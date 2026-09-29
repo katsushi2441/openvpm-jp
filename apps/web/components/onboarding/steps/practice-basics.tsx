@@ -32,6 +32,7 @@ const TIMEZONES = [
   "Europe/London",
   "Europe/Dublin",
   "Australia/Sydney",
+  "Asia/Tokyo",
 ];
 
 const selectClass =
