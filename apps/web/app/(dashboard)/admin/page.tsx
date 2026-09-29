@@ -17,12 +17,13 @@ import { EmptyState } from "@/components/common/empty-state";
 import { PageLoading } from "@/components/common/loading";
 import { SmsRecoveryConsole } from "@/components/admin/sms-recovery-console";
 import { ClinicPilotConsole } from "@/components/admin/clinic-pilot-console";
+import { tx, uiLocale } from "@/lib/i18n";
 
 const EMPTY_UUID = "00000000-0000-4000-8000-000000000000";
 const MESSAGING_HISTORY_LIMIT = 50;
 
 function formatUsd(n: number) {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat(uiLocale(), {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: 0,
@@ -41,9 +42,9 @@ function formatDate(d: Date | string | null, timeZone?: string | null) {
     year: "numeric",
   };
   try {
-    return date.toLocaleDateString("en-US", options);
+    return date.toLocaleDateString(uiLocale(), options);
   } catch {
-    return date.toLocaleDateString("en-US", { ...options, timeZone: "UTC" });
+    return date.toLocaleDateString(uiLocale(), { ...options, timeZone: "UTC" });
   }
 }
 
@@ -210,10 +211,8 @@ export default function AdminPage() {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
         <ShieldAlert className="h-12 w-12 text-muted-foreground mb-4" />
-        <h2 className="font-heading text-xl font-semibold">Access Denied</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          This area is for OpenVPM platform operators only.
-        </p>
+        <h2 className="font-heading text-xl font-semibold">{tx("Access Denied")}</h2>
+        <p className="text-sm text-muted-foreground mt-1">{tx("This area is for OpenVPM platform operators only.")}</p>
       </div>
     );
   }
@@ -222,9 +221,9 @@ export default function AdminPage() {
     return (
       <EmptyState
         icon={AlertTriangle}
-        title="Unable to load platform admin"
+        title={tx("Unable to load platform admin")}
         description={error.message}
-        action={{ label: "Retry", onClick: () => refetch() }}
+        action={{ label: tx("Retry"), onClick: () => refetch() }}
         className="border-destructive/30 bg-destructive/5"
       />
     );
@@ -236,9 +235,9 @@ export default function AdminPage() {
     return (
       <EmptyState
         icon={AlertTriangle}
-        title="Unable to load platform admin"
-        description="The admin overview finished without returning data. Try loading it again."
-        action={{ label: "Retry", onClick: () => refetch() }}
+        title={tx("Unable to load platform admin")}
+        description={tx("The admin overview finished without returning data. Try loading it again.")}
+        action={{ label: tx("Retry"), onClick: () => refetch() }}
         className="border-destructive/30 bg-destructive/5"
       />
     );
@@ -246,23 +245,23 @@ export default function AdminPage() {
 
   const kpis = [
     {
-      label: "Practices",
+      label: tx("Practices"),
       value: String(data.totals.practices),
       icon: Building2,
     },
     {
-      label: "Est. MRR",
+      label: tx("Est. MRR"),
       value: formatUsd(data.totals.estimatedMrr),
       icon: DollarSign,
     },
     {
-      label: "Active trials",
+      label: tx("Active trials"),
       value: String(data.totals.activeTrials),
       icon: Clock,
     },
-    { label: "Active", value: String(data.totals.active), icon: CheckCircle },
+    { label: tx("Active"), value: String(data.totals.active), icon: CheckCircle },
     {
-      label: "Past due",
+      label: tx("Past due"),
       value: String(data.totals.pastDue),
       icon: AlertTriangle,
     },
@@ -271,10 +270,8 @@ export default function AdminPage() {
   return (
     <div>
       <div>
-        <h2 className="font-heading text-xl font-semibold">Platform Admin</h2>
-        <p className="text-sm text-muted-foreground">
-          Cross-tenant operations overview
-        </p>
+        <h2 className="font-heading text-xl font-semibold">{tx("Platform Admin")}</h2>
+        <p className="text-sm text-muted-foreground">{tx("Cross-tenant operations overview")}</p>
       </div>
 
       {/* KPIs */}
@@ -304,13 +301,9 @@ export default function AdminPage() {
           <div>
             <div className="flex items-center gap-2 text-muted-foreground">
               <MessageSquare className="h-4 w-4" />
-              <span className="text-sm">SMS operations health</span>
+              <span className="text-sm">{tx("SMS operations health")}</span>
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">
-              Read-only carrier, provider-profile, provider-event, send-attempt,
-              and delivery evidence. This monitor never enables sending or
-              changes provider state.
-            </p>
+            <p className="mt-2 text-xs text-muted-foreground">{tx("Read-only carrier, provider-profile, provider-event, send-attempt, and delivery evidence. This monitor never enables sending or changes provider state.")}</p>
           </div>
           {smsOperations ? (
             <span
@@ -329,7 +322,7 @@ export default function AdminPage() {
         {smsConfiguration ? (
           <div className="mt-4 rounded-md border border-border bg-muted/20 p-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="text-sm font-medium">Hosted SMS configuration</p>
+              <p className="text-sm font-medium">{tx("Hosted SMS configuration")}</p>
               <span className="text-xs text-muted-foreground">
                 {smsConfiguration.rolloutIntended
                   ? smsConfiguration.providerIsTelnyx &&
@@ -339,9 +332,9 @@ export default function AdminPage() {
                     smsConfiguration.provisioningScopeExact &&
                     smsConfiguration.sendingScopeExact &&
                     smsConfiguration.inboundEnabled
-                    ? "Rollout configured"
-                    : "Needs attention"
-                  : "Safely deferred"}
+                    ? tx("Rollout configured")
+                    : tx("Needs attention")
+                  : tx("Safely deferred")}
               </span>
             </div>
             <div className="mt-2 grid gap-2 text-xs sm:grid-cols-2 lg:grid-cols-4">
@@ -375,24 +368,19 @@ export default function AdminPage() {
                         : "font-medium text-red-700"
                     }
                   >
-                    {valid ? "Valid" : "Fix"}
+                    {valid ? tx("Valid") : tx("Fix")}
                   </span>
                 </div>
               ))}
             </div>
-            <p className="mt-2 text-xs text-muted-foreground">
-              Provisioning {smsConfiguration.provisioningEnabled ? "on" : "off"}
-              {" · "}sending {smsConfiguration.sendingEnabled ? "on" : "off"}
-              {" · "}scopes {smsConfiguration.provisioningPracticeScopeCount}/
+            <p className="mt-2 text-xs text-muted-foreground">{tx("Provisioning")}{" "}{smsConfiguration.provisioningEnabled ? tx("on") : tx("off")}
+              {" · "}{tx("sending")}{" "}{smsConfiguration.sendingEnabled ? tx("on") : tx("off")}
+              {" · "}{tx("scopes")}{" "}{smsConfiguration.provisioningPracticeScopeCount}/
               {smsConfiguration.sendingPracticeScopeCount}/
-              {smsConfiguration.sendingLocationScopeCount} (provisioning /
-              sending practice / sending location). No secret values are shown.
-            </p>
+              {smsConfiguration.sendingLocationScopeCount}{" "}{tx("(provisioning / sending practice / sending location). No secret values are shown.")}</p>
           </div>
         ) : smsConfigurationError ? (
-          <p className="mt-3 text-sm text-red-700">
-            Could not load hosted SMS configuration diagnostics.
-          </p>
+          <p className="mt-3 text-sm text-red-700">{tx("Could not load hosted SMS configuration diagnostics.")}</p>
         ) : null}
         {smsOperations ? (
           <>
@@ -433,34 +421,27 @@ export default function AdminPage() {
                 </div>
               ))}
             </div>
-            <p className="mt-3 text-xs text-muted-foreground">
-              Carrier {smsOperations.counts.carrier} · Profile{" "}
-              {smsOperations.counts.profile} · Provider audit failures{" "}
-              {smsOperations.counts.providerAuditFailures} · Generated{" "}
+            <p className="mt-3 text-xs text-muted-foreground">{tx("Carrier")}{" "}{smsOperations.counts.carrier}{" "}{tx("· Profile")}{" "}
+              {smsOperations.counts.profile}{" "}{tx("· Provider audit failures")}{" "}
+              {smsOperations.counts.providerAuditFailures}{" "}{tx("· Generated")}{" "}
               {new Date(smsOperations.generatedAt).toLocaleString()}
             </p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Provider events: {smsOperations.counts.providerEventsPending}{" "}
-              pending · {smsOperations.counts.providerEventsRetry} retry ·{" "}
-              {smsOperations.counts.providerEventsBlockedRecovery}{" "}
-              recovery-blocked ·{" "}
-              {smsOperations.counts.providerEventsQuarantined} quarantined ·{" "}
-              {smsOperations.counts.providerEventConflicts} identity conflicts ·{" "}
-              {smsOperations.counts.providerEventsStale} stale
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">{tx("Provider events:")}{" "}{smsOperations.counts.providerEventsPending}{" "}{tx("pending ·")}{" "}{smsOperations.counts.providerEventsRetry}{" "}{tx("retry ·")}{" "}
+              {smsOperations.counts.providerEventsBlockedRecovery}{" "}{tx("recovery-blocked ·")}{" "}
+              {smsOperations.counts.providerEventsQuarantined}{" "}{tx("quarantined ·")}{" "}
+              {smsOperations.counts.providerEventConflicts}{" "}{tx("identity conflicts ·")}{" "}
+              {smsOperations.counts.providerEventsStale}{" "}{tx("stale")}</p>
             {smsOperations.items.length > 0 ? (
               <div className="mt-4 overflow-x-auto rounded-md border border-border">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-border bg-muted/30 text-left text-muted-foreground">
-                      <th className="px-3 py-2 font-medium">Priority</th>
-                      <th className="px-3 py-2 font-medium">
-                        Clinic / location
-                      </th>
-                      <th className="px-3 py-2 font-medium">Category</th>
-                      <th className="px-3 py-2 font-medium">Age</th>
-                      <th className="px-3 py-2 font-medium">Reason</th>
-                      <th className="px-3 py-2 font-medium">Next action</th>
+                      <th className="px-3 py-2 font-medium">{tx("Priority")}</th>
+                      <th className="px-3 py-2 font-medium">{tx("Clinic / location")}</th>
+                      <th className="px-3 py-2 font-medium">{tx("Category")}</th>
+                      <th className="px-3 py-2 font-medium">{tx("Age")}</th>
+                      <th className="px-3 py-2 font-medium">{tx("Reason")}</th>
+                      <th className="px-3 py-2 font-medium">{tx("Next action")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
@@ -483,7 +464,7 @@ export default function AdminPage() {
                         <td className="px-3 py-2">
                           <p className="font-medium">{item.practiceName}</p>
                           <p className="text-xs text-muted-foreground">
-                            {item.locationName ?? "Practice-wide"}
+                            {item.locationName ?? tx("Practice-wide")}
                           </p>
                         </td>
                         <td className="px-3 py-2 capitalize text-muted-foreground">
@@ -502,22 +483,17 @@ export default function AdminPage() {
                 </table>
               </div>
             ) : (
-              <div className="mt-4 rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-900">
-                No SMS operational exceptions need attention.
-              </div>
+              <div className="mt-4 rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-900">{tx("No SMS operational exceptions need attention.")}</div>
             )}
             {smsOperations.truncated ? (
-              <p className="mt-2 text-xs font-medium text-amber-700">
-                Results are bounded. Resolve the oldest items, then refresh for
-                the remaining queue.
-              </p>
+              <p className="mt-2 text-xs font-medium text-amber-700">{tx("Results are bounded. Resolve the oldest items, then refresh for the remaining queue.")}</p>
             ) : null}
           </>
         ) : (
           <p className="mt-3 text-sm text-muted-foreground">
             {smsOperationsError
-              ? "Could not load SMS operations health."
-              : "Loading SMS operations health…"}
+              ? tx("Could not load SMS operations health.")
+              : tx("Loading SMS operations health…")}
           </p>
         )}
       </div>
@@ -528,24 +504,21 @@ export default function AdminPage() {
       <div className="mt-6 rounded-lg border border-border bg-card p-5">
         <div className="flex items-center gap-2 text-muted-foreground">
           <TrendingUp className="h-4 w-4" />
-          <span className="text-sm">Clinic activation recovery</span>
+          <span className="text-sm">{tx("Clinic activation recovery")}</span>
         </div>
-        <p className="mt-2 text-xs text-muted-foreground">
-          Ranked by the next operator action, then by days since a real clinic
-          milestone. Internal/test workspaces and sample data are excluded.
-        </p>
+        <p className="mt-2 text-xs text-muted-foreground">{tx("Ranked by the next operator action, then by days since a real clinic milestone. Internal/test workspaces and sample data are excluded.")}</p>
         {recoveryQueue ? (
           <div className="mt-4 overflow-x-auto rounded-md border border-border">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-muted/30 text-left text-muted-foreground">
-                  <th className="px-3 py-2 font-medium">Rank</th>
-                  <th className="px-3 py-2 font-medium">Clinic contact</th>
-                  <th className="px-3 py-2 font-medium">Trial</th>
-                  <th className="px-3 py-2 font-medium">Setup</th>
-                  <th className="px-3 py-2 font-medium">Real activity</th>
-                  <th className="px-3 py-2 font-medium">Stage</th>
-                  <th className="px-3 py-2 font-medium">Next action</th>
+                  <th className="px-3 py-2 font-medium">{tx("Rank")}</th>
+                  <th className="px-3 py-2 font-medium">{tx("Clinic contact")}</th>
+                  <th className="px-3 py-2 font-medium">{tx("Trial")}</th>
+                  <th className="px-3 py-2 font-medium">{tx("Setup")}</th>
+                  <th className="px-3 py-2 font-medium">{tx("Real activity")}</th>
+                  <th className="px-3 py-2 font-medium">{tx("Stage")}</th>
+                  <th className="px-3 py-2 font-medium">{tx("Next action")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -571,9 +544,7 @@ export default function AdminPage() {
                           {clinic.verifiedAdminEmail}
                         </a>
                       ) : (
-                        <p className="mt-0.5 text-xs font-medium text-amber-700">
-                          No verified admin contact
-                        </p>
+                        <p className="mt-0.5 text-xs font-medium text-amber-700">{tx("No verified admin contact")}</p>
                       )}
                     </td>
                     <td className="px-3 py-2">
@@ -588,14 +559,13 @@ export default function AdminPage() {
                       <p className="mt-1 text-xs text-muted-foreground">
                         {clinic.trialEndsAt
                           ? `Ends ${formatDate(clinic.trialEndsAt, clinic.timezone)}`
-                          : "No trial end"}
+                          : tx("No trial end")}
                       </p>
                     </td>
                     <td className="px-3 py-2 text-muted-foreground">
                       <p>{clinic.setupStage}</p>
                       {clinic.setupHelpRequestedAt ? (
-                        <p className="mt-0.5 text-xs font-medium text-emerald-700">
-                          Help requested{" "}
+                        <p className="mt-0.5 text-xs font-medium text-emerald-700">{tx("Help requested")}{" "}
                           {formatDate(
                             clinic.setupHelpRequestedAt,
                             clinic.timezone,
@@ -605,16 +575,13 @@ export default function AdminPage() {
                     </td>
                     <td className="px-3 py-2">
                       <p className="tabular-nums">
-                        {clinic.realClientCount} clients ·{" "}
-                        {clinic.realAppointmentCount} visits
-                      </p>
-                      <p className="mt-0.5 text-xs text-muted-foreground">
-                        Last{" "}
+                        {clinic.realClientCount}{" "}{tx("clients ·")}{" "}
+                        {clinic.realAppointmentCount}{" "}{tx("visits")}</p>
+                      <p className="mt-0.5 text-xs text-muted-foreground">{tx("Last")}{" "}
                         {formatDate(
                           clinic.lastMeaningfulActivityAt,
                           clinic.timezone,
-                        )}{" "}
-                        · stalled {clinic.stallAgeDays}d
+                        )}{" "}{tx("· stalled")}{" "}{clinic.stallAgeDays}d
                       </p>
                     </td>
                     <td className="px-3 py-2 capitalize text-muted-foreground">
@@ -622,8 +589,7 @@ export default function AdminPage() {
                     </td>
                     <td className="px-3 py-2">
                       <p className="font-medium">{clinic.nextAction}</p>
-                      <p className="mt-0.5 text-xs text-muted-foreground">
-                        Priority {clinic.nextActionPriority}
+                      <p className="mt-0.5 text-xs text-muted-foreground">{tx("Priority")}{" "}{clinic.nextActionPriority}
                       </p>
                     </td>
                   </tr>
@@ -633,9 +599,7 @@ export default function AdminPage() {
                     <td
                       colSpan={7}
                       className="px-3 py-6 text-center text-muted-foreground"
-                    >
-                      No clinic workspaces need activation recovery.
-                    </td>
+                    >{tx("No clinic workspaces need activation recovery.")}</td>
                   </tr>
                 ) : null}
               </tbody>
@@ -644,8 +608,8 @@ export default function AdminPage() {
         ) : (
           <p className="mt-3 text-sm text-muted-foreground">
             {recoveryError
-              ? "Could not load activation recovery."
-              : "Loading activation recovery…"}
+              ? tx("Could not load activation recovery.")
+              : tx("Loading activation recovery…")}
           </p>
         )}
       </div>
@@ -654,13 +618,9 @@ export default function AdminPage() {
       <div className="mt-6 rounded-lg border border-border bg-card p-5">
         <div className="flex items-center gap-2 text-muted-foreground">
           <MessageSquare className="h-4 w-4" />
-          <span className="text-sm">Messaging carrier registrations</span>
+          <span className="text-sm">{tx("Messaging carrier registrations")}</span>
         </div>
-        <p className="mt-2 text-xs text-muted-foreground">
-          Brand and campaign submissions incur Telnyx charges and require an
-          explicit confirmation. Refresh is read-only. Assignment never enables
-          sending.
-        </p>
+        <p className="mt-2 text-xs text-muted-foreground">{tx("Brand and campaign submissions incur Telnyx charges and require an explicit confirmation. Refresh is read-only. Assignment never enables sending.")}</p>
         {messagingError ? (
           <div className="mt-3 rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
             {messagingError}
@@ -671,12 +631,12 @@ export default function AdminPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-muted/30 text-left text-muted-foreground">
-                  <th className="px-3 py-2 font-medium">Clinic</th>
-                  <th className="px-3 py-2 font-medium">Status</th>
-                  <th className="px-3 py-2 font-medium">Brand</th>
-                  <th className="px-3 py-2 font-medium">Campaign</th>
-                  <th className="px-3 py-2 font-medium">Numbers</th>
-                  <th className="px-3 py-2 font-medium">Operator action</th>
+                  <th className="px-3 py-2 font-medium">{tx("Clinic")}</th>
+                  <th className="px-3 py-2 font-medium">{tx("Status")}</th>
+                  <th className="px-3 py-2 font-medium">{tx("Brand")}</th>
+                  <th className="px-3 py-2 font-medium">{tx("Campaign")}</th>
+                  <th className="px-3 py-2 font-medium">{tx("Numbers")}</th>
+                  <th className="px-3 py-2 font-medium">{tx("Operator action")}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -703,8 +663,7 @@ export default function AdminPage() {
                           {registration.practiceName}
                         </p>
                         <p className="text-xs text-muted-foreground">
-                          {registration.legalName} · EIN ••••
-                          {registration.taxIdLast4}
+                          {registration.legalName}{" "}{tx("· EIN ••••")}{registration.taxIdLast4}
                         </p>
                         {registration.lastError ? (
                           <p className="mt-1 max-w-xs text-xs text-destructive">
@@ -716,14 +675,14 @@ export default function AdminPage() {
                         {registration.status.replace("_", " ")}
                       </td>
                       <td className="px-3 py-2 text-xs text-muted-foreground">
-                        {registration.providerBrandStatus ?? "Not submitted"}
+                        {registration.providerBrandStatus ?? tx("Not submitted")}
                       </td>
                       <td className="px-3 py-2 text-xs text-muted-foreground">
-                        {registration.providerCampaignStatus ?? "Not submitted"}
+                        {registration.providerCampaignStatus ?? tx("Not submitted")}
                       </td>
                       <td className="px-3 py-2 text-xs text-muted-foreground">
                         {registration.senders.length === 0
-                          ? "No number"
+                          ? tx("No number")
                           : registration.senders
                               .map(
                                 (sender) =>
@@ -754,9 +713,7 @@ export default function AdminPage() {
                                 practiceName: registration.practiceName,
                               })
                             }
-                          >
-                            History
-                          </button>
+                          >{tx("History")}</button>
                           {!registration.providerBrandId ? (
                             <button
                               type="button"
@@ -781,8 +738,8 @@ export default function AdminPage() {
                               }}
                             >
                               {registration.lastError
-                                ? "Retry reviewed brand"
-                                : "Submit brand"}
+                                ? tx("Retry reviewed brand")
+                                : tx("Submit brand")}
                             </button>
                           ) : null}
                           {registration.providerBrandId &&
@@ -810,8 +767,8 @@ export default function AdminPage() {
                               }}
                             >
                               {registration.lastError
-                                ? "Retry reviewed campaign"
-                                : "Submit campaign"}
+                                ? tx("Retry reviewed campaign")
+                                : tx("Submit campaign")}
                             </button>
                           ) : null}
                           {registration.providerCampaignId ? (
@@ -831,9 +788,7 @@ export default function AdminPage() {
                                   });
                                 }
                               }}
-                            >
-                              Assign numbers
-                            </button>
+                            >{tx("Assign numbers")}</button>
                           ) : null}
                           {registration.senders.map((sender) =>
                             sender.messagingProfileId ? (
@@ -851,9 +806,7 @@ export default function AdminPage() {
                                       locationId: sender.locationId,
                                     })
                                   }
-                                >
-                                  Inspect profile
-                                </button>
+                                >{tx("Inspect profile")}</button>
                                 {!sender.providerProfileReady &&
                                 registration.status === "active" &&
                                 sender.registrationStatus === "active" ? (
@@ -875,9 +828,7 @@ export default function AdminPage() {
                                         });
                                       }
                                     }}
-                                  >
-                                    Enable provider profile
-                                  </button>
+                                  >{tx("Enable provider profile")}</button>
                                 ) : null}
                                 <button
                                   type="button"
@@ -897,16 +848,14 @@ export default function AdminPage() {
                                       });
                                     }
                                   }}
-                                >
-                                  Disable provider profile
-                                </button>
+                                >{tx("Disable provider profile")}</button>
                               </span>
                             ) : null,
                           )}
                           {registration.providerBrandId ? (
                             <button
                               type="button"
-                              title="Read current carrier status"
+                              title={tx("Read current carrier status")}
                               disabled={anyMutationPending}
                               className="inline-flex items-center rounded border border-border px-2 py-1 text-xs font-medium hover:bg-muted disabled:opacity-50"
                               onClick={() =>
@@ -915,8 +864,7 @@ export default function AdminPage() {
                                 })
                               }
                             >
-                              <RefreshCw className="mr-1 h-3 w-3" /> Refresh
-                            </button>
+                              <RefreshCw className="mr-1 h-3 w-3" />{" "}{tx("Refresh")}</button>
                           ) : null}
                           {busy ? (
                             <>
@@ -940,16 +888,14 @@ export default function AdminPage() {
                                     confirmProviderPortalReviewed: true,
                                   });
                                 }}
-                              >
-                                Recover provider IDs
-                              </button>
+                              >{tx("Recover provider IDs")}</button>
                               <button
                                 type="button"
                                 disabled={!lockIsStale || anyMutationPending}
                                 title={
                                   lockIsStale
-                                    ? "Use only after confirming no matching object exists in Telnyx"
-                                    : "Available after the 15-minute safety window"
+                                    ? tx("Use only after confirming no matching object exists in Telnyx")
+                                    : tx("Available after the 15-minute safety window")
                                 }
                                 className="rounded border border-destructive/40 px-2 py-1 text-xs font-medium text-destructive hover:bg-destructive/5 disabled:opacity-50"
                                 onClick={() => {
@@ -971,9 +917,7 @@ export default function AdminPage() {
                                     });
                                   }
                                 }}
-                              >
-                                No object — clear stale lock
-                              </button>
+                              >{tx("No object — clear stale lock")}</button>
                             </>
                           ) : null}
                         </div>
@@ -986,9 +930,7 @@ export default function AdminPage() {
                     <td
                       colSpan={6}
                       className="px-3 py-6 text-center text-muted-foreground"
-                    >
-                      No clinics have submitted carrier details yet.
-                    </td>
+                    >{tx("No clinics have submitted carrier details yet.")}</td>
                   </tr>
                 ) : null}
               </tbody>
@@ -997,8 +939,8 @@ export default function AdminPage() {
         ) : (
           <p className="mt-3 text-sm text-muted-foreground">
             {messagingQueueError
-              ? "Could not load messaging registrations."
-              : "Loading messaging registrations…"}
+              ? tx("Could not load messaging registrations.")
+              : tx("Loading messaging registrations…")}
           </p>
         )}
       </div>
@@ -1008,36 +950,28 @@ export default function AdminPage() {
         <div className="mt-4 rounded-lg border border-border bg-card p-5">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="text-sm font-semibold">Carrier lifecycle history</p>
+              <p className="text-sm font-semibold">{tx("Carrier lifecycle history")}</p>
               <p className="mt-1 text-xs text-muted-foreground">
-                {messagingHistorySelection.practiceName} · newest first · at
-                most {MESSAGING_HISTORY_LIMIT} redacted operational events
-              </p>
+                {messagingHistorySelection.practiceName}{" "}{tx("· newest first · at most")}{" "}{MESSAGING_HISTORY_LIMIT}{" "}{tx("redacted operational events")}</p>
             </div>
             <button
               type="button"
               className="rounded border border-border px-2 py-1 text-xs font-medium hover:bg-muted"
               onClick={() => setMessagingHistorySelection(null)}
-            >
-              Close history
-            </button>
+            >{tx("Close history")}</button>
           </div>
           {messagingHistoryError ? (
-            <p className="mt-3 text-sm text-destructive">
-              Could not load carrier lifecycle history.
-            </p>
+            <p className="mt-3 text-sm text-destructive">{tx("Could not load carrier lifecycle history.")}</p>
           ) : messagingHistory ? (
             <>
               <div className="mt-4 overflow-x-auto rounded-md border border-border">
                 <table className="w-full text-xs">
                   <thead>
                     <tr className="border-b border-border bg-muted/30 text-left text-muted-foreground">
-                      <th className="px-3 py-2 font-medium">Recorded</th>
-                      <th className="px-3 py-2 font-medium">Lifecycle event</th>
-                      <th className="px-3 py-2 font-medium">Status</th>
-                      <th className="px-3 py-2 font-medium">
-                        Operational evidence
-                      </th>
+                      <th className="px-3 py-2 font-medium">{tx("Recorded")}</th>
+                      <th className="px-3 py-2 font-medium">{tx("Lifecycle event")}</th>
+                      <th className="px-3 py-2 font-medium">{tx("Status")}</th>
+                      <th className="px-3 py-2 font-medium">{tx("Operational evidence")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
@@ -1060,25 +994,20 @@ export default function AdminPage() {
                             →{" "}
                             {recoveryLabel(event.statusAfter ?? "not recorded")}
                           </p>
-                          <p className="mt-1 text-muted-foreground">
-                            Brand {event.providerBrandStatus ?? "—"} · campaign{" "}
+                          <p className="mt-1 text-muted-foreground">{tx("Brand")}{" "}{event.providerBrandStatus ?? "—"}{" "}{tx("· campaign")}{" "}
                             {event.providerCampaignStatus ?? "—"}
                           </p>
                         </td>
                         <td className="px-3 py-2 font-mono text-[11px]">
-                          <p className="break-all">event {event.id}</p>
-                          <p className="mt-1 break-all text-muted-foreground">
-                            operation {event.operationId}
+                          <p className="break-all">{tx("event")}{" "}{event.id}</p>
+                          <p className="mt-1 break-all text-muted-foreground">{tx("operation")}{" "}{event.operationId}
                           </p>
-                          <p className="mt-1 break-all text-muted-foreground">
-                            registration {event.registrationId} · location{" "}
+                          <p className="mt-1 break-all text-muted-foreground">{tx("registration")}{" "}{event.registrationId}{" "}{tx("· location")}{" "}
                             {event.locationId ?? "—"}
                           </p>
-                          <p className="mt-1 capitalize text-muted-foreground">
-                            reason {recoveryLabel(event.reasonCode)}
+                          <p className="mt-1 capitalize text-muted-foreground">{tx("reason")}{" "}{recoveryLabel(event.reasonCode)}
                           </p>
-                          <p className="mt-1 text-muted-foreground">
-                            actor {event.actorLabel}
+                          <p className="mt-1 text-muted-foreground">{tx("actor")}{" "}{event.actorLabel}
                           </p>
                         </td>
                       </tr>
@@ -1088,27 +1017,21 @@ export default function AdminPage() {
                         <td
                           colSpan={4}
                           className="px-3 py-6 text-center text-muted-foreground"
-                        >
-                          No carrier lifecycle evidence has been recorded.
-                        </td>
+                        >{tx("No carrier lifecycle evidence has been recorded.")}</td>
                       </tr>
                     ) : null}
                   </tbody>
                 </table>
               </div>
               {messagingHistory.truncated ? (
-                <p className="mt-2 text-xs font-medium text-amber-700">
-                  History is truncated at {MESSAGING_HISTORY_LIMIT} events.
-                  Review the newest evidence before taking any separate operator
-                  action.
-                </p>
+                <p className="mt-2 text-xs font-medium text-amber-700">{tx("History is truncated at")}{" "}{MESSAGING_HISTORY_LIMIT}{" "}{tx("events. Review the newest evidence before taking any separate operator action.")}</p>
               ) : null}
             </>
           ) : (
             <p className="mt-3 text-sm text-muted-foreground">
               {messagingHistoryFetching
-                ? "Loading redacted carrier history…"
-                : "Select History again to load carrier evidence."}
+                ? tx("Loading redacted carrier history…")
+                : tx("Select History again to load carrier evidence.")}
             </p>
           )}
         </div>
@@ -1118,7 +1041,7 @@ export default function AdminPage() {
       <div className="mt-6 rounded-lg border border-border bg-card p-5">
         <div className="flex items-center gap-2 text-muted-foreground">
           <TrendingUp className="h-4 w-4" />
-          <span className="text-sm">Production journey cohorts (30 days)</span>
+          <span className="text-sm">{tx("Production journey cohorts (30 days)")}</span>
         </div>
         {journey ? (
           <>
@@ -1182,32 +1105,29 @@ export default function AdminPage() {
             </div>
 
             <div className="mt-5 grid gap-2 text-sm text-muted-foreground sm:grid-cols-2 xl:grid-cols-6">
-              <p>Left before trying (7d+): {journey.totals.leftBeforeTrying}</p>
-              <p>Demo without signup (7d+): {journey.totals.demoAbandoned}</p>
-              <p>
-                Signup stalled (7d+): {journey.totals.registrationAbandoned}
+              <p>{tx("Left before trying (7d+):")}{" "}{journey.totals.leftBeforeTrying}</p>
+              <p>{tx("Demo without signup (7d+):")}{" "}{journey.totals.demoAbandoned}</p>
+              <p>{tx("Signup stalled (7d+):")}{" "}{journey.totals.registrationAbandoned}
               </p>
-              <p>
-                Activation stalled (7d+): {journey.totals.activationAbandoned}
+              <p>{tx("Activation stalled (7d+):")}{" "}{journey.totals.activationAbandoned}
               </p>
-              <p>
-                Payment method without positive payment after trial (7d+):{" "}
+              <p>{tx("Payment method without positive payment after trial (7d+):")}{" "}
                 {journey.totals.paymentAbandoned}
               </p>
-              <p>Client errors: {journey.totals.clientErrors}</p>
+              <p>{tx("Client errors:")}{" "}{journey.totals.clientErrors}</p>
             </div>
 
             <div className="mt-5 overflow-x-auto rounded-md border border-border">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border bg-muted/30 text-left text-muted-foreground">
-                    <th className="px-3 py-2 font-medium">Cohort week</th>
-                    <th className="px-3 py-2 font-medium">Visit</th>
-                    <th className="px-3 py-2 font-medium">Demo</th>
-                    <th className="px-3 py-2 font-medium">Registered</th>
-                    <th className="px-3 py-2 font-medium">Activated</th>
-                    <th className="px-3 py-2 font-medium">Payment method</th>
-                    <th className="px-3 py-2 font-medium">Positive payment</th>
+                    <th className="px-3 py-2 font-medium">{tx("Cohort week")}</th>
+                    <th className="px-3 py-2 font-medium">{tx("Visit")}</th>
+                    <th className="px-3 py-2 font-medium">{tx("Demo")}</th>
+                    <th className="px-3 py-2 font-medium">{tx("Registered")}</th>
+                    <th className="px-3 py-2 font-medium">{tx("Activated")}</th>
+                    <th className="px-3 py-2 font-medium">{tx("Payment method")}</th>
+                    <th className="px-3 py-2 font-medium">{tx("Positive payment")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
@@ -1239,20 +1159,13 @@ export default function AdminPage() {
                       <td
                         colSpan={7}
                         className="px-3 py-6 text-center text-muted-foreground"
-                      >
-                        No first-party journey cohorts recorded yet.
-                      </td>
+                      >{tx("No first-party journey cohorts recorded yet.")}</td>
                     </tr>
                   ) : null}
                 </tbody>
               </table>
             </div>
-            <p className="mt-3 text-xs text-muted-foreground">
-              Anonymous first touch is carried across openvpm.com, demo, and
-              signup. Rates are visit-to-step for demo and registration, then
-              step-to-step. Stalls require seven full days; an active trial with
-              a collected payment method is not treated as payment-abandoned.
-              {journey.totals.historicalUnattributedRegistrations > 0
+            <p className="mt-3 text-xs text-muted-foreground">{tx("Anonymous first touch is carried across openvpm.com, demo, and signup. Rates are visit-to-step for demo and registration, then step-to-step. Stalls require seven full days; an active trial with a collected payment method is not treated as payment-abandoned.")}{journey.totals.historicalUnattributedRegistrations > 0
                 ? ` ${journey.totals.historicalUnattributedRegistrations} historical registration(s) have no captured journey ID and remain explicitly unknown.`
                 : ""}
               {journey.totals.repairableAttributionGaps > 0
@@ -1263,8 +1176,8 @@ export default function AdminPage() {
         ) : (
           <p className="mt-3 text-sm text-muted-foreground">
             {journeyError
-              ? "Could not load journey cohorts."
-              : "Loading journey cohorts..."}
+              ? tx("Could not load journey cohorts.")
+              : tx("Loading journey cohorts...")}
           </p>
         )}
       </div>
@@ -1272,19 +1185,19 @@ export default function AdminPage() {
       <div className="mt-6 rounded-lg border border-border bg-card p-5">
         <div className="flex items-center gap-2 text-muted-foreground">
           <TrendingUp className="h-4 w-4" />
-          <span className="text-sm">Trial funnel (30 days)</span>
+          <span className="text-sm">{tx("Trial funnel (30 days)")}</span>
         </div>
         {funnel ? (
           <>
             <div className="mt-3 grid gap-4 sm:grid-cols-3 xl:grid-cols-8">
               <div>
-                <p className="text-sm text-muted-foreground">Signups</p>
+                <p className="text-sm text-muted-foreground">{tx("Signups")}</p>
                 <p className="mt-1 font-heading text-2xl font-bold tabular-nums">
                   {funnel.totals.signups}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Setup started</p>
+                <p className="text-sm text-muted-foreground">{tx("Setup started")}</p>
                 <p className="mt-1 font-heading text-2xl font-bold tabular-nums">
                   {funnel.totals.setupStarted}
                   <span className="ml-2 text-sm font-normal text-muted-foreground">
@@ -1293,7 +1206,7 @@ export default function AdminPage() {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Setup complete</p>
+                <p className="text-sm text-muted-foreground">{tx("Setup complete")}</p>
                 <p className="mt-1 font-heading text-2xl font-bold tabular-nums">
                   {funnel.totals.setupCompleted}
                   <span className="ml-2 text-sm font-normal text-muted-foreground">
@@ -1302,7 +1215,7 @@ export default function AdminPage() {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Activated</p>
+                <p className="text-sm text-muted-foreground">{tx("Activated")}</p>
                 <p className="mt-1 font-heading text-2xl font-bold tabular-nums">
                   {funnel.totals.activated}
                   <span className="ml-2 text-sm font-normal text-muted-foreground">
@@ -1311,9 +1224,7 @@ export default function AdminPage() {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">
-                  First visit done
-                </p>
+                <p className="text-sm text-muted-foreground">{tx("First visit done")}</p>
                 <p className="mt-1 font-heading text-2xl font-bold tabular-nums">
                   {funnel.totals.firstVisitCompleted}
                   <span className="ml-2 text-sm font-normal text-muted-foreground">
@@ -1322,7 +1233,7 @@ export default function AdminPage() {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Payment method</p>
+                <p className="text-sm text-muted-foreground">{tx("Payment method")}</p>
                 <p className="mt-1 font-heading text-2xl font-bold tabular-nums">
                   {funnel.totals.paymentMethodCollected}
                   <span className="ml-2 text-sm font-normal text-muted-foreground">
@@ -1331,9 +1242,7 @@ export default function AdminPage() {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">
-                  First positive payment
-                </p>
+                <p className="text-sm text-muted-foreground">{tx("First positive payment")}</p>
                 <p className="mt-1 font-heading text-2xl font-bold tabular-nums">
                   {funnel.totals.firstPositivePayment}
                   <span className="ml-2 text-sm font-normal text-muted-foreground">
@@ -1342,9 +1251,7 @@ export default function AdminPage() {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">
-                  Currently active
-                </p>
+                <p className="text-sm text-muted-foreground">{tx("Currently active")}</p>
                 <p className="mt-1 font-heading text-2xl font-bold tabular-nums">
                   {funnel.totals.currentlyActive}
                   <span className="ml-2 text-sm font-normal text-muted-foreground">
@@ -1365,20 +1272,16 @@ export default function AdminPage() {
             </p>
 
             <div className="mt-4 rounded-lg border border-primary/15 bg-primary/5 p-4">
-              <p className="text-sm font-medium">
-                First real visit → billing setup
-              </p>
+              <p className="text-sm font-medium">{tx("First real visit → billing setup")}</p>
               <div className="mt-3 grid gap-3 sm:grid-cols-3">
                 <div>
-                  <p className="text-xs text-muted-foreground">
-                    Conversion opportunities
-                  </p>
+                  <p className="text-xs text-muted-foreground">{tx("Conversion opportunities")}</p>
                   <p className="mt-1 font-heading text-xl font-bold tabular-nums">
                     {funnel.firstVisitBillingConversion.opportunities}
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Within 24h</p>
+                  <p className="text-xs text-muted-foreground">{tx("Within 24h")}</p>
                   <p className="mt-1 font-heading text-xl font-bold tabular-nums">
                     {funnel.firstVisitBillingConversion.convertedWithin24Hours}
                     <span className="ml-2 text-sm font-normal text-muted-foreground">
@@ -1390,7 +1293,7 @@ export default function AdminPage() {
                   </p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Within 72h</p>
+                  <p className="text-xs text-muted-foreground">{tx("Within 72h")}</p>
                   <p className="mt-1 font-heading text-xl font-bold tabular-nums">
                     {funnel.firstVisitBillingConversion.convertedWithin72Hours}
                     <span className="ml-2 text-sm font-normal text-muted-foreground">
@@ -1402,95 +1305,76 @@ export default function AdminPage() {
                   </p>
                 </div>
               </div>
-              <p className="mt-2 text-xs text-muted-foreground">
-                Uses only first real visits at least 72 hours old. Clinics that
-                connected billing before that visit are reported separately (
-                {funnel.firstVisitBillingConversion.alreadyConnectedAtVisit})
-                and are not in the opportunity denominator.
-              </p>
+              <p className="mt-2 text-xs text-muted-foreground">{tx("Uses only first real visits at least 72 hours old. Clinics that connected billing before that visit are reported separately (")}{funnel.firstVisitBillingConversion.alreadyConnectedAtVisit}{tx(") and are not in the opportunity denominator.")}</p>
             </div>
             <div className="mt-4 rounded-md border border-amber-300/60 bg-amber-50/50 p-3 text-xs text-muted-foreground dark:bg-amber-950/10">
-              <p className="font-medium text-foreground">
-                Conversion evidence quality
-              </p>
-              <p className="mt-1">
-                Legacy business-stage rows are excluded; unknown evidence is
-                never counted as zero or assigned a synthetic date.
-              </p>
-              <p className="mt-2 font-medium text-foreground">
-                Jurisdiction cohorts: US{" "}
+              <p className="font-medium text-foreground">{tx("Conversion evidence quality")}</p>
+              <p className="mt-1">{tx("Legacy business-stage rows are excluded; unknown evidence is never counted as zero or assigned a synthetic date.")}</p>
+              <p className="mt-2 font-medium text-foreground">{tx("Jurisdiction cohorts: US")}{" "}
                 {funnel.jurisdictionCohorts.confirmedUs.signups}
                 {" → "}
-                {funnel.jurisdictionCohorts.confirmedUs.activated} activated (
-                {formatPct(
+                {funnel.jurisdictionCohorts.confirmedUs.activated}{" "}{tx("activated (")}{formatPct(
                   funnel.jurisdictionCohorts.confirmedUs.activationRate,
-                )}
-                ) · non-US {funnel.jurisdictionCohorts.confirmedNonUs.signups}
+                )}{tx(") · non-US")}{" "}{funnel.jurisdictionCohorts.confirmedNonUs.signups}
                 {" → "}
                 {funnel.jurisdictionCohorts.confirmedNonUs.activated} (
                 {formatPct(
                   funnel.jurisdictionCohorts.confirmedNonUs.activationRate,
-                )}
-                ) · historical unknown{" "}
+                )}{tx(") · historical unknown")}{" "}
                 {funnel.jurisdictionCohorts.unknown.signups}
                 {" → "}
                 {funnel.jurisdictionCohorts.unknown.activated} (
                 {formatPct(funnel.jurisdictionCohorts.unknown.activationRate)})
               </p>
-              <p className="mt-2">
-                Legacy rows: {funnel.dataQuality.legacyBusinessStageRows} ·
-                Unknown payment method:{" "}
-                {funnel.dataQuality.unknownPaymentMethodPractices} · Unknown
-                positive payment:{" "}
+              <p className="mt-2">{tx("Legacy rows:")}{" "}{funnel.dataQuality.legacyBusinessStageRows}{" "}{tx("· Unknown payment method:")}{" "}
+                {funnel.dataQuality.unknownPaymentMethodPractices}{" "}{tx("· Unknown positive payment:")}{" "}
                 {funnel.dataQuality.unknownPositivePaymentPractices}
-                {" · "}Missing registrations:{" "}
+                {" · "}{tx("Missing registrations:")}{" "}
                 {funnel.dataQuality.missingRegistrationMilestones}
-                {" · "}Missing activations:{" "}
+                {" · "}{tx("Missing activations:")}{" "}
                 {funnel.dataQuality.missingActivationMilestones}
-                {" · "}Unprojected Stripe evidence:{" "}
+                {" · "}{tx("Unprojected Stripe evidence:")}{" "}
                 {funnel.dataQuality.unprojectedStripeEvidence}
-                {" · "}Unmapped Stripe evidence:{" "}
+                {" · "}{tx("Unmapped Stripe evidence:")}{" "}
                 {funnel.dataQuality.unmappedStripeEvidence}
               </p>
             </div>
           </>
         ) : (
           <p className="mt-3 text-sm text-muted-foreground">
-            {funnelError ? "Could not load the funnel." : "Loading funnel..."}
+            {funnelError ? tx("Could not load the funnel.") : tx("Loading funnel...")}
           </p>
         )}
       </div>
 
       {/* Practices table */}
       {extendTrialError && (
-        <div className="mt-6 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
-          Could not extend the trial: {extendTrialError}
+        <div className="mt-6 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">{tx("Could not extend the trial:")}{" "}{extendTrialError}
         </div>
       )}
       {analyticsError && (
-        <div className="mt-6 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">
-          Could not update funnel inclusion: {analyticsError}
+        <div className="mt-6 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 text-sm text-destructive">{tx("Could not update funnel inclusion:")}{" "}{analyticsError}
         </div>
       )}
       <div className="mt-8 overflow-x-auto rounded-lg border border-border">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/30 text-left text-muted-foreground">
-              <th className="px-4 py-2.5 font-medium">Practice</th>
-              <th className="px-4 py-2.5 font-medium">Plan</th>
-              <th className="px-4 py-2.5 font-medium">Status</th>
-              <th className="px-4 py-2.5 font-medium">Source</th>
-              <th className="px-4 py-2.5 font-medium">Intent</th>
-              <th className="px-4 py-2.5 font-medium">Setup</th>
-              <th className="px-4 py-2.5 font-medium">Metrics</th>
-              <th className="px-4 py-2.5 font-medium">Trial ends</th>
-              <th className="px-4 py-2.5 font-medium text-right">Locations</th>
-              <th className="px-4 py-2.5 font-medium text-right">Staff</th>
-              <th className="px-4 py-2.5 font-medium text-right">Base MRR</th>
-              <th className="px-4 py-2.5 font-medium text-right">Clients</th>
-              <th className="px-4 py-2.5 font-medium text-right">Patients</th>
-              <th className="px-4 py-2.5 font-medium">Country</th>
-              <th className="px-4 py-2.5 font-medium">Joined</th>
+              <th className="px-4 py-2.5 font-medium">{tx("Practice")}</th>
+              <th className="px-4 py-2.5 font-medium">{tx("Plan")}</th>
+              <th className="px-4 py-2.5 font-medium">{tx("Status")}</th>
+              <th className="px-4 py-2.5 font-medium">{tx("Source")}</th>
+              <th className="px-4 py-2.5 font-medium">{tx("Intent")}</th>
+              <th className="px-4 py-2.5 font-medium">{tx("Setup")}</th>
+              <th className="px-4 py-2.5 font-medium">{tx("Metrics")}</th>
+              <th className="px-4 py-2.5 font-medium">{tx("Trial ends")}</th>
+              <th className="px-4 py-2.5 font-medium text-right">{tx("Locations")}</th>
+              <th className="px-4 py-2.5 font-medium text-right">{tx("Staff")}</th>
+              <th className="px-4 py-2.5 font-medium text-right">{tx("Base MRR")}</th>
+              <th className="px-4 py-2.5 font-medium text-right">{tx("Clients")}</th>
+              <th className="px-4 py-2.5 font-medium text-right">{tx("Patients")}</th>
+              <th className="px-4 py-2.5 font-medium">{tx("Country")}</th>
+              <th className="px-4 py-2.5 font-medium">{tx("Joined")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -1505,12 +1389,10 @@ export default function AdminPage() {
                     >
                       {p.adminName ? `${p.adminName} · ` : ""}
                       {p.adminEmail}
-                      {!p.adminEmailVerifiedAt ? " · unverified" : ""}
+                      {!p.adminEmailVerifiedAt ? tx(" · unverified") : ""}
                     </a>
                   ) : (
-                    <p className="mt-0.5 text-xs text-muted-foreground">
-                      No active admin contact
-                    </p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{tx("No active admin contact")}</p>
                   )}
                 </td>
                 <td className="px-4 py-2.5 capitalize">{p.tier}</td>
@@ -1533,8 +1415,7 @@ export default function AdminPage() {
                 <td className="px-4 py-2.5 text-muted-foreground">
                   <p>{p.setupStage}</p>
                   {p.setupHelpRequestedAt ? (
-                    <p className="mt-0.5 text-xs font-medium text-emerald-700">
-                      Help requested{" "}
+                    <p className="mt-0.5 text-xs font-medium text-emerald-700">{tx("Help requested")}{" "}
                       {formatDate(p.setupHelpRequestedAt, p.timezone)}
                     </p>
                   ) : null}
@@ -1544,8 +1425,8 @@ export default function AdminPage() {
                     type="button"
                     title={
                       p.analyticsExcluded
-                        ? "Include this practice in conversion reporting"
-                        : "Exclude this internal or test practice from conversion reporting"
+                        ? tx("Include this practice in conversion reporting")
+                        : tx("Exclude this internal or test practice from conversion reporting")
                     }
                     aria-pressed={p.analyticsExcluded}
                     disabled={setAnalyticsExcluded.isPending}
@@ -1561,7 +1442,7 @@ export default function AdminPage() {
                         : "border-border text-muted-foreground hover:bg-muted"
                     }`}
                   >
-                    {p.analyticsExcluded ? "Excluded" : "Exclude"}
+                    {p.analyticsExcluded ? tx("Excluded") : tx("Exclude")}
                   </button>
                 </td>
                 <td className="px-4 py-2.5 text-muted-foreground">
@@ -1570,7 +1451,7 @@ export default function AdminPage() {
                     {p.billingStatus === "trialing" && (
                       <button
                         type="button"
-                        title="Give this trial 14 more days"
+                        title={tx("Give this trial 14 more days")}
                         disabled={extendTrial.isPending}
                         onClick={() =>
                           extendTrial.mutate({ practiceId: p.id, days: 14 })
@@ -1610,9 +1491,7 @@ export default function AdminPage() {
                 <td
                   colSpan={15}
                   className="px-4 py-8 text-center text-muted-foreground"
-                >
-                  No practices yet.
-                </td>
+                >{tx("No practices yet.")}</td>
               </tr>
             )}
           </tbody>

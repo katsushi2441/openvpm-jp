@@ -16,6 +16,7 @@ import {
   Line,
 } from "recharts";
 import { formatCurrency, localeForCountry } from "@/lib/locale/format";
+import { tx } from "@/lib/i18n";
 
 const SPECIES_COLORS: Record<string, string> = {
   Canine: "#3b82f6",
@@ -113,9 +114,7 @@ export function DashboardCharts({
     <>
       <div className="grid gap-4 md:grid-cols-2">
         <div className="rounded-lg border border-border bg-card p-6">
-          <h2 className="mb-4 font-heading text-lg font-semibold">
-            Appointments This Week
-          </h2>
+          <h2 className="mb-4 font-heading text-lg font-semibold">{tx("Appointments This Week")}</h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={appointmentsByDay}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
@@ -164,9 +163,7 @@ export function DashboardCharts({
         </div>
 
         <div className="rounded-lg border border-border bg-card p-6">
-          <h2 className="mb-4 font-heading text-lg font-semibold">
-            Species Distribution
-          </h2>
+          <h2 className="mb-4 font-heading text-lg font-semibold">{tx("Species Distribution")}</h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -199,9 +196,7 @@ export function DashboardCharts({
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="rounded-lg border border-border bg-card p-6">
-          <h2 className="mb-4 font-heading text-lg font-semibold">
-            Revenue (Last 30 Days)
-          </h2>
+          <h2 className="mb-4 font-heading text-lg font-semibold">{tx("Revenue (Last 30 Days)")}</h2>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={revenueByDay}>
               <CartesianGrid strokeDasharray="3 3" className="stroke-border" />
@@ -238,9 +233,7 @@ export function DashboardCharts({
         </div>
 
         <div className="rounded-lg border border-border bg-card p-6">
-          <h2 className="mb-4 font-heading text-lg font-semibold">
-            Production by Doctor (MTD)
-          </h2>
+          <h2 className="mb-4 font-heading text-lg font-semibold">{tx("Production by Doctor (MTD)")}</h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
               data={productionByDoctor}

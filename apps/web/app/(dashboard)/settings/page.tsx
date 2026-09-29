@@ -139,6 +139,7 @@ import {
   isValidSettingsTaxRate,
   isSupportedPracticeTimezone,
 } from "@/lib/settings-policy";
+import { tx, uiLocale } from "@/lib/i18n";
 
 // ── Types ───────────────────────────────────────────────────
 type Tab =
@@ -156,18 +157,18 @@ type Tab =
   | "billing";
 
 const tabs: { id: Tab; label: string; icon: React.ElementType }[] = [
-  { id: "practice", label: "Practice Info", icon: Settings },
-  { id: "locations", label: "Locations", icon: MapPin },
-  { id: "staff", label: "Staff", icon: Users },
-  { id: "appointmentTypes", label: "Appointment Types", icon: Calendar },
-  { id: "rooms", label: "Rooms", icon: DoorOpen },
-  { id: "services", label: "Services & Pricing", icon: ReceiptText },
-  { id: "data", label: "Data", icon: Database },
-  { id: "templates", label: "Templates", icon: Layers },
-  { id: "wellness", label: "Wellness Plans", icon: HeartPulse },
-  { id: "messaging", label: "Messaging", icon: MessageSquare },
-  { id: "booking", label: "Online Booking", icon: Globe },
-  { id: "billing", label: "Plan & Billing", icon: CreditCard },
+  { id: "practice", label: tx("Practice Info"), icon: Settings },
+  { id: "locations", label: tx("Locations"), icon: MapPin },
+  { id: "staff", label: tx("Staff"), icon: Users },
+  { id: "appointmentTypes", label: tx("Appointment Types"), icon: Calendar },
+  { id: "rooms", label: tx("Rooms"), icon: DoorOpen },
+  { id: "services", label: tx("Services & Pricing"), icon: ReceiptText },
+  { id: "data", label: tx("Data"), icon: Database },
+  { id: "templates", label: tx("Templates"), icon: Layers },
+  { id: "wellness", label: tx("Wellness Plans"), icon: HeartPulse },
+  { id: "messaging", label: tx("Messaging"), icon: MessageSquare },
+  { id: "booking", label: tx("Online Booking"), icon: Globe },
+  { id: "billing", label: tx("Plan & Billing"), icon: CreditCard },
 ];
 
 const TIMEZONES = [
@@ -244,12 +245,12 @@ function formatSettingsDateTime(
   const resolvedTimeZone = timeZone?.trim() || "UTC";
 
   try {
-    return new Intl.DateTimeFormat("en-US", {
+    return new Intl.DateTimeFormat(uiLocale(), {
       ...options,
       timeZone: resolvedTimeZone,
     }).format(date);
   } catch {
-    return new Intl.DateTimeFormat("en-US", {
+    return new Intl.DateTimeFormat(uiLocale(), {
       ...options,
       timeZone: "UTC",
     }).format(date);
@@ -300,9 +301,7 @@ function SettingsLoadError({
               size="sm"
               onClick={onRetry}
               className="mt-3"
-            >
-              Retry
-            </Button>
+            >{tx("Retry")}</Button>
           ) : null}
         </div>
       </div>
@@ -337,9 +336,7 @@ function SettingsPageInner() {
   if (status === "loading") {
     return (
       <div className="flex items-center justify-center gap-2 py-24 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" />
-        Checking settings access...
-      </div>
+        <Loader2 className="h-4 w-4 animate-spin" />{tx("Checking settings access...")}</div>
     );
   }
 
@@ -347,10 +344,8 @@ function SettingsPageInner() {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
         <ShieldAlert className="h-12 w-12 text-muted-foreground mb-4" />
-        <h2 className="font-heading text-xl font-semibold">Access Denied</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Only administrators can access practice settings.
-        </p>
+        <h2 className="font-heading text-xl font-semibold">{tx("Access Denied")}</h2>
+        <p className="text-sm text-muted-foreground mt-1">{tx("Only administrators can access practice settings.")}</p>
       </div>
     );
   }
@@ -359,10 +354,8 @@ function SettingsPageInner() {
     <div className="min-w-0 w-full max-w-full overflow-hidden">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="font-heading text-xl font-semibold">Settings</h2>
-          <p className="text-sm text-muted-foreground">
-            Practice configuration and staff management
-          </p>
+          <h2 className="font-heading text-xl font-semibold">{tx("Settings")}</h2>
+          <p className="text-sm text-muted-foreground">{tx("Practice configuration and staff management")}</p>
         </div>
         <Button
           variant="outline"
@@ -370,16 +363,14 @@ function SettingsPageInner() {
           data-tour="settings-guides"
           onClick={openWelcome}
         >
-          <Compass className="mr-2 h-4 w-4" />
-          Guides
-        </Button>
+          <Compass className="mr-2 h-4 w-4" />{tx("Guides")}</Button>
       </div>
 
       <div className="mt-6 flex min-w-0 w-full max-w-full flex-col gap-6 lg:flex-row lg:gap-8">
         {/* Section nav: horizontal scroll on small screens, vertical on lg+ */}
         <nav
           className="min-w-0 max-w-full overflow-hidden lg:w-56 lg:shrink-0"
-          aria-label="Settings sections"
+          aria-label={tx("Settings sections")}
         >
           <div className="flex w-full max-w-full gap-1 overflow-x-auto pb-1 lg:flex-col lg:overflow-visible lg:pb-0">
             {tabs.map((tab) => {
@@ -444,7 +435,7 @@ function PracticeInfoTab() {
         utils.settings.getPractice.invalidate(),
         utils.settings.getMarketingEmailPreference.invalidate(),
       ]);
-      toast.success("Practice info updated");
+      toast.success(tx("Practice info updated"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -457,7 +448,7 @@ function PracticeInfoTab() {
     onSuccess: () => {
       utils.settings.getPractice.invalidate();
       utils.settings.getBranding.invalidate();
-      toast.success("Branding updated");
+      toast.success(tx("Branding updated"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -528,7 +519,7 @@ function PracticeInfoTab() {
         utils.settings.getPractice.invalidate(),
         utils.settings.getBranding.invalidate(),
       ]);
-      toast.success("Logo saved");
+      toast.success(tx("Logo saved"));
     } catch (err) {
       if (logoUploadAttemptRef.current === attempt) {
         logoUploadAttemptRef.current = settleManagedUploadAttempt(attempt, {
@@ -574,8 +565,8 @@ function PracticeInfoTab() {
     return (
       <EmptyState
         icon={Settings}
-        title="Practice settings unavailable"
-        description="The practice profile could not be found for this account."
+        title={tx("Practice settings unavailable")}
+        description={tx("The practice profile could not be found for this account.")}
       />
     );
   }
@@ -628,14 +619,12 @@ function PracticeInfoTab() {
         {/* ── Practice details ── */}
         <div className="space-y-6 rounded-lg border border-border bg-card p-6">
           <div className="space-y-1">
-            <h3 className="text-sm font-semibold">Practice details</h3>
-            <p className="text-xs text-muted-foreground">
-              Your practice name, contact info, and timezone.
-            </p>
+            <h3 className="text-sm font-semibold">{tx("Practice details")}</h3>
+            <p className="text-xs text-muted-foreground">{tx("Your practice name, contact info, and timezone.")}</p>
           </div>
           <div className="grid gap-4">
             <label className="space-y-1.5">
-              <span className="text-sm font-medium">Practice Name</span>
+              <span className="text-sm font-medium">{tx("Practice Name")}</span>
               <Input
                 maxLength={PRACTICE_NAME_MAX_LENGTH}
                 value={current.name}
@@ -643,7 +632,7 @@ function PracticeInfoTab() {
               />
             </label>
             <label className="space-y-1.5">
-              <span className="text-sm font-medium">Address</span>
+              <span className="text-sm font-medium">{tx("Address")}</span>
               <Input
                 maxLength={SETTINGS_ADDRESS_MAX_LENGTH}
                 value={current.address}
@@ -652,7 +641,7 @@ function PracticeInfoTab() {
             </label>
             <div className="grid grid-cols-2 gap-4">
               <label className="space-y-1.5">
-                <span className="text-sm font-medium">Phone</span>
+                <span className="text-sm font-medium">{tx("Phone")}</span>
                 <Input
                   maxLength={SETTINGS_PHONE_MAX_LENGTH}
                   value={current.phone}
@@ -660,7 +649,7 @@ function PracticeInfoTab() {
                 />
               </label>
               <label className="space-y-1.5">
-                <span className="text-sm font-medium">Email</span>
+                <span className="text-sm font-medium">{tx("Email")}</span>
                 <Input
                   type="email"
                   maxLength={SETTINGS_EMAIL_MAX_LENGTH}
@@ -670,7 +659,7 @@ function PracticeInfoTab() {
               </label>
             </div>
             <label className="space-y-1.5">
-              <span className="text-sm font-medium">Website</span>
+              <span className="text-sm font-medium">{tx("Website")}</span>
               <Input
                 maxLength={SETTINGS_WEBSITE_MAX_LENGTH}
                 value={current.website}
@@ -678,7 +667,7 @@ function PracticeInfoTab() {
               />
             </label>
             <label className="space-y-1.5">
-              <span className="text-sm font-medium">Timezone</span>
+              <span className="text-sm font-medium">{tx("Timezone")}</span>
               <select
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 value={current.timezone}
@@ -697,32 +686,29 @@ function PracticeInfoTab() {
         {/* ── Region & Tax ── */}
         <div className="space-y-6 rounded-lg border border-border bg-card p-6">
           <div className="space-y-1">
-            <h3 className="text-sm font-semibold">Region &amp; Tax</h3>
-            <p className="text-xs text-muted-foreground">
-              Controls invoice currency, tax rate, and date formatting. Choosing
-              a country prefills the usual defaults — adjust as needed.
-            </p>
+            <h3 className="text-sm font-semibold">{tx("Region & Tax")}</h3>
+            <p className="text-xs text-muted-foreground">{tx("Controls invoice currency, tax rate, and date formatting. Choosing a country prefills the usual defaults — adjust as needed.")}</p>
           </div>
           <div className="grid gap-4">
             <div className="grid grid-cols-2 gap-4">
               <label className="space-y-1.5">
-                <span className="text-sm font-medium">Country</span>
+                <span className="text-sm font-medium">{tx("Country")}</span>
                 <select
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   value={current.country}
                   onChange={(e) => handleCountryChange(e.target.value)}
                   required
                 >
-                  <option value="">Choose your clinic country</option>
+                  <option value="">{tx("Choose your clinic country")}</option>
                   {CLINIC_REGION_OPTIONS.map((c) => (
                     <option key={c.code} value={c.code}>
-                      {c.label}
+                      {tx(c.label)}
                     </option>
                   ))}
                 </select>
               </label>
               <label className="space-y-1.5">
-                <span className="text-sm font-medium">Currency</span>
+                <span className="text-sm font-medium">{tx("Currency")}</span>
                 <select
                   className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                   value={current.currency}
@@ -738,7 +724,7 @@ function PracticeInfoTab() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <label className="space-y-1.5">
-                <span className="text-sm font-medium">Tax / VAT rate (%)</span>
+                <span className="text-sm font-medium">{tx("Tax / VAT rate (%)")}</span>
                 <Input
                   type="number"
                   step="0.01"
@@ -751,9 +737,7 @@ function PracticeInfoTab() {
                 />
               </label>
               <label className="space-y-1.5">
-                <span className="text-sm font-medium">
-                  VAT number (optional)
-                </span>
+                <span className="text-sm font-medium">{tx("VAT number (optional)")}</span>
                 <Input
                   maxLength={SETTINGS_VAT_NUMBER_MAX_LENGTH}
                   value={current.vatNumber}
@@ -767,22 +751,19 @@ function PracticeInfoTab() {
         {/* ── Branding ── */}
         <div className="space-y-6 rounded-lg border border-border bg-card p-6">
           <div className="space-y-1">
-            <h3 className="text-sm font-semibold">Branding</h3>
-            <p className="text-xs text-muted-foreground">
-              Your logo and accent color appear across OpenVPM. Changes save
-              immediately.
-            </p>
+            <h3 className="text-sm font-semibold">{tx("Branding")}</h3>
+            <p className="text-xs text-muted-foreground">{tx("Your logo and accent color appear across OpenVPM. Changes save immediately.")}</p>
           </div>
           <div className="grid gap-5">
             {/* Logo */}
             <div className="space-y-2">
-              <span className="text-sm font-medium">Logo</span>
+              <span className="text-sm font-medium">{tx("Logo")}</span>
               <div className="flex items-center gap-4">
                 {practice.logoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={practice.logoUrl}
-                    alt="Practice logo"
+                    alt={tx("Practice logo")}
                     className="h-14 w-14 rounded-lg border border-border object-cover"
                   />
                 ) : (
@@ -813,11 +794,9 @@ function PracticeInfoTab() {
                     ) : (
                       <Upload className="mr-2 h-4 w-4" />
                     )}
-                    {practice.logoUrl ? "Replace logo" : "Upload logo"}
+                    {practice.logoUrl ? tx("Replace logo") : tx("Upload logo")}
                   </Button>
-                  <p className="mt-1.5 text-xs text-muted-foreground">
-                    PNG, JPG, or WebP. Square images work best.
-                  </p>
+                  <p className="mt-1.5 text-xs text-muted-foreground">{tx("PNG, JPG, or WebP. Square images work best.")}</p>
                   {logoUploadError ? (
                     <div className="mt-2 flex items-center gap-2 text-xs text-destructive">
                       <span>{logoUploadError}</span>
@@ -827,9 +806,7 @@ function PracticeInfoTab() {
                           disabled={uploadingLogo}
                           onClick={() => void handleLogoUpload()}
                           className="font-medium underline underline-offset-2 disabled:opacity-50"
-                        >
-                          Try again
-                        </button>
+                        >{tx("Try again")}</button>
                       ) : null}
                     </div>
                   ) : null}
@@ -839,7 +816,7 @@ function PracticeInfoTab() {
 
             {/* Accent color */}
             <div className="space-y-2">
-              <span className="text-sm font-medium">Accent color</span>
+              <span className="text-sm font-medium">{tx("Accent color")}</span>
               <AccentColorPicker
                 value={currentBrandColor}
                 onChange={(c) => brandingMutation.mutate({ brandColor: c })}
@@ -852,26 +829,19 @@ function PracticeInfoTab() {
         {/* ── OpenVPM email preferences ── */}
         <div className="space-y-5 rounded-lg border border-border bg-card p-6">
           <div className="space-y-1">
-            <h3 className="text-sm font-semibold">Emails from OpenVPM</h3>
-            <p className="text-xs text-muted-foreground">
-              Controls optional email OpenVPM sends to your clinic, not messages
-              your clinic sends to pet owners.
-            </p>
+            <h3 className="text-sm font-semibold">{tx("Emails from OpenVPM")}</h3>
+            <p className="text-xs text-muted-foreground">{tx("Controls optional email OpenVPM sends to your clinic, not messages your clinic sends to pet owners.")}</p>
           </div>
 
           {marketingEmailPreferenceError ? (
             <div className="space-y-3" role="alert">
-              <p className="text-sm text-destructive">
-                We couldn&apos;t load this email preference.
-              </p>
+              <p className="text-sm text-destructive">{tx("We couldn't load this email preference.")}</p>
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={() => void refetchMarketingEmailPreference()}
-              >
-                Try again
-              </Button>
+              >{tx("Try again")}</Button>
             </div>
           ) : (
             <div className="space-y-4">
@@ -893,17 +863,11 @@ function PracticeInfoTab() {
                   }
                 />
                 <span className="min-w-0 flex-1">
-                  <span className="block text-sm font-medium">
-                    Product guidance and feedback
-                  </span>
+                  <span className="block text-sm font-medium">{tx("Product guidance and feedback")}</span>
                   <span
                     id="marketing-email-preference-description"
                     className="mt-1 block text-xs leading-5 text-muted-foreground"
-                  >
-                    Occasional setup tips, product updates, trial guidance, and
-                    requests for feedback. Turn this off to stop marketing and
-                    research email
-                    {marketingEmailPreference?.recipientEmail
+                  >{tx("Occasional setup tips, product updates, trial guidance, and requests for feedback. Turn this off to stop marketing and research email")}{marketingEmailPreference?.recipientEmail
                       ? ` to ${marketingEmailPreference.recipientEmail}`
                       : ""}
                     .
@@ -927,26 +891,18 @@ function PracticeInfoTab() {
                   marketingEmailPreference?.enabled ? (
                 <p className="text-xs text-emerald-700" role="status">
                   {marketingEmailMutation.data.enabled
-                    ? "Optional OpenVPM emails are on."
-                    : "Optional OpenVPM emails are off."}
+                    ? tx("Optional OpenVPM emails are on.")
+                    : tx("Optional OpenVPM emails are off.")}
                 </p>
               ) : null}
 
               <div className="rounded-md bg-muted/50 p-3">
-                <p className="text-sm font-medium">
-                  Account, security, and billing email
-                </p>
-                <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                  Required for sign-in, receipts, payment issues, and critical
-                  service notices. These cannot be turned off here.
-                </p>
+                <p className="text-sm font-medium">{tx("Account, security, and billing email")}</p>
+                <p className="mt-1 text-xs leading-5 text-muted-foreground">{tx("Required for sign-in, receipts, payment issues, and critical service notices. These cannot be turned off here.")}</p>
               </div>
 
               {marketingEmailPreference?.configurable === false ? (
-                <p className="text-xs text-amber-700" role="status">
-                  Add a practice email above, save your changes, then manage
-                  optional email here.
-                </p>
+                <p className="text-xs text-amber-700" role="status">{tx("Add a practice email above, save your changes, then manage optional email here.")}</p>
               ) : null}
             </div>
           )}
@@ -973,9 +929,7 @@ function PracticeInfoTab() {
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
           <Save className="mr-2 h-4 w-4" />
-        )}
-        Save Changes
-      </Button>
+        )}{tx("Save Changes")}</Button>
     </div>
   );
 }
@@ -1009,7 +963,7 @@ function LocationsTab() {
       invalidateLocationState();
       setShowAdd(false);
       setAddForm({ name: "", address: "", phone: "", isPrimary: false });
-      toast.success("Location created");
+      toast.success(tx("Location created"));
     },
     onError: (err) => toast.error(err.message),
   });
@@ -1017,14 +971,14 @@ function LocationsTab() {
     onSuccess: () => {
       invalidateLocationState();
       setEditingId(null);
-      toast.success("Location updated");
+      toast.success(tx("Location updated"));
     },
     onError: (err) => toast.error(err.message),
   });
   const setPrimaryMutation = trpc.settings.setPrimaryLocation.useMutation({
     onSuccess: () => {
       invalidateLocationState();
-      toast.success("Primary location updated");
+      toast.success(tx("Primary location updated"));
     },
     onError: (err) => toast.error(err.message),
   });
@@ -1032,7 +986,7 @@ function LocationsTab() {
     onSuccess: () => {
       invalidateLocationState();
       setConfirmDelete(null);
-      toast.success("Location retired");
+      toast.success(tx("Location retired"));
     },
     onError: (err) => toast.error(err.message),
   });
@@ -1078,7 +1032,7 @@ function LocationsTab() {
   if (locationsMissing) {
     return (
       <SettingsLoadError
-        title="Could not load locations"
+        title={tx("Could not load locations")}
         message="The locations request finished without returning data. Try loading it again before editing practice locations."
         onRetry={() => void refetchLocations()}
       />
@@ -1115,11 +1069,8 @@ function LocationsTab() {
     <div className="max-w-4xl space-y-4">
       <div className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-sm font-semibold">Practice Locations</h3>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Locations power texting setup, room assignment, reminders, and
-            hosted billing quantity.
-          </p>
+          <h3 className="text-sm font-semibold">{tx("Practice Locations")}</h3>
+          <p className="mt-1 text-sm text-muted-foreground">{tx("Locations power texting setup, room assignment, reminders, and hosted billing quantity.")}</p>
         </div>
         <Button
           onClick={() => {
@@ -1130,23 +1081,21 @@ function LocationsTab() {
           size="sm"
           className="gap-2"
         >
-          <Plus className="h-4 w-4" />
-          Add Location
-        </Button>
+          <Plus className="h-4 w-4" />{tx("Add Location")}</Button>
       </div>
 
       {showAdd ? (
         <div className="rounded-lg border border-border bg-card p-4">
-          <h3 className="text-sm font-semibold">New Location</h3>
+          <h3 className="text-sm font-semibold">{tx("New Location")}</h3>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             <Input
-              placeholder="Location name"
+              placeholder={tx("Location name")}
               maxLength={LOCATION_NAME_MAX_LENGTH}
               value={addForm.name}
               onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
             />
             <Input
-              placeholder="Phone"
+              placeholder={tx("Phone")}
               maxLength={SETTINGS_PHONE_MAX_LENGTH}
               value={addForm.phone}
               onChange={(e) =>
@@ -1154,7 +1103,7 @@ function LocationsTab() {
               }
             />
             <Input
-              placeholder="Address"
+              placeholder={tx("Address")}
               maxLength={SETTINGS_ADDRESS_MAX_LENGTH}
               value={addForm.address}
               onChange={(e) =>
@@ -1170,9 +1119,7 @@ function LocationsTab() {
               onChange={(e) =>
                 setAddForm({ ...addForm, isPrimary: e.target.checked })
               }
-            />
-            Make this the primary location
-          </label>
+            />{tx("Make this the primary location")}</label>
           <div className="mt-4 flex gap-2">
             <Button
               size="sm"
@@ -1185,12 +1132,8 @@ function LocationsTab() {
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 <Save className="mr-2 h-4 w-4" />
-              )}
-              Create
-            </Button>
-            <Button size="sm" variant="ghost" onClick={() => setShowAdd(false)}>
-              Cancel
-            </Button>
+              )}{tx("Create")}</Button>
+            <Button size="sm" variant="ghost" onClick={() => setShowAdd(false)}>{tx("Cancel")}</Button>
           </div>
         </div>
       ) : null}
@@ -1199,9 +1142,9 @@ function LocationsTab() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/50">
-              <th className="px-4 py-3 text-left font-medium">Location</th>
-              <th className="px-4 py-3 text-left font-medium">Contact</th>
-              <th className="px-4 py-3 text-right font-medium">Actions</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Location")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Contact")}</th>
+              <th className="px-4 py-3 text-right font-medium">{tx("Actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -1226,7 +1169,7 @@ function LocationsTab() {
                         />
                         <Input
                           value={editForm.address}
-                          placeholder="Address"
+                          placeholder={tx("Address")}
                           maxLength={SETTINGS_ADDRESS_MAX_LENGTH}
                           onChange={(e) =>
                             setEditForm({
@@ -1242,13 +1185,11 @@ function LocationsTab() {
                           <span className="font-medium">{location.name}</span>
                           {location.isPrimary ? (
                             <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
-                              <Star className="h-3 w-3" />
-                              Primary
-                            </span>
+                              <Star className="h-3 w-3" />{tx("Primary")}</span>
                           ) : null}
                         </div>
                         <p className="mt-1 text-muted-foreground">
-                          {location.address || "No address on file"}
+                          {location.address || tx("No address on file")}
                         </p>
                       </div>
                     )}
@@ -1257,14 +1198,14 @@ function LocationsTab() {
                     {isEditing ? (
                       <Input
                         value={editForm.phone}
-                        placeholder="Phone"
+                        placeholder={tx("Phone")}
                         maxLength={SETTINGS_PHONE_MAX_LENGTH}
                         onChange={(e) =>
                           setEditForm({ ...editForm, phone: e.target.value })
                         }
                       />
                     ) : (
-                      location.phone || "No phone"
+                      location.phone || tx("No phone")
                     )}
                   </td>
                   <td className="px-4 py-3 align-top">
@@ -1348,8 +1289,8 @@ function LocationsTab() {
                   <EmptyState
                     className="border-0 bg-transparent p-8"
                     icon={MapPin}
-                    title="No active locations configured"
-                    description="Add a location to power rooms, reminders, texting setup, and hosted billing quantities."
+                    title={tx("No active locations configured")}
+                    description={tx("Add a location to power rooms, reminders, texting setup, and hosted billing quantities.")}
                   />
                 </td>
               </tr>
@@ -1358,9 +1299,7 @@ function LocationsTab() {
         </table>
       </div>
       {activeLocationCount <= 1 ? (
-        <p className="text-xs text-muted-foreground">
-          A practice must keep at least one active location.
-        </p>
+        <p className="text-xs text-muted-foreground">{tx("A practice must keep at least one active location.")}</p>
       ) : null}
     </div>
   );
@@ -1378,7 +1317,7 @@ const FEATURE_LABELS: Record<string, string> = {
 
 function redirectToHostedBillingUrl(url: unknown) {
   if (!isSafeCheckoutRedirectUrl(url)) {
-    toast.error("Billing checkout is unavailable. Please try again.");
+    toast.error(tx("Billing checkout is unavailable. Please try again."));
     return;
   }
 
@@ -1387,7 +1326,7 @@ function redirectToHostedBillingUrl(url: unknown) {
 
 function redirectToClientPaymentUrl(url: unknown) {
   if (!isSafeCheckoutRedirectUrl(url)) {
-    toast.error("Client payment setup is unavailable. Please try again.");
+    toast.error(tx("Client payment setup is unavailable. Please try again."));
     return;
   }
 
@@ -1425,7 +1364,7 @@ function BillingTab() {
   const refreshPaymentAccount = trpc.billing.refreshPaymentAccount.useMutation({
     onSuccess: () => {
       utils.billing.paymentAccountStatus.invalidate();
-      toast.success("Client payment status refreshed");
+      toast.success(tx("Client payment status refreshed"));
     },
     onError: (e) => toast.error(e.message),
   });
@@ -1446,7 +1385,7 @@ function BillingTab() {
   if (billingError) {
     return (
       <SettingsLoadError
-        title="Could not load billing details"
+        title={tx("Could not load billing details")}
         message={billingError.message}
         onRetry={() => void refetchBilling()}
       />
@@ -1464,7 +1403,7 @@ function BillingTab() {
   if (!data) {
     return (
       <SettingsLoadError
-        title="Could not load billing details"
+        title={tx("Could not load billing details")}
         message="The billing details request finished without returning data. Try loading it again."
         onRetry={() => void refetchBilling()}
       />
@@ -1479,16 +1418,9 @@ function BillingTab() {
           <div className="rounded-lg border border-border bg-card p-6">
             <div className="flex items-center gap-3">
               <Check className="h-5 w-5 text-green-600" />
-              <h3 className="font-heading text-lg font-semibold">
-                Self-hosted — all features unlocked
-              </h3>
+              <h3 className="font-heading text-lg font-semibold">{tx("Self-hosted — all features unlocked")}</h3>
             </div>
-            <p className="mt-2 text-sm text-muted-foreground">
-              You&apos;re running OpenVPM on your own infrastructure. Every
-              feature is available and there&apos;s no subscription — free
-              forever. Plans below are how the managed OpenVPM Cloud is priced,
-              for reference.
-            </p>
+            <p className="mt-2 text-sm text-muted-foreground">{tx("You're running OpenVPM on your own infrastructure. Every feature is available and there's no subscription — free forever. Plans below are how the managed OpenVPM Cloud is priced, for reference.")}</p>
           </div>
           <ClientPaymentProcessingSection
             data={paymentAccount.data}
@@ -1531,16 +1463,14 @@ function BillingTab() {
     <div className="min-w-0 w-full max-w-full space-y-6">
       {checkoutStatus === "cancelled" ? (
         <div className="rounded-lg border border-border bg-muted/50 p-4 text-sm">
-          <p className="font-medium">Checkout was canceled</p>
-          <p className="mt-1 text-muted-foreground">
-            Nothing changed. Choose a schedule whenever you are ready.
-          </p>
+          <p className="font-medium">{tx("Checkout was canceled")}</p>
+          <p className="mt-1 text-muted-foreground">{tx("Nothing changed. Choose a schedule whenever you are ready.")}</p>
         </div>
       ) : null}
       {checkoutStatus === "success" ? (
         <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-900">
-          <p className="font-medium">Your billing details were received</p>
-          <p className="mt-1">OpenVPM is confirming the subscription now.</p>
+          <p className="font-medium">{tx("Your billing details were received")}</p>
+          <p className="mt-1">{tx("OpenVPM is confirming the subscription now.")}</p>
         </div>
       ) : null}
 
@@ -1552,25 +1482,23 @@ function BillingTab() {
             </span>
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-2">
-                <p className="text-sm font-medium text-primary">
-                  OpenVPM Cloud
-                </p>
+                <p className="text-sm font-medium text-primary">{tx("OpenVPM Cloud")}</p>
                 <Badge
                   variant={data.billingStatus === "active" ? "success" : "info"}
                 >
                   {data.billingStatus === "trialing"
-                    ? `${daysLeft} trial day${daysLeft === 1 ? "" : "s"} left`
+                    ? `${daysLeft} trial day${daysLeft === 1 ? "" : tx("s")} left`
                     : data.billingStatus.replace("_", " ")}
                 </Badge>
               </div>
               <h3 className="mt-2 font-heading text-2xl font-semibold tracking-tight">
                 {firstActivation
-                  ? "Activate your account"
-                  : "Your Cloud subscription"}
+                  ? tx("Activate your account")
+                  : tx("Your Cloud subscription")}
               </h3>
               <p className="mt-2 max-w-xl text-sm leading-6 text-muted-foreground">
                 {firstActivation
-                  ? "Choose a billing schedule, then add your payment details in secure Stripe Checkout. Your workspace and trial stay exactly as they are."
+                  ? tx("Choose a billing schedule, then add your payment details in secure Stripe Checkout. Your workspace and trial stay exactly as they are.")
                   : `${currentPlan?.name ?? "Cloud"} keeps your clinic workspace active with unlimited staff.`}
               </p>
             </div>
@@ -1581,21 +1509,14 @@ function BillingTab() {
           {showReadOnlyNotice ? (
             <div className="mb-5 flex gap-3 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
-              <p>
-                Cloud is in read-only mode. Activating billing restores full
-                access without changing your records.
-              </p>
+              <p>{tx("Cloud is in read-only mode. Activating billing restores full access without changing your records.")}</p>
             </div>
           ) : null}
 
           {data.billingStatus === "past_due" ? (
             <div className="mb-5 flex gap-3 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
-              <p>
-                Stripe is retrying this payment. Your clinic remains writable
-                during the retry window; review billing to avoid an unpaid,
-                read-only account.
-              </p>
+              <p>{tx("Stripe is retrying this payment. Your clinic remains writable during the retry window; review billing to avoid an unpaid, read-only account.")}</p>
             </div>
           ) : null}
 
@@ -1618,8 +1539,8 @@ function BillingTab() {
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
                     {data.billingStatus === "trialing"
-                      ? `No charge today. ${daysLeft} trial day${daysLeft === 1 ? "" : "s"} remaining.`
-                      : "Stripe securely collects and stores your payment method."}
+                      ? `No charge today. ${daysLeft} trial day${daysLeft === 1 ? "" : tx("s")} remaining.`
+                      : tx("Stripe securely collects and stores your payment method.")}
                   </p>
                 </div>
                 <Button
@@ -1639,9 +1560,7 @@ function BillingTab() {
                     <Loader2 className="size-4 animate-spin" />
                   ) : (
                     <CreditCard className="size-4" />
-                  )}
-                  Continue to secure checkout
-                </Button>
+                  )}{tx("Continue to secure checkout")}</Button>
               </div>
             </>
           ) : (
@@ -1652,10 +1571,7 @@ function BillingTab() {
                     ? `$${data.estimatedAnnualBase} per year`
                     : `$${data.estimatedMonthlyBase} per month`}
                 </p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  Update payment details, invoices, or cancellation securely in
-                  Stripe.
-                </p>
+                <p className="mt-1 text-xs text-muted-foreground">{tx("Update payment details, invoices, or cancellation securely in Stripe.")}</p>
               </div>
               <Button
                 variant="outline"
@@ -1666,9 +1582,7 @@ function BillingTab() {
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
                   <CreditCard className="mr-2 h-4 w-4" />
-                )}
-                Manage billing
-              </Button>
+                )}{tx("Manage billing")}</Button>
             </div>
           )}
 
@@ -1687,13 +1601,9 @@ function BillingTab() {
 
           {(currentPlan?.includedSmsPerMonth != null ||
             currentPlan?.includedAiRunsPerMonth != null) && (
-            <p className="mt-5 border-t border-border pt-4 text-xs text-muted-foreground">
-              This month: {data.usage.sms} of{" "}
-              {currentPlan?.includedSmsPerMonth?.toLocaleString()} included
-              texts · {data.usage.aiRuns} of{" "}
-              {currentPlan?.includedAiRunsPerMonth?.toLocaleString()} included
-              AI actions
-            </p>
+            <p className="mt-5 border-t border-border pt-4 text-xs text-muted-foreground">{tx("This month:")}{" "}{data.usage.sms}{" "}{tx("of")}{" "}
+              {currentPlan?.includedSmsPerMonth?.toLocaleString()}{" "}{tx("included texts ·")}{" "}{data.usage.aiRuns}{" "}{tx("of")}{" "}
+              {currentPlan?.includedAiRunsPerMonth?.toLocaleString()}{" "}{tx("included AI actions")}</p>
           )}
 
           {showSyncNote ? (
@@ -1705,7 +1615,7 @@ function BillingTab() {
                   : "border-amber-200 bg-amber-50 text-amber-800",
               )}
             >
-              <span className="font-medium">Billing sync: </span>
+              <span className="font-medium">{tx("Billing sync:")}{" "}</span>
               {data.billingSyncStatus!.message}
             </div>
           ) : null}
@@ -1796,9 +1706,7 @@ function ClientPaymentProcessingSection({
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="font-heading text-lg font-semibold">
-              Client payment processing
-            </h3>
+            <h3 className="font-heading text-lg font-semibold">{tx("Client payment processing")}</h3>
             <span
               className={cn(
                 "rounded-full px-3 py-1 text-xs font-medium capitalize",
@@ -1810,8 +1718,8 @@ function ClientPaymentProcessingSection({
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
             {data?.connectRequired
-              ? "Stripe Connect lets the clinic collect card payments from pet owners into its own Stripe account."
-              : "This installation can use its configured Stripe key for client invoice payments. Stripe Connect is required for hosted OpenVPM Cloud clinics."}
+              ? tx("Stripe Connect lets the clinic collect card payments from pet owners into its own Stripe account.")
+              : tx("This installation can use its configured Stripe key for client invoice payments. Stripe Connect is required for hosted OpenVPM Cloud clinics.")}
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -1822,7 +1730,7 @@ function ClientPaymentProcessingSection({
               ) : (
                 <CreditCard className="mr-2 h-4 w-4" />
               )}
-              {data?.status === "not_started" ? "Set up" : "Resume setup"}
+              {data?.status === "not_started" ? tx("Set up") : tx("Resume setup")}
             </Button>
           )}
           {data?.connectRequired && (
@@ -1836,9 +1744,7 @@ function ClientPaymentProcessingSection({
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 <Check className="mr-2 h-4 w-4" />
-              )}
-              Refresh
-            </Button>
+              )}{tx("Refresh")}</Button>
           )}
           {canOpenDashboard && (
             <Button
@@ -1851,58 +1757,52 @@ function ClientPaymentProcessingSection({
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 <CreditCard className="mr-2 h-4 w-4" />
-              )}
-              Open Stripe
-            </Button>
+              )}{tx("Open Stripe")}</Button>
           )}
         </div>
       </div>
 
       {isLoading && (
         <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          Loading client payment status
-        </div>
+          <Loader2 className="h-4 w-4 animate-spin" />{tx("Loading client payment status")}</div>
       )}
       {error && <p className="mt-4 text-sm text-destructive">{error}</p>}
       {!isLoading && !error && data && (
         <div className="mt-4 grid gap-3 border-t border-border pt-4 text-sm sm:grid-cols-3">
           <div>
-            <p className="text-muted-foreground">Stripe API</p>
+            <p className="text-muted-foreground">{tx("Stripe API")}</p>
             <p className="font-medium">
-              {data.stripeConfigured ? "Configured" : "Missing"}
+              {data.stripeConfigured ? tx("Configured") : tx("Missing")}
             </p>
           </div>
           <div>
-            <p className="text-muted-foreground">Card payments</p>
+            <p className="text-muted-foreground">{tx("Card payments")}</p>
             <p className="font-medium">
               {data.enabled || data.status === "not_required"
-                ? "Enabled"
-                : "Disabled"}
+                ? tx("Enabled")
+                : tx("Disabled")}
             </p>
           </div>
           <div>
-            <p className="text-muted-foreground">Payouts</p>
+            <p className="text-muted-foreground">{tx("Payouts")}</p>
             <p className="font-medium">
               {data.payoutsEnabled
-                ? "Enabled"
+                ? tx("Enabled")
                 : data.connectRequired
-                  ? "Pending"
+                  ? tx("Pending")
                   : "N/A"}
             </p>
           </div>
           {data.requirementsCurrentlyDue?.length ? (
             <div className="sm:col-span-3">
-              <p className="text-muted-foreground">Stripe requirements</p>
+              <p className="text-muted-foreground">{tx("Stripe requirements")}</p>
               <p className="font-medium">
-                {data.requirementsCurrentlyDue.length} item
-                {data.requirementsCurrentlyDue.length === 1 ? "" : "s"} due
-              </p>
+                {data.requirementsCurrentlyDue.length}{" "}{tx("item")}{data.requirementsCurrentlyDue.length === 1 ? "" : tx("s")}{" "}{tx("due")}</p>
             </div>
           ) : null}
           {data.requirementsDisabledReason ? (
             <div className="sm:col-span-3">
-              <p className="text-muted-foreground">Disabled reason</p>
+              <p className="text-muted-foreground">{tx("Disabled reason")}</p>
               <p className="font-medium">{data.requirementsDisabledReason}</p>
             </div>
           ) : null}
@@ -1959,9 +1859,9 @@ function PlanGrid({
             <h4 className="font-heading text-base font-semibold">{p.name}</h4>
             <p className="mt-1 text-2xl font-bold">
               {p.locationUnitPriceMonthlyUsd === null ? (
-                "Custom"
+                tx("Custom")
               ) : p.locationUnitPriceMonthlyUsd === 0 ? (
-                "Free"
+                tx("Free")
               ) : (
                 <>
                   ${p.locationUnitPriceMonthlyUsd}
@@ -1971,7 +1871,7 @@ function PlanGrid({
                   <span className="block text-sm font-normal text-muted-foreground">
                     {p.seatUnitPriceMonthlyUsd && p.seatUnitPriceMonthlyUsd > 0
                       ? `+ $${p.seatUnitPriceMonthlyUsd}/staff/mo`
-                      : "unlimited staff"}
+                      : tx("unlimited staff")}
                   </span>
                 </>
               )}
@@ -1979,27 +1879,20 @@ function PlanGrid({
             <p className="mt-2 text-xs text-muted-foreground">{p.blurb}</p>
             <ul className="mt-3 space-y-1 text-xs text-muted-foreground">
               <li>
-                {p.seatLimit === null ? "All" : p.seatLimit} staff roles
-                included
-              </li>
+                {p.seatLimit === null ? tx("All") : p.seatLimit}{" "}{tx("staff roles included")}</li>
               <li>
-                {p.locationLimit === null ? "Unlimited" : p.locationLimit}{" "}
-                location
-                {p.locationLimit === 1 ? "" : "s"}
+                {p.locationLimit === null ? tx("Unlimited") : p.locationLimit}{" "}{tx("location")}{p.locationLimit === 1 ? "" : tx("s")}
               </li>
               {p.includedSmsPerMonth ? (
                 <li>
-                  {p.includedSmsPerMonth.toLocaleString()} SMS/mo included
-                  {p.smsOveragePriceUsd
+                  {p.includedSmsPerMonth.toLocaleString()}{" "}{tx("SMS/mo included")}{p.smsOveragePriceUsd
                     ? `, then $${p.smsOveragePriceUsd}/SMS`
                     : ""}
                 </li>
               ) : null}
               {p.includedAiRunsPerMonth ? (
                 <li>
-                  {p.includedAiRunsPerMonth.toLocaleString()} AI actions/mo
-                  included
-                  {p.aiOveragePriceUsd
+                  {p.includedAiRunsPerMonth.toLocaleString()}{" "}{tx("AI actions/mo included")}{p.aiOveragePriceUsd
                     ? `, then $${p.aiOveragePriceUsd}/action`
                     : ""}
                 </li>
@@ -2012,14 +1905,12 @@ function PlanGrid({
                   </li>
                 ))
               ) : (
-                <li>Full core PIMS</li>
+                <li>{tx("Full core PIMS")}</li>
               )}
             </ul>
             <div className="mt-4 pt-2">
               {isCurrent ? (
-                <span className="text-xs font-medium text-primary">
-                  Current plan
-                </span>
+                <span className="text-xs font-medium text-primary">{tx("Current plan")}</span>
               ) : canBuy ? (
                 <Button
                   size="sm"
@@ -2029,16 +1920,13 @@ function PlanGrid({
                 >
                   {busyTier === p.tier ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : null}
-                  Choose {p.name}
+                  ) : null}{tx("Choose")}{" "}{p.name}
                 </Button>
               ) : !p.selfServe ? (
                 <a
                   href="mailto:support@openvpm.com?subject=OpenVPM%20Enterprise"
                   className="text-xs font-medium text-primary hover:underline"
-                >
-                  Contact sales
-                </a>
+                >{tx("Contact sales")}</a>
               ) : null}
             </div>
           </div>
@@ -2062,7 +1950,7 @@ function StaffTab() {
       utils.settings.listUsers.invalidate();
       setShowAdd(false);
       resetAddForm();
-      toast.success("Staff member added");
+      toast.success(tx("Staff member added"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -2072,7 +1960,7 @@ function StaffTab() {
     onSuccess: () => {
       utils.settings.listUsers.invalidate();
       setEditingId(null);
-      toast.success("Staff member updated");
+      toast.success(tx("Staff member updated"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -2081,7 +1969,7 @@ function StaffTab() {
   const deactivateMutation = trpc.settings.deactivateUser.useMutation({
     onSuccess: () => {
       utils.settings.listUsers.invalidate();
-      toast.success("Staff member deactivated");
+      toast.success(tx("Staff member deactivated"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -2092,7 +1980,7 @@ function StaffTab() {
       utils.settings.listUsers.invalidate();
       setInviteForm({ email: "", name: "", role: "front_desk" });
       setInviteUrl(res.inviteUrl ?? null);
-      toast.success("Invite sent");
+      toast.success(tx("Invite sent"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -2195,7 +2083,7 @@ function StaffTab() {
   if (staffMissing) {
     return (
       <SettingsLoadError
-        title="Could not load staff"
+        title={tx("Could not load staff")}
         message="The staff list request finished without returning data. Try loading it again before adding or editing staff."
         onRetry={() => void refetchStaff()}
       />
@@ -2214,9 +2102,7 @@ function StaffTab() {
           size="sm"
           variant="outline"
         >
-          <Mail className="mr-2 h-4 w-4" />
-          Invite by email
-        </Button>
+          <Mail className="mr-2 h-4 w-4" />{tx("Invite by email")}</Button>
         <Button
           onClick={() => {
             setShowAdd(!showAdd);
@@ -2225,21 +2111,16 @@ function StaffTab() {
           }}
           size="sm"
         >
-          <Plus className="mr-2 h-4 w-4" />
-          Add Staff
-        </Button>
+          <Plus className="mr-2 h-4 w-4" />{tx("Add Staff")}</Button>
       </div>
 
       {showInvite && (
         <div className="rounded-lg border border-border bg-card p-4 space-y-3">
-          <h3 className="text-sm font-semibold">Invite a teammate</h3>
-          <p className="text-xs text-muted-foreground">
-            They&apos;ll get an email to set their own password and activate
-            their account.
-          </p>
+          <h3 className="text-sm font-semibold">{tx("Invite a teammate")}</h3>
+          <p className="text-xs text-muted-foreground">{tx("They'll get an email to set their own password and activate their account.")}</p>
           <div className="grid grid-cols-2 gap-3">
             <Input
-              placeholder="Email"
+              placeholder={tx("Email")}
               type="email"
               maxLength={SETTINGS_EMAIL_MAX_LENGTH}
               value={inviteForm.email}
@@ -2248,7 +2129,7 @@ function StaffTab() {
               }
             />
             <Input
-              placeholder="Name (optional)"
+              placeholder={tx("Name (optional)")}
               maxLength={STAFF_NAME_MAX_LENGTH}
               value={inviteForm.name}
               onChange={(e) =>
@@ -2265,11 +2146,11 @@ function StaffTab() {
                 })
               }
             >
-              <option value="front_desk">Front Desk</option>
-              <option value="viewer">Viewer (read-only)</option>
-              <option value="technician">Technician</option>
-              <option value="veterinarian">Veterinarian</option>
-              <option value="admin">Admin</option>
+              <option value="front_desk">{tx("Front Desk")}</option>
+              <option value="viewer">{tx("Viewer (read-only)")}</option>
+              <option value="technician">{tx("Technician")}</option>
+              <option value="veterinarian">{tx("Veterinarian")}</option>
+              <option value="admin">{tx("Admin")}</option>
             </select>
           </div>
           <div className="flex gap-2">
@@ -2288,22 +2169,16 @@ function StaffTab() {
             >
               {inviteMutation.isPending && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Send invite
-            </Button>
+              )}{tx("Send invite")}</Button>
             <Button
               size="sm"
               variant="ghost"
               onClick={() => setShowInvite(false)}
-            >
-              Cancel
-            </Button>
+            >{tx("Cancel")}</Button>
           </div>
           {inviteUrl && (
             <div className="space-y-1.5 rounded-md border border-border bg-muted/30 p-3">
-              <p className="text-xs font-medium text-muted-foreground">
-                Invite link (shown in dev/preview so you can test the flow):
-              </p>
+              <p className="text-xs font-medium text-muted-foreground">{tx("Invite link (shown in dev/preview so you can test the flow):")}</p>
               <div className="flex items-center gap-2">
                 <code className="flex-1 truncate rounded bg-background px-2 py-1 text-xs">
                   {inviteUrl}
@@ -2313,7 +2188,7 @@ function StaffTab() {
                   variant="ghost"
                   onClick={() => {
                     navigator.clipboard.writeText(inviteUrl);
-                    toast.success("Copied");
+                    toast.success(tx("Copied"));
                   }}
                 >
                   <Copy className="h-4 w-4" />
@@ -2331,16 +2206,16 @@ function StaffTab() {
 
       {showAdd && (
         <div className="rounded-lg border border-border bg-card p-4 space-y-3">
-          <h3 className="text-sm font-semibold">New Staff Member</h3>
+          <h3 className="text-sm font-semibold">{tx("New Staff Member")}</h3>
           <div className="grid grid-cols-2 gap-3">
             <Input
-              placeholder="Full name"
+              placeholder={tx("Full name")}
               maxLength={STAFF_NAME_MAX_LENGTH}
               value={addForm.name}
               onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
             />
             <Input
-              placeholder="Email"
+              placeholder={tx("Email")}
               type="email"
               maxLength={SETTINGS_EMAIL_MAX_LENGTH}
               value={addForm.email}
@@ -2369,14 +2244,14 @@ function StaffTab() {
                 })
               }
             >
-              <option value="front_desk">Front Desk</option>
-              <option value="viewer">Viewer (read-only)</option>
-              <option value="technician">Technician</option>
-              <option value="veterinarian">Veterinarian</option>
-              <option value="admin">Admin</option>
+              <option value="front_desk">{tx("Front Desk")}</option>
+              <option value="viewer">{tx("Viewer (read-only)")}</option>
+              <option value="technician">{tx("Technician")}</option>
+              <option value="veterinarian">{tx("Veterinarian")}</option>
+              <option value="admin">{tx("Admin")}</option>
             </select>
             <Input
-              placeholder="Phone (optional)"
+              placeholder={tx("Phone (optional)")}
               maxLength={SETTINGS_PHONE_MAX_LENGTH}
               value={addForm.phone}
               onChange={(e) =>
@@ -2384,7 +2259,7 @@ function StaffTab() {
               }
             />
             <Input
-              placeholder="License # (optional)"
+              placeholder={tx("License # (optional)")}
               maxLength={STAFF_LICENSE_NUMBER_MAX_LENGTH}
               value={addForm.licenseNumber}
               onChange={(e) =>
@@ -2404,10 +2279,7 @@ function StaffTab() {
                   })
                 }
               />
-              <span>
-                Veterinarian provider — appears in doctor lists and can sign
-                doctor-required visits.
-              </span>
+              <span>{tx("Veterinarian provider — appears in doctor lists and can sign doctor-required visits.")}</span>
             </label>
           </div>
           <div className="flex gap-2">
@@ -2426,12 +2298,8 @@ function StaffTab() {
             >
               {createMutation.isPending && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Create
-            </Button>
-            <Button size="sm" variant="ghost" onClick={() => setShowAdd(false)}>
-              Cancel
-            </Button>
+              )}{tx("Create")}</Button>
+            <Button size="sm" variant="ghost" onClick={() => setShowAdd(false)}>{tx("Cancel")}</Button>
           </div>
           {createMutation.error && (
             <p className="text-sm text-destructive">
@@ -2445,13 +2313,13 @@ function StaffTab() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/50">
-              <th className="px-4 py-3 text-left font-medium">Name</th>
-              <th className="px-4 py-3 text-left font-medium">Email</th>
-              <th className="px-4 py-3 text-left font-medium">Role</th>
-              <th className="px-4 py-3 text-left font-medium">Provider</th>
-              <th className="px-4 py-3 text-left font-medium">Phone</th>
-              <th className="px-4 py-3 text-left font-medium">License #</th>
-              <th className="px-4 py-3 text-right font-medium">Actions</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Name")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Email")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Role")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Provider")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Phone")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("License #")}</th>
+              <th className="px-4 py-3 text-right font-medium">{tx("Actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -2489,11 +2357,11 @@ function StaffTab() {
                           })
                         }
                       >
-                        <option value="front_desk">Front Desk</option>
-                        <option value="viewer">Viewer (read-only)</option>
-                        <option value="technician">Technician</option>
-                        <option value="veterinarian">Veterinarian</option>
-                        <option value="admin">Admin</option>
+                        <option value="front_desk">{tx("Front Desk")}</option>
+                        <option value="viewer">{tx("Viewer (read-only)")}</option>
+                        <option value="technician">{tx("Technician")}</option>
+                        <option value="veterinarian">{tx("Veterinarian")}</option>
+                        <option value="admin">{tx("Admin")}</option>
                       </select>
                     </td>
                     <td className="px-4 py-2">
@@ -2509,9 +2377,7 @@ function StaffTab() {
                               isVeterinarian: event.target.checked,
                             })
                           }
-                        />
-                        Veterinarian
-                      </label>
+                        />{tx("Veterinarian")}</label>
                     </td>
                     <td className="px-4 py-2">
                       <Input
@@ -2586,7 +2452,7 @@ function StaffTab() {
                       </span>
                     </td>
                     <td className="px-4 py-3 text-muted-foreground">
-                      {user.isVeterinarian ? "Veterinarian" : "—"}
+                      {user.isVeterinarian ? tx("Veterinarian") : "—"}
                     </td>
                     <td className="px-4 py-3 text-muted-foreground">
                       {user.phone ?? "-"}
@@ -2597,9 +2463,7 @@ function StaffTab() {
                     <td className="px-4 py-3 text-right">
                       {confirmDeactivate === user.id ? (
                         <div className="flex items-center justify-end gap-1">
-                          <span className="mr-2 text-xs text-destructive">
-                            Deactivate?
-                          </span>
+                          <span className="mr-2 text-xs text-destructive">{tx("Deactivate?")}</span>
                           <Button
                             size="sm"
                             variant="destructive"
@@ -2608,16 +2472,12 @@ function StaffTab() {
                               deactivateMutation.mutate({ id: user.id });
                               setConfirmDeactivate(null);
                             }}
-                          >
-                            Yes
-                          </Button>
+                          >{tx("Yes")}</Button>
                           <Button
                             size="sm"
                             variant="ghost"
                             onClick={() => setConfirmDeactivate(null)}
-                          >
-                            No
-                          </Button>
+                          >{tx("No")}</Button>
                         </div>
                       ) : (
                         <div className="flex justify-end gap-1">
@@ -2657,8 +2517,8 @@ function StaffTab() {
                   <EmptyState
                     className="border-0 bg-transparent p-8"
                     icon={Users}
-                    title="No staff members found"
-                    description="Invite teammates or create a staff login to finish practice setup."
+                    title={tx("No staff members found")}
+                    description={tx("Invite teammates or create a staff login to finish practice setup.")}
                   />
                 </td>
               </tr>
@@ -2685,7 +2545,7 @@ function AppointmentTypesTab() {
       utils.settings.listAppointmentTypes.invalidate();
       setShowAdd(false);
       resetAddForm();
-      toast.success("Appointment type created");
+      toast.success(tx("Appointment type created"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -2695,7 +2555,7 @@ function AppointmentTypesTab() {
     onSuccess: () => {
       utils.settings.listAppointmentTypes.invalidate();
       setEditingId(null);
-      toast.success("Appointment type updated");
+      toast.success(tx("Appointment type updated"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -2704,7 +2564,7 @@ function AppointmentTypesTab() {
   const deleteMutation = trpc.settings.deleteAppointmentType.useMutation({
     onSuccess: () => {
       utils.settings.listAppointmentTypes.invalidate();
-      toast.success("Appointment type deleted");
+      toast.success(tx("Appointment type deleted"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -2753,7 +2613,7 @@ function AppointmentTypesTab() {
   if (appointmentTypesMissing) {
     return (
       <SettingsLoadError
-        title="Could not load appointment types"
+        title={tx("Could not load appointment types")}
         message="The appointment type request finished without returning data. Try loading it again before editing scheduling defaults."
         onRetry={() => void refetchAppointmentTypes()}
       />
@@ -2770,24 +2630,22 @@ function AppointmentTypesTab() {
           }}
           size="sm"
         >
-          <Plus className="mr-2 h-4 w-4" />
-          Add Type
-        </Button>
+          <Plus className="mr-2 h-4 w-4" />{tx("Add Type")}</Button>
       </div>
 
       {showAdd && (
         <div className="rounded-lg border border-border bg-card p-4 space-y-3">
-          <h3 className="text-sm font-semibold">New Appointment Type</h3>
+          <h3 className="text-sm font-semibold">{tx("New Appointment Type")}</h3>
           <div className="grid grid-cols-2 gap-3">
             <Input
-              placeholder="Type name"
+              placeholder={tx("Type name")}
               maxLength={APPOINTMENT_TYPE_NAME_MAX_LENGTH}
               value={addForm.name}
               onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
             />
             <Input
               type="number"
-              placeholder="Duration (minutes)"
+              placeholder={tx("Duration (minutes)")}
               min={APPOINTMENT_TYPE_DURATION_MIN_MINUTES}
               max={APPOINTMENT_TYPE_DURATION_MAX_MINUTES}
               value={addForm.durationMinutes}
@@ -2799,7 +2657,7 @@ function AppointmentTypesTab() {
               }
             />
             <div className="space-y-1.5">
-              <span className="text-sm font-medium">Color</span>
+              <span className="text-sm font-medium">{tx("Color")}</span>
               <div className="flex gap-1.5">
                 {PRESET_COLORS.map((c) => (
                   <button
@@ -2846,12 +2704,8 @@ function AppointmentTypesTab() {
             >
               {createMutation.isPending && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Create
-            </Button>
-            <Button size="sm" variant="ghost" onClick={() => setShowAdd(false)}>
-              Cancel
-            </Button>
+              )}{tx("Create")}</Button>
+            <Button size="sm" variant="ghost" onClick={() => setShowAdd(false)}>{tx("Cancel")}</Button>
           </div>
         </div>
       )}
@@ -2860,11 +2714,11 @@ function AppointmentTypesTab() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/50">
-              <th className="px-4 py-3 text-left font-medium">Name</th>
-              <th className="px-4 py-3 text-left font-medium">Duration</th>
-              <th className="px-4 py-3 text-left font-medium">Color</th>
-              <th className="px-4 py-3 text-left font-medium">Room Type</th>
-              <th className="px-4 py-3 text-right font-medium">Actions</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Name")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Duration")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Color")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Room Type")}</th>
+              <th className="px-4 py-3 text-right font-medium">{tx("Actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -2971,8 +2825,7 @@ function AppointmentTypesTab() {
                   <>
                     <td className="px-4 py-3 font-medium">{type.name}</td>
                     <td className="px-4 py-3 text-muted-foreground">
-                      {type.durationMinutes} min
-                    </td>
+                      {type.durationMinutes}{" "}{tx("min")}</td>
                     <td className="px-4 py-3">
                       <span
                         className="inline-block h-4 w-4 rounded-full"
@@ -3019,8 +2872,8 @@ function AppointmentTypesTab() {
                   <EmptyState
                     className="border-0 bg-transparent p-8"
                     icon={Calendar}
-                    title="No appointment types configured"
-                    description="Add appointment types so scheduling can use default durations, colors, and room types."
+                    title={tx("No appointment types configured")}
+                    description={tx("Add appointment types so scheduling can use default durations, colors, and room types.")}
                   />
                 </td>
               </tr>
@@ -3168,11 +3021,11 @@ function DataTab() {
         });
         setRestoreResult(null);
         if (data.missingSections.length > 0) {
-          toast.error("Backup is missing required sections");
+          toast.error(tx("Backup is missing required sections"));
         } else if (data.restoreErrors.length > 0) {
-          toast.error("Backup has invalid restore data");
+          toast.error(tx("Backup has invalid restore data"));
         } else {
-          toast.success("Backup verified");
+          toast.success(tx("Backup verified"));
         }
         return;
       }
@@ -3215,7 +3068,7 @@ function DataTab() {
       setImportRecoveryMessage(
         "This preview expired or the clinic data changed. Nothing new was imported by this attempt. Check the same file again.",
       );
-      toast.error("Check the CSV again before importing.");
+      toast.error(tx("Check the CSV again before importing."));
       return;
     }
     toast.error(err.message);
@@ -3241,7 +3094,7 @@ function DataTab() {
         });
         setImportRecoveryMessage("");
         setImportResult(null);
-        toast.success("Client CSV checked");
+        toast.success(tx("Client CSV checked"));
         return;
       }
 
@@ -3254,7 +3107,7 @@ function DataTab() {
       setCsvText("");
       setCsvFileName("");
       setImportRecoveryMessage("");
-      toast.success("Clients imported");
+      toast.success(tx("Clients imported"));
     },
     onError: handleCsvImportError,
   });
@@ -3279,7 +3132,7 @@ function DataTab() {
         });
         setImportRecoveryMessage("");
         setImportResult(null);
-        toast.success("Patient CSV checked");
+        toast.success(tx("Patient CSV checked"));
         return;
       }
 
@@ -3292,7 +3145,7 @@ function DataTab() {
       setCsvText("");
       setCsvFileName("");
       setImportRecoveryMessage("");
-      toast.success("Patients imported");
+      toast.success(tx("Patients imported"));
     },
     onError: handleCsvImportError,
   });
@@ -3316,7 +3169,7 @@ function DataTab() {
         });
         setImportRecoveryMessage("");
         setImportResult(null);
-        toast.success("Vaccination CSV checked");
+        toast.success(tx("Vaccination CSV checked"));
         return;
       }
 
@@ -3325,7 +3178,7 @@ function DataTab() {
       setCsvText("");
       setCsvFileName("");
       setImportRecoveryMessage("");
-      toast.success("Vaccine history imported");
+      toast.success(tx("Vaccine history imported"));
     },
     onError: handleCsvImportError,
   });
@@ -3349,7 +3202,7 @@ function DataTab() {
         });
         setImportRecoveryMessage("");
         setImportResult(null);
-        toast.success("Medical history CSV checked");
+        toast.success(tx("Medical history CSV checked"));
         return;
       }
 
@@ -3358,7 +3211,7 @@ function DataTab() {
       setCsvText("");
       setCsvFileName("");
       setImportRecoveryMessage("");
-      toast.success("Medical history imported");
+      toast.success(tx("Medical history imported"));
     },
     onError: handleCsvImportError,
   });
@@ -3369,7 +3222,7 @@ function DataTab() {
         utils.settings.getAccountDeletionRequest.invalidate();
         setConfirmExportDownloaded(false);
         setConfirmManualReview(false);
-        toast.success("Account deletion request sent");
+        toast.success(tx("Account deletion request sent"));
       },
       onError: (err) => toast.error(err.message),
     });
@@ -3387,14 +3240,14 @@ function DataTab() {
   const clearDemo = trpc.settings.clearDemoData.useMutation({
     onSuccess: () => {
       utils.settings.onboardingStatus.invalidate();
-      toast.success("Sample data removed");
+      toast.success(tx("Sample data removed"));
     },
     onError: (err) => toast.error(err.message),
   });
   const reseedDemo = trpc.settings.reseedDemoData.useMutation({
     onSuccess: () => {
       utils.settings.onboardingStatus.invalidate();
-      toast.success("Sample data added");
+      toast.success(tx("Sample data added"));
     },
     onError: (err) => toast.error(err.message),
   });
@@ -3521,7 +3374,7 @@ function DataTab() {
       };
       reader.onerror = () => {
         clearBackupFile();
-        toast.error("Could not read backup JSON");
+        toast.error(tx("Could not read backup JSON"));
       };
       reader.readAsText(file);
     },
@@ -3560,7 +3413,7 @@ function DataTab() {
   const runImportPreview = useCallback(
     (text: string) => {
       if (!importMode || !migrationSource) {
-        toast.error("Choose the system you are moving from first.");
+        toast.error(tx("Choose the system you are moving from first."));
         return;
       }
       setImportPreview(null);
@@ -3596,7 +3449,7 @@ function DataTab() {
   const handleFileSelect = useCallback(
     (file: File) => {
       if (!importMode || !migrationSource) {
-        toast.error("Choose the system you are moving from first.");
+        toast.error(tx("Choose the system you are moving from first."));
         return;
       }
       const readVersion = ++importFileReadVersionRef.current;
@@ -3626,7 +3479,7 @@ function DataTab() {
         const text = String(e.target?.result ?? "");
         if (!text.trim()) {
           setCsvFileName("");
-          toast.error("CSV file is empty");
+          toast.error(tx("CSV file is empty"));
           return;
         }
         if (!isImportCsvSizeValid(text)) {
@@ -3641,7 +3494,7 @@ function DataTab() {
       reader.onerror = () => {
         if (importFileReadVersionRef.current !== readVersion) return;
         setCsvFileName("");
-        toast.error("Could not read CSV file");
+        toast.error(tx("Could not read CSV file"));
       };
       reader.readAsText(file);
     },
@@ -3674,7 +3527,7 @@ function DataTab() {
     if (importPreview.requestKey !== currentRequestKey) {
       importRequestKeyRef.current = null;
       setImportPreview(null);
-      toast.error("The file or source changed. Check the CSV again.");
+      toast.error(tx("The file or source changed. Check the CSV again."));
       return;
     }
     if (importMode === "clients") {
@@ -3765,11 +3618,8 @@ function DataTab() {
     <div className="space-y-8">
       {/* Sample data */}
       <div>
-        <h3 className="text-sm font-semibold mb-1">Sample data</h3>
-        <p className="text-sm text-muted-foreground mb-4">
-          A practice full of made up clients and pets so you can explore. Add it
-          any time, and remove it when you are ready to work for real.
-        </p>
+        <h3 className="text-sm font-semibold mb-1">{tx("Sample data")}</h3>
+        <p className="text-sm text-muted-foreground mb-4">{tx("A practice full of made up clients and pets so you can explore. Add it any time, and remove it when you are ready to work for real.")}</p>
         <Button
           variant="outline"
           onClick={() => {
@@ -3789,22 +3639,20 @@ function DataTab() {
             reseedDemo.isPending
           }
         >
-          {hasDemo ? "Remove sample data" : "Add sample data"}
+          {hasDemo ? tx("Remove sample data") : tx("Add sample data")}
         </Button>
         {onboarding.error || onboardingMissing ? (
           <p className="mt-2 text-xs text-destructive">
             {onboarding.error?.message ??
-              "Unable to load sample data status. Please retry."}
+              tx("Unable to load sample data status. Please retry.")}
           </p>
         ) : null}
       </div>
 
       {/* Export Section */}
       <div>
-        <h3 className="text-sm font-semibold mb-1">Export Data</h3>
-        <p className="text-sm text-muted-foreground mb-4">
-          Download your practice data.
-        </p>
+        <h3 className="text-sm font-semibold mb-1">{tx("Export Data")}</h3>
+        <p className="text-sm text-muted-foreground mb-4">{tx("Download your practice data.")}</p>
         <div className="mb-3 max-w-2xl">
           <Button
             variant="outline"
@@ -3823,19 +3671,14 @@ function DataTab() {
             ) : (
               <Download className="h-4 w-4" />
             )}
-            <Database className="h-4 w-4" />
-            Export Database Backup
-          </Button>
+            <Database className="h-4 w-4" />{tx("Export Database Backup")}</Button>
           {practiceSettingsError || practiceSettingsMissing ? (
             <p className="mt-2 text-xs text-destructive">
               {practiceSettingsError?.message ??
-                "Unable to load practice settings for backup export."}
+                tx("Unable to load practice settings for backup export.")}
             </p>
           ) : null}
-          <p className="mt-2 text-xs text-muted-foreground">
-            Includes structured records and attachment manifests. Uploaded
-            document and image bytes are not embedded in the JSON download.
-          </p>
+          <p className="mt-2 text-xs text-muted-foreground">{tx("Includes structured records and attachment manifests. Uploaded document and image bytes are not embedded in the JSON download.")}</p>
         </div>
         <div className="grid grid-cols-2 gap-3 max-w-2xl">
           {(
@@ -3879,22 +3722,15 @@ function DataTab() {
 
       {/* Database backup restore */}
       <div>
-        <h3 className="text-sm font-semibold mb-1">Restore Database Backup</h3>
-        <p className="text-sm text-muted-foreground mb-4">
-          Restore structured data into an empty practice. Existing clients,
-          patients, appointments, or invoices block the restore. A backup with
-          attachment manifests must target its original practice.
-        </p>
+        <h3 className="text-sm font-semibold mb-1">{tx("Restore Database Backup")}</h3>
+        <p className="text-sm text-muted-foreground mb-4">{tx("Restore structured data into an empty practice. Existing clients, patients, appointments, or invoices block the restore. A backup with attachment manifests must target its original practice.")}</p>
         <div className="max-w-2xl rounded-lg border border-amber-300 bg-amber-50 p-4 text-amber-950 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-100">
           <div className="flex items-start gap-3">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
             <div className="min-w-0 flex-1 space-y-4">
               <div>
-                <p className="text-sm font-medium">Empty-practice restore</p>
-                <p className="mt-1 text-xs leading-5 text-amber-900 dark:text-amber-200">
-                  OpenVPM first checks the backup sections, row counts, and
-                  internal record links. Restores are non-destructive and only
-                  insert rows that do not already exist.{" "}
+                <p className="text-sm font-medium">{tx("Empty-practice restore")}</p>
+                <p className="mt-1 text-xs leading-5 text-amber-900 dark:text-amber-200">{tx("OpenVPM first checks the backup sections, row counts, and internal record links. Restores are non-destructive and only insert rows that do not already exist.")}{" "}
                   {PRACTICE_BACKUP_JSON_SIZE_MESSAGE}
                 </p>
               </div>
@@ -3911,9 +3747,7 @@ function DataTab() {
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     <Upload className="h-4 w-4" />
-                  )}
-                  Choose Backup JSON
-                </Button>
+                  )}{tx("Choose Backup JSON")}</Button>
                 {backupFileName && (
                   <span className="truncate text-xs text-amber-900 dark:text-amber-200">
                     {backupFileName}
@@ -3944,19 +3778,17 @@ function DataTab() {
                       }
                     >
                       {backupSummary.missingSections.length > 0
-                        ? "Missing sections"
+                        ? tx("Missing sections")
                         : backupSummary.restoreErrors.length > 0
-                          ? "Invalid backup data"
-                          : "Verified"}
+                          ? tx("Invalid backup data")
+                          : tx("Verified")}
                     </Badge>
                     <span className="text-muted-foreground">
-                      {backupSummary.totalRows.toLocaleString()} rows detected
-                    </span>
+                      {backupSummary.totalRows.toLocaleString()}{" "}{tx("rows detected")}</span>
                   </div>
 
                   {backupSummary.missingSections.length > 0 ? (
-                    <p className="mt-2 text-xs text-destructive">
-                      Missing: {backupSummary.missingSections.join(", ")}
+                    <p className="mt-2 text-xs text-destructive">{tx("Missing:")}{" "}{backupSummary.missingSections.join(", ")}
                     </p>
                   ) : backupSummary.restoreErrors.length > 0 ? (
                     <div className="mt-2 space-y-1 text-xs text-destructive">
@@ -3990,9 +3822,7 @@ function DataTab() {
               {restoreResult && (
                 <div className="rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-900 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-100">
                   <div className="flex items-center gap-2 font-medium">
-                    <Check className="h-4 w-4" />
-                    Restored {restoreResult.totalRows.toLocaleString()} rows
-                  </div>
+                    <Check className="h-4 w-4" />{tx("Restored")}{" "}{restoreResult.totalRows.toLocaleString()}{" "}{tx("rows")}</div>
                 </div>
               )}
 
@@ -4010,10 +3840,7 @@ function DataTab() {
                   }
                   className="mt-0.5"
                 />
-                <span>
-                  I confirm this practice has no live clients, patients,
-                  appointments, or invoices.
-                </span>
+                <span>{tx("I confirm this practice has no live clients, patients, appointments, or invoices.")}</span>
               </label>
 
               <Button
@@ -4026,9 +3853,7 @@ function DataTab() {
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <Database className="h-4 w-4" />
-                )}
-                Restore into Empty Practice
-              </Button>
+                )}{tx("Restore into Empty Practice")}</Button>
             </div>
           </div>
         </div>
@@ -4036,29 +3861,24 @@ function DataTab() {
 
       {/* Account deletion */}
       <div>
-        <h3 className="text-sm font-semibold mb-1">Account Deletion</h3>
-        <p className="text-sm text-muted-foreground mb-4">
-          Start a deletion review after exporting the database backup. Review
-          uploaded files separately because their bytes are not in the JSON.
-        </p>
+        <h3 className="text-sm font-semibold mb-1">{tx("Account Deletion")}</h3>
+        <p className="text-sm text-muted-foreground mb-4">{tx("Start a deletion review after exporting the database backup. Review uploaded files separately because their bytes are not in the JSON.")}</p>
         <div className="max-w-2xl rounded-lg border border-destructive/30 bg-destructive/5 p-4">
           {isDeletionStatusLoading ? (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Loading deletion status
-            </div>
+              <Loader2 className="h-4 w-4 animate-spin" />{tx("Loading deletion status")}</div>
           ) : deletionStatusError ? (
             <div className="flex items-start gap-2 text-sm text-destructive">
               <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
               <div>
-                <p className="font-medium">Could not load deletion status</p>
+                <p className="font-medium">{tx("Could not load deletion status")}</p>
                 <p className="mt-1 text-xs">{deletionStatusError.message}</p>
               </div>
             </div>
           ) : deletionRequest ? (
             <div className="space-y-3">
               <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="warning">Review requested</Badge>
+                <Badge variant="warning">{tx("Review requested")}</Badge>
                 {deletionRequestedAt && (
                   <span className="text-sm text-muted-foreground">
                     {deletionRequestedAt}
@@ -4067,11 +3887,11 @@ function DataTab() {
               </div>
               <div className="grid gap-1 text-sm">
                 <div>
-                  <span className="font-medium">Contact:</span>{" "}
+                  <span className="font-medium">{tx("Contact:")}</span>{" "}
                   {deletionRequest.contactEmail}
                 </div>
                 <div>
-                  <span className="font-medium">Requested by:</span>{" "}
+                  <span className="font-medium">{tx("Requested by:")}</span>{" "}
                   {deletionRequest.requestedByEmail}
                 </div>
               </div>
@@ -4082,9 +3902,7 @@ function DataTab() {
                 <label
                   htmlFor="account-deletion-contact"
                   className="mb-1 block text-sm font-medium"
-                >
-                  Contact email
-                </label>
+                >{tx("Contact email")}</label>
                 <Input
                   id="account-deletion-contact"
                   type="email"
@@ -4098,9 +3916,7 @@ function DataTab() {
                 <label
                   htmlFor="account-deletion-reason"
                   className="mb-1 block text-sm font-medium"
-                >
-                  Notes
-                </label>
+                >{tx("Notes")}</label>
                 <textarea
                   id="account-deletion-reason"
                   value={deletionReason}
@@ -4108,7 +3924,7 @@ function DataTab() {
                   maxLength={ACCOUNT_DELETION_REASON_MAX_LENGTH}
                   rows={3}
                   className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm shadow-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50"
-                  placeholder="Optional context for the ops review"
+                  placeholder={tx("Optional context for the ops review")}
                 />
               </div>
               <label className="flex items-start gap-2 text-sm">
@@ -4119,9 +3935,7 @@ function DataTab() {
                   }
                   className="mt-0.5"
                 />
-                <span>
-                  I downloaded the database backup before requesting deletion.
-                </span>
+                <span>{tx("I downloaded the database backup before requesting deletion.")}</span>
               </label>
               <label className="flex items-start gap-2 text-sm">
                 <Checkbox
@@ -4131,10 +3945,7 @@ function DataTab() {
                   }
                   className="mt-0.5"
                 />
-                <span>
-                  I understand deletion needs manual retention review before
-                  records are erased.
-                </span>
+                <span>{tx("I understand deletion needs manual retention review before records are erased.")}</span>
               </label>
               <Button
                 variant="destructive"
@@ -4146,9 +3957,7 @@ function DataTab() {
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <Trash2 className="h-4 w-4" />
-                )}
-                Request Deletion Review
-              </Button>
+                )}{tx("Request Deletion Review")}</Button>
             </div>
           )}
         </div>
@@ -4156,22 +3965,12 @@ function DataTab() {
 
       {/* Import Section */}
       <div>
-        <h3 className="text-sm font-semibold mb-1">Import Data</h3>
-        <p className="text-sm text-muted-foreground mb-4">
-          Moving from another system? Import clients first, then patients, then
-          vaccine history, then medical history (visit notes). Every file is
-          dry-run first so you see duplicates and missing matches before
-          anything is saved. Common column names from AVImark, Cornerstone, and
-          ezyVet are recognized. Shepherd migrations are currently guided so we
-          can verify the clinic's exact export format. Owner and patient IDs
-          stay linked across files, even when an owner has no email.
-        </p>
+        <h3 className="text-sm font-semibold mb-1">{tx("Import Data")}</h3>
+        <p className="text-sm text-muted-foreground mb-4">{tx("Moving from another system? Import clients first, then patients, then vaccine history, then medical history (visit notes). Every file is dry-run first so you see duplicates and missing matches before anything is saved. Common column names from AVImark, Cornerstone, and ezyVet are recognized. Shepherd migrations are currently guided so we can verify the clinic's exact export format. Owner and patient IDs stay linked across files, even when an owner has no email.")}</p>
 
         {/* Where the data is coming from (export instructions per source) */}
         <div className="mb-4 flex flex-wrap items-center gap-2">
-          <span className="text-xs font-medium text-muted-foreground">
-            Coming from:
-          </span>
+          <span className="text-xs font-medium text-muted-foreground">{tx("Coming from:")}</span>
           {MIGRATION_SOURCES.map((source) => (
             <button
               key={source.id}
@@ -4211,9 +4010,7 @@ function DataTab() {
             <MigrationHelpRequest source={migrationSource} />
           </div>
         ) : (
-          <p className="mb-4 text-xs font-medium text-amber-700">
-            Choose the system you are moving from before selecting an import.
-          </p>
+          <p className="mb-4 text-xs font-medium text-amber-700">{tx("Choose the system you are moving from before selecting an import.")}</p>
         )}
 
         {/* Import mode selector */}
@@ -4235,7 +4032,7 @@ function DataTab() {
               }}
             >
               <Upload className="mr-2 h-4 w-4" />
-              {index + 1}. Import {label}
+              {index + 1}{tx(". Import")}{" "}{label}
             </Button>
           ))}
         </div>
@@ -4243,8 +4040,7 @@ function DataTab() {
         {importMode && (
           <div className="max-w-2xl space-y-4">
             {/* Expected columns hint */}
-            <p className="text-xs text-muted-foreground">
-              Expected columns:{" "}
+            <p className="text-xs text-muted-foreground">{tx("Expected columns:")}{" "}
               {
                 MIGRATION_STEPS.find((step) => step.mode === importMode)!
                   .columnHint
@@ -4268,17 +4064,9 @@ function DataTab() {
               onClick={() => fileInputRef.current?.click()}
             >
               <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
-              <p className="text-sm text-muted-foreground">
-                Drag and drop a CSV file here, or click to select
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                CSV files must be 5 MB or less. The file is dry-run first; no
-                rows import until you confirm.
-              </p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Existing owners connect by one exact email. Existing pets need a
-                matching microchip or date of birth before an ID is connected.
-              </p>
+              <p className="text-sm text-muted-foreground">{tx("Drag and drop a CSV file here, or click to select")}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{tx("CSV files must be 5 MB or less. The file is dry-run first; no rows import until you confirm.")}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{tx("Existing owners connect by one exact email. Existing pets need a matching microchip or date of birth before an ID is connected.")}</p>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -4294,8 +4082,7 @@ function DataTab() {
 
             {/* Server dry-run preview */}
             {csvFileName && (
-              <p className="text-xs text-muted-foreground">
-                Selected file:{" "}
+              <p className="text-xs text-muted-foreground">{tx("Selected file:")}{" "}
                 <span className="font-medium">{csvFileName}</span>
               </p>
             )}
@@ -4313,9 +4100,7 @@ function DataTab() {
                 >
                   {isImportPending ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : null}
-                  Check again
-                </Button>
+                  ) : null}{tx("Check again")}</Button>
               </div>
             ) : null}
 
@@ -4327,50 +4112,46 @@ function DataTab() {
                       variant={
                         importPreview.willInsert > 0 ? "success" : "warning"
                       }
-                    >
-                      Dry run complete
-                    </Badge>
-                    <span className="text-sm text-muted-foreground">
-                      No data has been imported yet.
-                    </span>
+                    >{tx("Dry run complete")}</Badge>
+                    <span className="text-sm text-muted-foreground">{tx("No data has been imported yet.")}</span>
                   </div>
                   <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
                     <ImportStat
-                      label="Rows parsed"
+                      label={tx("Rows parsed")}
                       value={importPreview.total}
                     />
                     <ImportStat
-                      label="Will import"
+                      label={tx("Will import")}
                       value={importPreview.willInsert}
                     />
                     {typeof importPreview.duplicates === "number" && (
                       <ImportStat
-                        label="Duplicates"
+                        label={tx("Duplicates")}
                         value={importPreview.duplicates ?? 0}
                       />
                     )}
                     {typeof importPreview.willReconcile === "number" &&
                       importPreview.willReconcile > 0 && (
                         <ImportStat
-                          label="IDs to connect"
+                          label={tx("IDs to connect")}
                           value={importPreview.willReconcile}
                         />
                       )}
                     {importMode === "patients" && (
                       <ImportStat
-                        label="Missing owners"
+                        label={tx("Missing owners")}
                         value={importPreview.unmatchedClient ?? 0}
                       />
                     )}
                     {(importMode === "vaccinations" ||
                       importMode === "soapNotes") && (
                       <ImportStat
-                        label="Missing pets"
+                        label={tx("Missing pets")}
                         value={importPreview.unmatchedPatient ?? 0}
                       />
                     )}
                     <ImportStat
-                      label="Row issues"
+                      label={tx("Row issues")}
                       value={importPreview.errors.length}
                     />
                   </div>
@@ -4378,8 +4159,7 @@ function DataTab() {
                   {importPreview.errors.length > 0 && (
                     <div className="mt-4 space-y-1">
                       <p className="text-sm font-medium text-destructive">
-                        {importPreview.errors.length} row issue(s):
-                      </p>
+                        {importPreview.errors.length}{" "}{tx("row issue(s):")}</p>
                       <ul className="max-h-40 space-y-0.5 overflow-y-auto text-xs text-destructive">
                         {importPreview.errors.map((err, i) => (
                           <li key={i}>{err}</li>
@@ -4387,17 +4167,10 @@ function DataTab() {
                       </ul>
                     </div>
                   )}
-                  <p className="mt-4 text-xs text-muted-foreground">
-                    Only the{" "}
+                  <p className="mt-4 text-xs text-muted-foreground">{tx("Only the")}{" "}
                     {importPreview.willInsert +
-                      (importPreview.willReconcile ?? 0)}{" "}
-                    listed changes will be saved. {importPreview.errors.length}{" "}
-                    issue row(s) will be skipped.
-                  </p>
-                  <p className="mt-2 text-xs font-medium text-amber-700">
-                    Start with a small representative sample. A confirmed import
-                    has no one-click rollback.
-                  </p>
+                      (importPreview.willReconcile ?? 0)}{" "}{tx("listed changes will be saved.")}{" "}{importPreview.errors.length}{" "}{tx("issue row(s) will be skipped.")}</p>
+                  <p className="mt-2 text-xs font-medium text-amber-700">{tx("Start with a small representative sample. A confirmed import has no one-click rollback.")}</p>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   <Button
@@ -4414,12 +4187,8 @@ function DataTab() {
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : (
                       <Check className="mr-2 h-4 w-4" />
-                    )}
-                    Confirm Import (
-                    {importPreview.willInsert +
-                      (importPreview.willReconcile ?? 0)}{" "}
-                    changes)
-                  </Button>
+                    )}{tx("Confirm Import (")}{importPreview.willInsert +
+                      (importPreview.willReconcile ?? 0)}{" "}{tx("changes)")}</Button>
                   <Button
                     size="sm"
                     variant="ghost"
@@ -4431,9 +4200,7 @@ function DataTab() {
                       setImportPreview(null);
                       setImportRecoveryMessage("");
                     }}
-                  >
-                    Cancel
-                  </Button>
+                  >{tx("Cancel")}</Button>
                 </div>
               </div>
             )}
@@ -4443,16 +4210,14 @@ function DataTab() {
               <div className="rounded-lg border border-border bg-card p-4 space-y-2">
                 <div className="flex items-center gap-2 text-sm font-medium text-green-600 dark:text-green-400">
                   <Check className="h-4 w-4" />
-                  {importResult.imported} records imported successfully
-                  {(importResult.reconciled ?? 0) > 0
+                  {importResult.imported}{" "}{tx("records imported successfully")}{(importResult.reconciled ?? 0) > 0
                     ? `; ${importResult.reconciled} existing record IDs connected`
                     : ""}
                 </div>
                 {importResult.errors && importResult.errors.length > 0 && (
                   <div className="space-y-1">
                     <p className="text-sm font-medium text-destructive">
-                      {importResult.errors.length} error(s):
-                    </p>
+                      {importResult.errors.length}{" "}{tx("error(s):")}</p>
                     <ul className="text-xs text-destructive space-y-0.5">
                       {importResult.errors.map((err, i) => (
                         <li key={i}>{err}</li>
@@ -4513,7 +4278,7 @@ function RoomsTab() {
           locationsQuery.data?.[0]?.id ??
           "",
       });
-      toast.success("Room created");
+      toast.success(tx("Room created"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -4522,7 +4287,7 @@ function RoomsTab() {
   const deleteMutation = trpc.settings.deleteRoom.useMutation({
     onSuccess: () => {
       utils.settings.listRooms.invalidate();
-      toast.success("Room deleted");
+      toast.success(tx("Room deleted"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -4564,7 +4329,7 @@ function RoomsTab() {
   if (roomsMissing) {
     return (
       <SettingsLoadError
-        title="Could not load rooms"
+        title={tx("Could not load rooms")}
         message="The room list request finished without returning data. Try loading it again before editing rooms."
         onRetry={() => void refetchRooms()}
       />
@@ -4575,17 +4340,15 @@ function RoomsTab() {
     <div className="space-y-4">
       <div className="flex justify-end">
         <Button onClick={() => setShowAdd(!showAdd)} size="sm">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Room
-        </Button>
+          <Plus className="mr-2 h-4 w-4" />{tx("Add Room")}</Button>
       </div>
 
       {showAdd && (
         <div className="rounded-lg border border-border bg-card p-4 space-y-3">
-          <h3 className="text-sm font-semibold">New Room</h3>
+          <h3 className="text-sm font-semibold">{tx("New Room")}</h3>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <Input
-              placeholder="Room name"
+              placeholder={tx("Room name")}
               maxLength={ROOM_NAME_MAX_LENGTH}
               value={addForm.name}
               onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
@@ -4607,7 +4370,7 @@ function RoomsTab() {
               ))}
             </select>
             <select
-              aria-label="Clinic location"
+              aria-label={tx("Clinic location")}
               className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
               value={addForm.locationId}
               onChange={(event) =>
@@ -4615,7 +4378,7 @@ function RoomsTab() {
               }
               disabled={locationsQuery.isLoading || roomLocations.length === 0}
             >
-              <option value="">Select location</option>
+              <option value="">{tx("Select location")}</option>
               {roomLocations.map((location) => (
                 <option key={location.id} value={location.id}>
                   {location.name}
@@ -4635,12 +4398,8 @@ function RoomsTab() {
             >
               {createMutation.isPending && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Create
-            </Button>
-            <Button size="sm" variant="ghost" onClick={() => setShowAdd(false)}>
-              Cancel
-            </Button>
+              )}{tx("Create")}</Button>
+            <Button size="sm" variant="ghost" onClick={() => setShowAdd(false)}>{tx("Cancel")}</Button>
           </div>
         </div>
       )}
@@ -4649,10 +4408,10 @@ function RoomsTab() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/50">
-              <th className="px-4 py-3 text-left font-medium">Name</th>
-              <th className="px-4 py-3 text-left font-medium">Type</th>
-              <th className="px-4 py-3 text-left font-medium">Location</th>
-              <th className="px-4 py-3 text-right font-medium">Actions</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Name")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Type")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Location")}</th>
+              <th className="px-4 py-3 text-right font-medium">{tx("Actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -4668,7 +4427,7 @@ function RoomsTab() {
                 <td className="px-4 py-3 text-muted-foreground">
                   {roomLocations.find(
                     (location) => location.id === room.locationId,
-                  )?.name ?? "Unassigned"}
+                  )?.name ?? tx("Unassigned")}
                 </td>
                 <td className="px-4 py-3 text-right">
                   <Button
@@ -4687,8 +4446,8 @@ function RoomsTab() {
                   <EmptyState
                     className="border-0 bg-transparent p-8"
                     icon={DoorOpen}
-                    title="No rooms configured"
-                    description="Add rooms so appointments can reserve exam, treatment, surgery, or boarding spaces."
+                    title={tx("No rooms configured")}
+                    description={tx("Add rooms so appointments can reserve exam, treatment, surgery, or boarding spaces.")}
                   />
                 </td>
               </tr>
@@ -4720,7 +4479,7 @@ function WellnessPlansTab() {
         price: "",
         billingInterval: "monthly",
       });
-      toast.success("Wellness plan created");
+      toast.success(tx("Wellness plan created"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -4775,7 +4534,7 @@ function WellnessPlansTab() {
   if (wellnessPlansMissing) {
     return (
       <SettingsLoadError
-        title="Could not load wellness plans"
+        title={tx("Could not load wellness plans")}
         message="The wellness plan request finished without returning data. Try loading it again before editing membership plans."
         onRetry={() => void refetchWellnessPlans()}
       />
@@ -4787,26 +4546,21 @@ function WellnessPlansTab() {
       <div className="flex flex-col gap-3 rounded-lg border border-border bg-muted/30 p-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-sm font-semibold">Scheduled invoice billing</h3>
-            <Badge variant="secondary">No auto-charge</Badge>
+            <h3 className="text-sm font-semibold">{tx("Scheduled invoice billing")}</h3>
+            <Badge variant="secondary">{tx("No auto-charge")}</Badge>
           </div>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Wellness plans generate due invoices by cadence; Stripe checkout is
-            collected on each invoice.
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground">{tx("Wellness plans generate due invoices by cadence; Stripe checkout is collected on each invoice.")}</p>
         </div>
         <Button size="sm" onClick={() => setShowAdd(!showAdd)}>
-          <Plus className="mr-2 h-4 w-4" />
-          Add Plan
-        </Button>
+          <Plus className="mr-2 h-4 w-4" />{tx("Add Plan")}</Button>
       </div>
 
       {showAdd && (
         <div className="space-y-3 rounded-lg border border-border bg-card p-4">
-          <h3 className="text-sm font-semibold">New Wellness Plan</h3>
+          <h3 className="text-sm font-semibold">{tx("New Wellness Plan")}</h3>
           <div className="grid gap-3 md:grid-cols-[1fr_9rem_9rem]">
             <Input
-              placeholder="Plan name"
+              placeholder={tx("Plan name")}
               maxLength={WELLNESS_PLAN_NAME_MAX_LENGTH}
               value={addForm.name}
               onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
@@ -4816,7 +4570,7 @@ function WellnessPlansTab() {
               min={WELLNESS_PLAN_PRICE_MIN}
               max={WELLNESS_PLAN_PRICE_MAX}
               step={10 ** -WELLNESS_PLAN_PRICE_SCALE}
-              placeholder="Price"
+              placeholder={tx("Price")}
               value={addForm.price}
               onChange={(e) =>
                 setAddForm({ ...addForm, price: e.target.value })
@@ -4833,12 +4587,12 @@ function WellnessPlansTab() {
                 })
               }
             >
-              <option value="monthly">Monthly</option>
-              <option value="annual">Annual</option>
+              <option value="monthly">{tx("Monthly")}</option>
+              <option value="annual">{tx("Annual")}</option>
             </select>
           </div>
           <Input
-            placeholder="Description (optional)"
+            placeholder={tx("Description (optional)")}
             maxLength={WELLNESS_PLAN_DESCRIPTION_MAX_LENGTH}
             value={addForm.description}
             onChange={(e) =>
@@ -4860,12 +4614,8 @@ function WellnessPlansTab() {
             >
               {createMutation.isPending && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Create
-            </Button>
-            <Button size="sm" variant="ghost" onClick={() => setShowAdd(false)}>
-              Cancel
-            </Button>
+              )}{tx("Create")}</Button>
+            <Button size="sm" variant="ghost" onClick={() => setShowAdd(false)}>{tx("Cancel")}</Button>
           </div>
         </div>
       )}
@@ -4874,11 +4624,11 @@ function WellnessPlansTab() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/50">
-              <th className="px-4 py-3 text-left font-medium">Name</th>
-              <th className="px-4 py-3 text-left font-medium">Interval</th>
-              <th className="px-4 py-3 text-right font-medium">Price</th>
-              <th className="px-4 py-3 text-left font-medium">Status</th>
-              <th className="px-4 py-3 text-right font-medium">Actions</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Name")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Interval")}</th>
+              <th className="px-4 py-3 text-right font-medium">{tx("Price")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Status")}</th>
+              <th className="px-4 py-3 text-right font-medium">{tx("Actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -4899,16 +4649,14 @@ function WellnessPlansTab() {
                   <div className="capitalize text-muted-foreground">
                     {plan.billingInterval}
                   </div>
-                  <Badge variant="outline" className="mt-1">
-                    Invoice schedule
-                  </Badge>
+                  <Badge variant="outline" className="mt-1">{tx("Invoice schedule")}</Badge>
                 </td>
                 <td className="px-4 py-3 text-right tabular-nums">
                   {formatCurrency(plan.price)}
                 </td>
                 <td className="px-4 py-3">
                   <Badge variant={plan.active ? "default" : "secondary"}>
-                    {plan.active ? "Active" : "Inactive"}
+                    {plan.active ? tx("Active") : tx("Inactive")}
                   </Badge>
                 </td>
                 <td className="px-4 py-3 text-right">
@@ -4923,7 +4671,7 @@ function WellnessPlansTab() {
                       })
                     }
                   >
-                    {plan.active ? "Deactivate" : "Reactivate"}
+                    {plan.active ? tx("Deactivate") : tx("Reactivate")}
                   </Button>
                 </td>
               </tr>
@@ -4934,8 +4682,8 @@ function WellnessPlansTab() {
                   <EmptyState
                     className="border-0 bg-transparent p-8"
                     icon={HeartPulse}
-                    title="No wellness plans configured"
-                    description="Create a plan to package preventive care into scheduled invoice memberships."
+                    title={tx("No wellness plans configured")}
+                    description={tx("Create a plan to package preventive care into scheduled invoice memberships.")}
                   />
                 </td>
               </tr>
@@ -4997,7 +4745,7 @@ function TemplatesTab() {
       utils.templates.list.invalidate();
       setShowAdd(false);
       resetAddForm();
-      toast.success("Template created");
+      toast.success(tx("Template created"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -5006,7 +4754,7 @@ function TemplatesTab() {
   const updateMutation = trpc.templates.update.useMutation({
     onSuccess: () => {
       utils.templates.list.invalidate();
-      toast.success("Template updated");
+      toast.success(tx("Template updated"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -5186,7 +4934,7 @@ function TemplatesTab() {
   if (templatesMissing) {
     return (
       <SettingsLoadError
-        title="Could not load templates"
+        title={tx("Could not load templates")}
         message="The template list request finished without returning data. Try loading it again before editing treatment templates."
         onRetry={() => void refetchTemplates()}
       />
@@ -5203,9 +4951,7 @@ function TemplatesTab() {
             variant="ghost"
             onClick={() => setSelectedTemplateId(null)}
           >
-            <X className="mr-2 h-4 w-4" />
-            Back
-          </Button>
+            <X className="mr-2 h-4 w-4" />{tx("Back")}</Button>
           <h3 className="text-sm font-semibold">{selectedTemplate.name}</h3>
           <span
             className={cn(
@@ -5215,7 +4961,7 @@ function TemplatesTab() {
                 : "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400",
             )}
           >
-            {selectedTemplate.isActive !== false ? "Active" : "Inactive"}
+            {selectedTemplate.isActive !== false ? tx("Active") : tx("Inactive")}
           </span>
           <Button
             size="sm"
@@ -5231,7 +4977,7 @@ function TemplatesTab() {
             {updateMutation.isPending && (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             )}
-            {selectedTemplate.isActive !== false ? "Deactivate" : "Activate"}
+            {selectedTemplate.isActive !== false ? tx("Deactivate") : tx("Activate")}
           </Button>
         </div>
 
@@ -5245,10 +4991,10 @@ function TemplatesTab() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-muted/50">
-                <th className="px-4 py-3 text-left font-medium">Description</th>
-                <th className="px-4 py-3 text-left font-medium">Type</th>
-                <th className="px-4 py-3 text-left font-medium">Quantity</th>
-                <th className="px-4 py-3 text-right font-medium">Unit Price</th>
+                <th className="px-4 py-3 text-left font-medium">{tx("Description")}</th>
+                <th className="px-4 py-3 text-left font-medium">{tx("Type")}</th>
+                <th className="px-4 py-3 text-left font-medium">{tx("Quantity")}</th>
+                <th className="px-4 py-3 text-right font-medium">{tx("Unit Price")}</th>
               </tr>
             </thead>
             <tbody>
@@ -5266,15 +5012,13 @@ function TemplatesTab() {
                     colSpan={4}
                     className="px-4 py-8 text-center text-muted-foreground"
                   >
-                    <Loader2 className="mr-2 inline h-4 w-4 animate-spin" />
-                    Loading template items...
-                  </td>
+                    <Loader2 className="mr-2 inline h-4 w-4 animate-spin" />{tx("Loading template items...")}</td>
                 </tr>
               ) : selectedTemplateMissing ? (
                 <tr>
                   <td colSpan={4} className="p-4">
                     <SettingsLoadError
-                      title="Could not load template items"
+                      title={tx("Could not load template items")}
                       message="The template detail request finished without returning data. Try loading it again before using this treatment template."
                       onRetry={() => void refetchSelectedTemplate()}
                     />
@@ -5290,10 +5034,7 @@ function TemplatesTab() {
                       <span className="capitalize">{item.itemType}</span>
                       {item.itemType === "product" &&
                       item.hasActiveProductLink !== true ? (
-                        <p className="mt-1 max-w-xs text-xs text-amber-700 dark:text-amber-400">
-                          Missing or archived inventory product — recreate this
-                          template before use.
-                        </p>
+                        <p className="mt-1 max-w-xs text-xs text-amber-700 dark:text-amber-400">{tx("Missing or archived inventory product — recreate this template before use.")}</p>
                       ) : null}
                     </td>
                     <td className="px-4 py-3 text-muted-foreground">
@@ -5310,8 +5051,8 @@ function TemplatesTab() {
                     <EmptyState
                       className="border-0 bg-transparent p-8"
                       icon={Layers}
-                      title="No items in this template"
-                      description="Add default services or products when creating a new treatment template."
+                      title={tx("No items in this template")}
+                      description={tx("Add default services or products when creating a new treatment template.")}
                     />
                   </td>
                 </tr>
@@ -5333,17 +5074,15 @@ function TemplatesTab() {
           }}
           size="sm"
         >
-          <Plus className="mr-2 h-4 w-4" />
-          Add Template
-        </Button>
+          <Plus className="mr-2 h-4 w-4" />{tx("Add Template")}</Button>
       </div>
 
       {showAdd && (
         <div className="rounded-lg border border-border bg-card p-4 space-y-3">
-          <h3 className="text-sm font-semibold">New Treatment Template</h3>
+          <h3 className="text-sm font-semibold">{tx("New Treatment Template")}</h3>
           <div className="grid grid-cols-2 gap-3">
             <Input
-              placeholder="Template name"
+              placeholder={tx("Template name")}
               maxLength={TREATMENT_TEMPLATE_NAME_MAX_LENGTH}
               value={addForm.name}
               onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
@@ -5366,7 +5105,7 @@ function TemplatesTab() {
             </select>
           </div>
           <Input
-            placeholder="Description (optional)"
+            placeholder={tx("Description (optional)")}
             maxLength={TREATMENT_TEMPLATE_DESCRIPTION_MAX_LENGTH}
             value={addForm.description}
             onChange={(e) =>
@@ -5376,7 +5115,7 @@ function TemplatesTab() {
 
           {/* Items */}
           <div className="space-y-2">
-            <h4 className="text-sm font-medium">Items</h4>
+            <h4 className="text-sm font-medium">{tx("Items")}</h4>
             {addItems.map((item, index) => (
               <div
                 key={item.draftId}
@@ -5412,12 +5151,12 @@ function TemplatesTab() {
                     )
                   }
                 >
-                  <option value="service">Service</option>
-                  <option value="product">Product</option>
+                  <option value="service">{tx("Service")}</option>
+                  <option value="product">{tx("Product")}</option>
                 </select>
                 <Input
                   type="number"
-                  placeholder="Qty"
+                  placeholder={tx("Qty")}
                   min={TREATMENT_TEMPLATE_ITEM_QUANTITY_MIN}
                   max={TREATMENT_TEMPLATE_ITEM_QUANTITY_MAX}
                   step={1}
@@ -5433,7 +5172,7 @@ function TemplatesTab() {
                 />
                 <Input
                   type="number"
-                  placeholder="Price"
+                  placeholder={tx("Price")}
                   min={0}
                   max={TREATMENT_TEMPLATE_UNIT_PRICE_MAX}
                   step="0.01"
@@ -5455,10 +5194,7 @@ function TemplatesTab() {
               </div>
             ))}
             {hasUnlinkedCatalogRows ? (
-              <p className="text-sm text-muted-foreground">
-                Search for and select an active service or inventory product for
-                every template row.
-              </p>
+              <p className="text-sm text-muted-foreground">{tx("Search for and select an active service or inventory product for every template row.")}</p>
             ) : null}
             <Button
               size="sm"
@@ -5466,9 +5202,7 @@ function TemplatesTab() {
               disabled={addItems.length >= TREATMENT_TEMPLATE_MAX_ITEMS}
               onClick={addItemRow}
             >
-              <Plus className="mr-2 h-4 w-4" />
-              Add Item
-            </Button>
+              <Plus className="mr-2 h-4 w-4" />{tx("Add Item")}</Button>
           </div>
 
           <div className="flex gap-2">
@@ -5486,12 +5220,8 @@ function TemplatesTab() {
             >
               {createMutation.isPending && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Create
-            </Button>
-            <Button size="sm" variant="ghost" onClick={() => setShowAdd(false)}>
-              Cancel
-            </Button>
+              )}{tx("Create")}</Button>
+            <Button size="sm" variant="ghost" onClick={() => setShowAdd(false)}>{tx("Cancel")}</Button>
           </div>
           {createMutation.error && (
             <p className="text-sm text-destructive">
@@ -5505,11 +5235,11 @@ function TemplatesTab() {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/50">
-              <th className="px-4 py-3 text-left font-medium">Name</th>
-              <th className="px-4 py-3 text-left font-medium">Category</th>
-              <th className="px-4 py-3 text-left font-medium">Items</th>
-              <th className="px-4 py-3 text-left font-medium">Status</th>
-              <th className="px-4 py-3 text-right font-medium">Actions</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Name")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Category")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Items")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Status")}</th>
+              <th className="px-4 py-3 text-right font-medium">{tx("Actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -5541,7 +5271,7 @@ function TemplatesTab() {
                         : "bg-gray-100 text-gray-800 dark:bg-gray-900/30 dark:text-gray-400",
                     )}
                   >
-                    {template.isActive !== false ? "Active" : "Inactive"}
+                    {template.isActive !== false ? tx("Active") : tx("Inactive")}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-right">
@@ -5571,8 +5301,8 @@ function TemplatesTab() {
                   <EmptyState
                     className="border-0 bg-transparent p-8"
                     icon={Layers}
-                    title="No templates configured"
-                    description="Create reusable treatment templates for common service and product bundles."
+                    title={tx("No templates configured")}
+                    description={tx("Create reusable treatment templates for common service and product bundles.")}
                   />
                 </td>
               </tr>

@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc";
+import { tx } from "@/lib/i18n";
 
 type ProviderWindow = {
   dayOfWeek: number;
@@ -74,7 +75,7 @@ export function ProviderHours() {
       ]);
       setEditingProviderId(null);
       setEditingRevision(null);
-      toast.success("Provider hours saved");
+      toast.success(tx("Provider hours saved"));
     },
     onError: (error) => toast.error(error.message),
   });
@@ -89,18 +90,16 @@ export function ProviderHours() {
   if (setup.error || !setup.data) {
     return (
       <div className="rounded-lg border border-destructive/40 bg-destructive/5 p-4 text-sm">
-        <p className="font-medium">Provider hours could not be loaded.</p>
+        <p className="font-medium">{tx("Provider hours could not be loaded.")}</p>
         <p className="mt-1 text-muted-foreground">
-          {setup.error?.message ?? "Refresh and try again."}
+          {setup.error?.message ?? tx("Refresh and try again.")}
         </p>
         <Button
           className="mt-3"
           size="sm"
           variant="outline"
           onClick={() => void setup.refetch()}
-        >
-          Try again
-        </Button>
+        >{tx("Try again")}</Button>
       </div>
     );
   }
@@ -117,19 +116,13 @@ export function ProviderHours() {
         <div>
           <div className="flex items-center gap-2">
             <Clock3 className="h-4 w-4 text-primary" />
-            <h3 className="text-sm font-semibold">Provider working hours</h3>
+            <h3 className="text-sm font-semibold">{tx("Provider working hours")}</h3>
           </div>
-          <p className="mt-1 max-w-2xl text-xs text-muted-foreground">
-            Set each veterinarian&apos;s weekly coverage at every clinic. Times
-            use {timezone}. Doctor-required client requests only show configured
-            provider coverage once your clinic saves its first hours.
-          </p>
+          <p className="mt-1 max-w-2xl text-xs text-muted-foreground">{tx("Set each veterinarian's weekly coverage at every clinic. Times use")}{" "}{timezone}{tx(". Doctor-required client requests only show configured provider coverage once your clinic saves its first hours.")}</p>
         </div>
         {locations.length > 0 ? (
-          <label className="text-xs font-medium text-muted-foreground">
-            Clinic location
-            <select
-              aria-label="Provider hours clinic location"
+          <label className="text-xs font-medium text-muted-foreground">{tx("Clinic location")}<select
+              aria-label={tx("Provider hours clinic location")}
               className="mt-1 block h-9 min-w-48 rounded-md border border-input bg-background px-3 text-sm text-foreground"
               value={selectedLocation?.id ?? ""}
               onChange={(event) => {
@@ -142,7 +135,7 @@ export function ProviderHours() {
               {locations.map((location) => (
                 <option key={location.id} value={location.id}>
                   {location.name}
-                  {location.isPrimary ? " (primary)" : ""}
+                  {location.isPrimary ? tx(" (primary)") : ""}
                 </option>
               ))}
             </select>
@@ -151,14 +144,9 @@ export function ProviderHours() {
       </div>
 
       {!selectedLocation ? (
-        <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-950">
-          Add an active clinic location before setting provider hours.
-        </div>
+        <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-950">{tx("Add an active clinic location before setting provider hours.")}</div>
       ) : providers.length === 0 ? (
-        <div className="rounded-md bg-muted/50 p-4 text-sm text-muted-foreground">
-          Mark at least one active staff member as a veterinarian provider to
-          configure appointment coverage.
-        </div>
+        <div className="rounded-md bg-muted/50 p-4 text-sm text-muted-foreground">{tx("Mark at least one active staff member as a veterinarian provider to configure appointment coverage.")}</div>
       ) : (
         <div className="space-y-3">
           {providers.map((provider) => {
@@ -183,20 +171,18 @@ export function ProviderHours() {
                     <p className="text-xs text-muted-foreground">
                       {windows.length === 0
                         ? `No hours set at ${selectedLocation.name}`
-                        : `${dayCount} day${dayCount === 1 ? "" : "s"} · ${windows.length} working window${windows.length === 1 ? "" : "s"}`}
+                        : `${dayCount} day${dayCount === 1 ? "" : tx("s")} · ${windows.length} working window${windows.length === 1 ? "" : tx("s")}`}
                     </p>
                     {homeLocation ? (
-                      <p className="text-xs text-muted-foreground">
-                        Home base: {homeLocation.name}
+                      <p className="text-xs text-muted-foreground">{tx("Home base:")}{" "}{homeLocation.name}
                       </p>
                     ) : null}
                     {provider.unspecifiedWindowCount > 0 ? (
                       <p className="text-xs text-amber-700">
-                        {provider.unspecifiedWindowCount} legacy practice-wide
-                        working{" "}
+                        {provider.unspecifiedWindowCount}{" "}{tx("legacy practice-wide working")}{" "}
                         {provider.unspecifiedWindowCount === 1
-                          ? "window"
-                          : "windows"}
+                          ? tx("window")
+                          : tx("windows")}
                       </p>
                     ) : null}
                   </div>
@@ -215,7 +201,7 @@ export function ProviderHours() {
                       setDraft(windows.map((window) => ({ ...window })));
                     }}
                   >
-                    {editing ? "Close editor" : "Set hours"}
+                    {editing ? tx("Close editor") : tx("Set hours")}
                   </Button>
                 </div>
 
@@ -226,16 +212,12 @@ export function ProviderHours() {
                         size="sm"
                         variant="outline"
                         onClick={() => setDraft(weekdayPreset())}
-                      >
-                        Use Mon–Fri, 8–6
-                      </Button>
+                      >{tx("Use Mon–Fri, 8–6")}</Button>
                       <Button
                         size="sm"
                         variant="ghost"
                         onClick={() => setDraft([])}
-                      >
-                        Mark all closed
-                      </Button>
+                      >{tx("Mark all closed")}</Button>
                     </div>
 
                     <div className="space-y-2">
@@ -258,9 +240,7 @@ export function ProviderHours() {
                                 {dayName}
                               </span>
                               {windows.length === 0 ? (
-                                <span className="text-xs text-muted-foreground">
-                                  Closed
-                                </span>
+                                <span className="text-xs text-muted-foreground">{tx("Closed")}</span>
                               ) : null}
                             </div>
                             <div className="space-y-2">
@@ -288,9 +268,7 @@ export function ProviderHours() {
                                       )
                                     }
                                   />
-                                  <span className="text-xs text-muted-foreground">
-                                    to
-                                  </span>
+                                  <span className="text-xs text-muted-foreground">{tx("to")}</span>
                                   <Input
                                     aria-label={`${dayName} end time`}
                                     className="h-8 w-32"
@@ -348,9 +326,7 @@ export function ProviderHours() {
                                     ])
                                   }
                                 >
-                                  <Plus className="mr-1 h-3.5 w-3.5" />
-                                  Add window
-                                </Button>
+                                  <Plus className="mr-1 h-3.5 w-3.5" />{tx("Add window")}</Button>
                               ) : null}
                             </div>
                           </div>
@@ -382,9 +358,7 @@ export function ProviderHours() {
                       >
                         {save.isPending ? (
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : null}
-                        Save provider hours
-                      </Button>
+                        ) : null}{tx("Save provider hours")}</Button>
                       <Button
                         size="sm"
                         variant="ghost"
@@ -393,9 +367,7 @@ export function ProviderHours() {
                           setEditingProviderId(null);
                           setEditingRevision(null);
                         }}
-                      >
-                        Cancel
-                      </Button>
+                      >{tx("Cancel")}</Button>
                     </div>
                   </div>
                 ) : null}

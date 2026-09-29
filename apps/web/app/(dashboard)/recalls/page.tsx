@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { EmptyState } from "@/components/common/empty-state";
+import { tx, uiLocale } from "@/lib/i18n";
 
 const MAX_BATCH_SIZE = 100;
 
@@ -34,7 +35,7 @@ function canOperateRecalls(role?: string | null): boolean {
 function clinicalDate(value: string): string {
   const date = new Date(`${value}T00:00:00Z`);
   if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString(uiLocale(), {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -103,9 +104,7 @@ export default function VaccinationRecallsPage() {
   if (sessionStatus === "loading") {
     return (
       <div className="flex items-center gap-2 rounded-lg border border-border bg-card p-5 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" />
-        Checking recall access...
-      </div>
+        <Loader2 className="h-4 w-4 animate-spin" />{tx("Checking recall access...")}</div>
     );
   }
 
@@ -113,8 +112,8 @@ export default function VaccinationRecallsPage() {
     return (
       <EmptyState
         icon={ShieldCheck}
-        title="Vaccination recalls are restricted"
-        description="Administrators, veterinarians, and front desk staff can review and send recalls."
+        title={tx("Vaccination recalls are restricted")}
+        description={tx("Administrators, veterinarians, and front desk staff can review and send recalls.")}
       />
     );
   }
@@ -122,9 +121,7 @@ export default function VaccinationRecallsPage() {
   if (preview.isLoading) {
     return (
       <div className="flex items-center gap-2 rounded-lg border border-border bg-card p-5 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" />
-        Building the recall preview...
-      </div>
+        <Loader2 className="h-4 w-4 animate-spin" />{tx("Building the recall preview...")}</div>
     );
   }
 
@@ -132,9 +129,9 @@ export default function VaccinationRecallsPage() {
     return (
       <EmptyState
         icon={AlertTriangle}
-        title="Could not load vaccination recalls"
-        description={preview.error?.message ?? "The preview returned no data."}
-        action={{ label: "Retry", onClick: () => preview.refetch() }}
+        title={tx("Could not load vaccination recalls")}
+        description={preview.error?.message ?? tx("The preview returned no data.")}
+        action={{ label: tx("Retry"), onClick: () => preview.refetch() }}
       />
     );
   }
@@ -144,14 +141,8 @@ export default function VaccinationRecallsPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h2 className="font-heading text-xl font-semibold">
-            Vaccination recalls
-          </h2>
-          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-            Review overdue patients before anything sends. Sample records,
-            reserved contacts, opt-outs, suppressions, and repeat sends are
-            blocked automatically.
-          </p>
+          <h2 className="font-heading text-xl font-semibold">{tx("Vaccination recalls")}</h2>
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{tx("Review overdue patients before anything sends. Sample records, reserved contacts, opt-outs, suppressions, and repeat sends are blocked automatically.")}</p>
         </div>
         <Button
           variant="outline"
@@ -162,21 +153,19 @@ export default function VaccinationRecallsPage() {
         >
           <RefreshCw
             className={`h-4 w-4 ${preview.isFetching ? "animate-spin" : ""}`}
-          />
-          Refresh preview
-        </Button>
+          />{tx("Refresh preview")}</Button>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <RecallMetric label="Overdue patients" value={data.total} icon={Syringe} />
+        <RecallMetric label={tx("Overdue patients")} value={data.total} icon={Syringe} />
         <RecallMetric
-          label="Ready to send"
+          label={tx("Ready to send")}
           value={data.eligible}
           icon={CheckCircle2}
         />
-        <RecallMetric label="Blocked" value={data.blocked} icon={AlertTriangle} />
+        <RecallMetric label={tx("Blocked")} value={data.blocked} icon={AlertTriangle} />
         <RecallMetric
-          label="Already reminded"
+          label={tx("Already reminded")}
           value={data.alreadySent}
           icon={Clock3}
         />
@@ -185,13 +174,8 @@ export default function VaccinationRecallsPage() {
       <Card>
         <CardHeader className="gap-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
           <div>
-            <CardTitle>Recipient preview</CardTitle>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Select up to {MAX_BATCH_SIZE} eligible patients. Sending is always
-              a deliberate action and requires confirmation. The same exact
-              overdue-vaccine set can only be sent once; a newly overdue or
-              newly recorded vaccine creates a new recall snapshot.
-            </p>
+            <CardTitle>{tx("Recipient preview")}</CardTitle>
+            <p className="mt-1 text-sm text-muted-foreground">{tx("Select up to")}{" "}{MAX_BATCH_SIZE}{" "}{tx("eligible patients. Sending is always a deliberate action and requires confirmation. The same exact overdue-vaccine set can only be sent once; a newly overdue or newly recorded vaccine creates a new recall snapshot.")}</p>
           </div>
           <Button
             className="gap-2"
@@ -202,16 +186,15 @@ export default function VaccinationRecallsPage() {
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <Send className="h-4 w-4" />
-            )}
-            Send selected ({selectedEligibleIds.length})
+            )}{tx("Send selected (")}{selectedEligibleIds.length})
           </Button>
         </CardHeader>
         <CardContent>
           {data.recipients.length === 0 ? (
             <EmptyState
               icon={CheckCircle2}
-              title="No overdue vaccination recalls"
-              description="Active patients with a latest vaccination due date in the past will appear here."
+              title={tx("No overdue vaccination recalls")}
+              description={tx("Active patients with a latest vaccination due date in the past will appear here.")}
             />
           ) : (
             <div className="overflow-x-auto">
@@ -220,7 +203,7 @@ export default function VaccinationRecallsPage() {
                   <tr className="border-b border-border text-left text-muted-foreground">
                     <th className="w-10 py-3 pr-3 font-medium">
                       <Checkbox
-                        aria-label="Select all eligible recall recipients"
+                        aria-label={tx("Select all eligible recall recipients")}
                         checked={allEligibleSelected}
                         disabled={eligibleRecipients.length === 0}
                         onChange={(event) => {
@@ -238,11 +221,11 @@ export default function VaccinationRecallsPage() {
                         }}
                       />
                     </th>
-                    <th className="py-3 pr-4 font-medium">Patient / client</th>
-                    <th className="py-3 pr-4 font-medium">Overdue vaccines</th>
-                    <th className="py-3 pr-4 font-medium">Delivery</th>
-                    <th className="py-3 pr-4 font-medium">Eligibility</th>
-                    <th className="py-3 text-right font-medium">Action</th>
+                    <th className="py-3 pr-4 font-medium">{tx("Patient / client")}</th>
+                    <th className="py-3 pr-4 font-medium">{tx("Overdue vaccines")}</th>
+                    <th className="py-3 pr-4 font-medium">{tx("Delivery")}</th>
+                    <th className="py-3 pr-4 font-medium">{tx("Eligibility")}</th>
+                    <th className="py-3 text-right font-medium">{tx("Action")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -286,8 +269,7 @@ export default function VaccinationRecallsPage() {
                                 <span className="font-medium">
                                   {vaccine.vaccineName}
                                 </span>{" "}
-                                <span className="text-xs text-muted-foreground">
-                                  due {clinicalDate(vaccine.nextDueDate)}
+                                <span className="text-xs text-muted-foreground">{tx("due")}{" "}{clinicalDate(vaccine.nextDueDate)}
                                 </span>
                               </li>
                             ))}
@@ -300,8 +282,7 @@ export default function VaccinationRecallsPage() {
                             </Badge>
                           ) : recipient.channel === "email" ? (
                             <Badge variant="secondary" className="gap-1">
-                              <Mail className="h-3 w-3" /> Email
-                            </Badge>
+                              <Mail className="h-3 w-3" />{" "}{tx("Email")}</Badge>
                           ) : (
                             <span className="text-xs text-muted-foreground">—</span>
                           )}
@@ -313,10 +294,10 @@ export default function VaccinationRecallsPage() {
                         </td>
                         <td className="py-4 pr-4">
                           {eligible ? (
-                            <Badge variant="success">Ready</Badge>
+                            <Badge variant="success">{tx("Ready")}</Badge>
                           ) : recipient.status === "already_sent" ? (
                             <div>
-                              <Badge variant="outline">Already reminded</Badge>
+                              <Badge variant="outline">{tx("Already reminded")}</Badge>
                               {recipient.lastSentAt ? (
                                 <p className="mt-1 text-xs text-muted-foreground">
                                   {new Date(recipient.lastSentAt).toLocaleString()}
@@ -325,7 +306,7 @@ export default function VaccinationRecallsPage() {
                             </div>
                           ) : (
                             <div className="max-w-xs">
-                              <Badge variant="warning">Blocked</Badge>
+                              <Badge variant="warning">{tx("Blocked")}</Badge>
                               <p className="mt-1 text-xs text-muted-foreground">
                                 {recipient.blockMessage}
                               </p>
@@ -338,9 +319,7 @@ export default function VaccinationRecallsPage() {
                             size="sm"
                             disabled={!eligible || sendReminders.isPending}
                             onClick={() => sendPatients([recipient.patientId])}
-                          >
-                            Send
-                          </Button>
+                          >{tx("Send")}</Button>
                         </td>
                       </tr>
                     );

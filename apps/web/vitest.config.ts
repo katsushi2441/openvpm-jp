@@ -11,6 +11,8 @@ export default defineConfig({
     // Unit tests only — pure logic (mappers, auth helpers). The Playwright
     // e2e suite lives under /e2e and is run separately via `pnpm test:e2e`.
     include: ["**/*.test.ts"],
+    // Source-reading UI tests see the English copy, not the catalog calls.
+    setupFiles: ["./vitest.i18n-source.setup.ts"],
     exclude: ["node_modules", ".next", "../../e2e/**"],
   },
 });

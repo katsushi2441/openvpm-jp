@@ -50,6 +50,7 @@ import {
   isInventoryStockQuantityInputValid,
   isInventoryRequiredTextInputValid,
 } from "@/lib/inventory/policy";
+import { tx } from "@/lib/i18n";
 
 const CATEGORIES = [
   { label: "All Categories", value: "" },
@@ -72,23 +73,23 @@ type AlertFilter = (typeof ALERT_FILTERS)[number]["value"];
 
 function stockBadge(status: string) {
   if (status === "not_tracked") {
-    return { label: "Stock not tracked", className: "bg-slate-100 text-slate-700" };
+    return { label: tx("Stock not tracked"), className: "bg-slate-100 text-slate-700" };
   }
   if (status === "out") {
-    return { label: "Out", className: "bg-red-100 text-red-700" };
+    return { label: tx("Out"), className: "bg-red-100 text-red-700" };
   }
   if (status === "low") {
-    return { label: "Low Stock", className: "bg-amber-100 text-amber-700" };
+    return { label: tx("Low Stock"), className: "bg-amber-100 text-amber-700" };
   }
-  return { label: "In Stock", className: "bg-green-100 text-green-700" };
+  return { label: tx("In Stock"), className: "bg-green-100 text-green-700" };
 }
 
 function expirationBadge(status: string) {
   if (status === "expired") {
-    return { label: "Expired", className: "bg-red-100 text-red-700" };
+    return { label: tx("Expired"), className: "bg-red-100 text-red-700" };
   }
   if (status === "expiring_soon") {
-    return { label: "Expiring Soon", className: "bg-orange-100 text-orange-700" };
+    return { label: tx("Expiring Soon"), className: "bg-orange-100 text-orange-700" };
   }
   return null;
 }
@@ -120,7 +121,7 @@ function AddProductForm({ onClose }: { onClose: () => void }) {
     onSuccess: () => {
       utils.inventory.list.invalidate();
       onClose();
-      toast.success("Product added");
+      toast.success(tx("Product added"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -185,15 +186,11 @@ function AddProductForm({ onClose }: { onClose: () => void }) {
       onSubmit={handleSubmit}
       className="mt-4 rounded-lg border border-border bg-card p-4 space-y-3"
     >
-      <h3 className="font-medium text-sm">Add Product</h3>
-      <p className="text-xs text-muted-foreground">
-        Use one consistent inventory unit. For medication dispensed as tablets,
-        enter stock and price per tablet—not per bottle or package. Prescription
-        quantities, stock deductions, and invoice totals all use this unit.
-      </p>
+      <h3 className="font-medium text-sm">{tx("Add Product")}</h3>
+      <p className="text-xs text-muted-foreground">{tx("Use one consistent inventory unit. For medication dispensed as tablets, enter stock and price per tablet—not per bottle or package. Prescription quantities, stock deductions, and invoice totals all use this unit.")}</p>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Input
-          placeholder="Name *"
+          placeholder={tx("Name *")}
           value={form.name}
           maxLength={INVENTORY_PRODUCT_NAME_MAX_LENGTH}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
@@ -210,7 +207,7 @@ function AddProductForm({ onClose }: { onClose: () => void }) {
           onChange={(e) => setForm({ ...form, category: e.target.value })}
           className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm"
         >
-          <option value="">Category</option>
+          <option value="">{tx("Category")}</option>
           {CATEGORIES.slice(1).map((c) => (
             <option key={c.value} value={c.value}>
               {c.label}
@@ -222,7 +219,7 @@ function AddProductForm({ onClose }: { onClose: () => void }) {
           min={INVENTORY_MONEY_AMOUNT_MIN}
           max={INVENTORY_MONEY_AMOUNT_MAX}
           step="0.01"
-          placeholder="Price per unit *"
+          placeholder={tx("Price per unit *")}
           value={form.unitPrice}
           onChange={(e) => setForm({ ...form, unitPrice: e.target.value })}
           required
@@ -234,15 +231,13 @@ function AddProductForm({ onClose }: { onClose: () => void }) {
             onChange={(event) =>
               setForm({ ...form, taxable: event.target.checked })
             }
-          />
-          Taxable
-        </label>
+          />{tx("Taxable")}</label>
         <Input
           type="number"
           min={INVENTORY_MONEY_AMOUNT_MIN}
           max={INVENTORY_MONEY_AMOUNT_MAX}
           step="0.01"
-          placeholder="Cost per unit"
+          placeholder={tx("Cost per unit")}
           value={form.costPrice}
           onChange={(e) => setForm({ ...form, costPrice: e.target.value })}
         />
@@ -252,7 +247,7 @@ function AddProductForm({ onClose }: { onClose: () => void }) {
           min={INVENTORY_STOCK_QUANTITY_MIN}
           max={INVENTORY_STOCK_QUANTITY_MAX}
           step="0.001"
-          placeholder="Stock units"
+          placeholder={tx("Stock units")}
           value={form.stockQuantity}
           onChange={(e) =>
             setForm({ ...form, stockQuantity: Number(e.target.value) })
@@ -263,21 +258,21 @@ function AddProductForm({ onClose }: { onClose: () => void }) {
           min={INVENTORY_STOCK_QUANTITY_MIN}
           max={INVENTORY_STOCK_QUANTITY_MAX}
           step={1}
-          placeholder="Reorder Point"
+          placeholder={tx("Reorder Point")}
           value={form.reorderPoint}
           onChange={(e) =>
             setForm({ ...form, reorderPoint: parseInt(e.target.value) || 0 })
           }
         />
         <Input
-          placeholder="Lot Number"
+          placeholder={tx("Lot Number")}
           value={form.lotNumber}
           maxLength={INVENTORY_PRODUCT_LOT_NUMBER_MAX_LENGTH}
           onChange={(e) => setForm({ ...form, lotNumber: e.target.value })}
         />
         <Input
           type="date"
-          placeholder="Expiration Date"
+          placeholder={tx("Expiration Date")}
           value={form.expirationDate}
           aria-invalid={
             !isInventoryOptionalExpirationDateInputValid(form.expirationDate) ||
@@ -294,11 +289,9 @@ function AddProductForm({ onClose }: { onClose: () => void }) {
           size="sm"
           disabled={!canSubmit || createMutation.isPending}
         >
-          {createMutation.isPending ? "Adding..." : "Add Product"}
+          {createMutation.isPending ? tx("Adding...") : tx("Add Product")}
         </Button>
-        <Button type="button" variant="outline" size="sm" onClick={onClose}>
-          Cancel
-        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={onClose}>{tx("Cancel")}</Button>
       </div>
       {createMutation.error && (
         <p className="text-sm text-destructive">
@@ -336,7 +329,7 @@ function EditProductRow({
     onSuccess: () => {
       utils.inventory.list.invalidate();
       onClose();
-      toast.success("Product updated");
+      toast.success(tx("Product updated"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -453,9 +446,7 @@ function EditProductRow({
             onChange={(event) =>
               setForm({ ...form, taxable: event.target.checked })
             }
-          />
-          Taxable
-        </label>
+          />{tx("Taxable")}</label>
       </td>
       <td className="px-4 py-2">
         <Input
@@ -494,7 +485,7 @@ function EditProductRow({
             maxLength={INVENTORY_PRODUCT_LOT_NUMBER_MAX_LENGTH}
             onChange={(e) => setForm({ ...form, lotNumber: e.target.value })}
             className="h-8 text-sm"
-            placeholder="Lot"
+            placeholder={tx("Lot")}
           />
           <Input
             type="date"
@@ -519,7 +510,7 @@ function EditProductRow({
             size="sm"
             variant="ghost"
             className="h-7 w-7 p-0"
-            aria-label="Save product"
+            aria-label={tx("Save product")}
             onClick={handleSave}
             disabled={!canSave || updateMutation.isPending}
           >
@@ -557,7 +548,7 @@ function StartTrackingPopover({
     onSuccess: async () => {
       await utils.inventory.list.invalidate();
       onClose();
-      toast.success("Stock tracking started");
+      toast.success(tx("Stock tracking started"));
     },
     onError: (error) => toast.error(error.message),
   });
@@ -567,15 +558,10 @@ function StartTrackingPopover({
 
   return (
     <div className="absolute right-0 top-9 z-20 w-72 rounded-lg border border-border bg-popover p-4 shadow-lg">
-      <p className="text-sm font-medium">Start tracking {productName}</p>
-      <p className="mt-1 text-xs text-muted-foreground">
-        Enter a reviewed opening quantity. Imported source stock and lots are
-        not assumed.
-      </p>
+      <p className="text-sm font-medium">{tx("Start tracking")}{" "}{productName}</p>
+      <p className="mt-1 text-xs text-muted-foreground">{tx("Enter a reviewed opening quantity. Imported source stock and lots are not assumed.")}</p>
       <div className="mt-3 grid grid-cols-2 gap-2">
-        <label className="text-xs">
-          Opening units
-          <Input
+        <label className="text-xs">{tx("Opening units")}<Input
             type="number"
             min={0}
             step="0.001"
@@ -586,9 +572,7 @@ function StartTrackingPopover({
             className="mt-1"
           />
         </label>
-        <label className="text-xs">
-          Reorder point
-          <Input
+        <label className="text-xs">{tx("Reorder point")}<Input
             type="number"
             min={0}
             step={1}
@@ -601,9 +585,7 @@ function StartTrackingPopover({
         </label>
       </div>
       <div className="mt-3 flex justify-end gap-2">
-        <Button type="button" size="sm" variant="ghost" onClick={onClose}>
-          Cancel
-        </Button>
+        <Button type="button" size="sm" variant="ghost" onClick={onClose}>{tx("Cancel")}</Button>
         <Button
           type="button"
           size="sm"
@@ -611,9 +593,7 @@ function StartTrackingPopover({
           onClick={() =>
             mutation.mutate({ id: productId, stockQuantity, reorderPoint })
           }
-        >
-          Start tracking
-        </Button>
+        >{tx("Start tracking")}</Button>
       </div>
     </div>
   );
@@ -637,7 +617,7 @@ function StockAdjustPopover({
     onSuccess: () => {
       utils.inventory.list.invalidate();
       onClose();
-      toast.success("Stock adjusted");
+      toast.success(tx("Stock adjusted"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -677,26 +657,25 @@ function StockAdjustPopover({
 
   return (
     <div className="absolute right-0 top-full z-50 mt-1 w-64 rounded-lg border border-border bg-card p-3 shadow-lg">
-      <p className="text-xs font-medium text-muted-foreground mb-2">
-        Adjust stock: {productName}
+      <p className="text-xs font-medium text-muted-foreground mb-2">{tx("Adjust stock:")}{" "}{productName}
       </p>
       <Input
         type="number"
         min={INVENTORY_ADJUSTMENT_QUANTITY_MIN}
         max={INVENTORY_STOCK_QUANTITY_MAX}
         step="0.001"
-        aria-label="Stock adjustment quantity"
+        aria-label={tx("Stock adjustment quantity")}
         value={qty}
         onChange={(e) => setQty(Number(e.target.value))}
         className="h-8 text-sm mb-2"
-        placeholder="Quantity"
+        placeholder={tx("Quantity")}
       />
       <Input
         value={reason}
         maxLength={INVENTORY_ADJUSTMENT_REASON_MAX_LENGTH}
         onChange={(e) => setReason(e.target.value)}
         className="h-8 text-sm mb-2"
-        placeholder="Reason *"
+        placeholder={tx("Reason *")}
       />
       <div className="flex gap-2">
         <Button
@@ -706,8 +685,7 @@ function StockAdjustPopover({
           onClick={() => handleAdjust(1)}
           disabled={!canAddStock}
         >
-          <Plus className="h-3 w-3 mr-1" /> Add
-        </Button>
+          <Plus className="h-3 w-3 mr-1" />{" "}{tx("Add")}</Button>
         <Button
           size="sm"
           variant="outline"
@@ -715,17 +693,14 @@ function StockAdjustPopover({
           onClick={() => handleAdjust(-1)}
           disabled={!canRemoveStock}
         >
-          <Minus className="h-3 w-3 mr-1" /> Remove
-        </Button>
+          <Minus className="h-3 w-3 mr-1" />{" "}{tx("Remove")}</Button>
       </div>
       <Button
         size="sm"
         variant="ghost"
         className="mt-2 w-full h-7 text-xs"
         onClick={onClose}
-      >
-        Cancel
-      </Button>
+      >{tx("Cancel")}</Button>
       {adjustMutation.error && (
         <p className="text-xs text-destructive mt-1">
           {adjustMutation.error.message}
@@ -743,7 +718,7 @@ function AddSupplierForm({ onClose }: { onClose: () => void }) {
     onSuccess: () => {
       utils.inventory.listSuppliers.invalidate();
       onClose();
-      toast.success("Supplier added");
+      toast.success(tx("Supplier added"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -794,37 +769,37 @@ function AddSupplierForm({ onClose }: { onClose: () => void }) {
       onSubmit={handleSubmit}
       className="mt-4 rounded-lg border border-border bg-card p-4 space-y-3"
     >
-      <h3 className="font-medium text-sm">Add Supplier</h3>
+      <h3 className="font-medium text-sm">{tx("Add Supplier")}</h3>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         <Input
-          placeholder="Name *"
+          placeholder={tx("Name *")}
           value={form.name}
           maxLength={INVENTORY_SUPPLIER_NAME_MAX_LENGTH}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
           required
         />
         <Input
-          placeholder="Email"
+          placeholder={tx("Email")}
           type="email"
           value={form.contactEmail}
           maxLength={INVENTORY_SUPPLIER_EMAIL_MAX_LENGTH}
           onChange={(e) => setForm({ ...form, contactEmail: e.target.value })}
         />
         <Input
-          placeholder="Phone"
+          placeholder={tx("Phone")}
           value={form.phone}
           maxLength={INVENTORY_SUPPLIER_PHONE_MAX_LENGTH}
           onChange={(e) => setForm({ ...form, phone: e.target.value })}
         />
         <Input
-          placeholder="Address"
+          placeholder={tx("Address")}
           value={form.address}
           maxLength={INVENTORY_SUPPLIER_ADDRESS_MAX_LENGTH}
           onChange={(e) => setForm({ ...form, address: e.target.value })}
           className="col-span-2"
         />
         <Input
-          placeholder="Notes"
+          placeholder={tx("Notes")}
           value={form.notes}
           maxLength={INVENTORY_SUPPLIER_NOTES_MAX_LENGTH}
           onChange={(e) => setForm({ ...form, notes: e.target.value })}
@@ -836,11 +811,9 @@ function AddSupplierForm({ onClose }: { onClose: () => void }) {
           size="sm"
           disabled={!canSubmit || createMutation.isPending}
         >
-          {createMutation.isPending ? "Adding..." : "Add Supplier"}
+          {createMutation.isPending ? tx("Adding...") : tx("Add Supplier")}
         </Button>
-        <Button type="button" variant="outline" size="sm" onClick={onClose}>
-          Cancel
-        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={onClose}>{tx("Cancel")}</Button>
       </div>
       {createMutation.error && (
         <p className="text-sm text-destructive">
@@ -872,7 +845,7 @@ function EditSupplierRow({
     onSuccess: () => {
       utils.inventory.listSuppliers.invalidate();
       onClose();
-      toast.success("Supplier updated");
+      toast.success(tx("Supplier updated"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -972,7 +945,7 @@ function EditSupplierRow({
             className="h-7 w-7 p-0"
             onClick={handleSave}
             disabled={!canSave || updateMutation.isPending}
-            title="Save supplier"
+            title={tx("Save supplier")}
           >
             <Check className="h-4 w-4" />
           </Button>
@@ -981,7 +954,7 @@ function EditSupplierRow({
             variant="ghost"
             className="h-7 w-7 p-0"
             onClick={onClose}
-            title="Cancel"
+            title={tx("Cancel")}
           >
             <X className="h-4 w-4" />
           </Button>
@@ -1044,10 +1017,8 @@ export default function InventoryPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-heading text-xl font-semibold">Inventory</h2>
-          <p className="text-sm text-muted-foreground">
-            Products, stock management, and suppliers
-          </p>
+          <h2 className="font-heading text-xl font-semibold">{tx("Inventory")}</h2>
+          <p className="text-sm text-muted-foreground">{tx("Products, stock management, and suppliers")}</p>
         </div>
       </div>
 
@@ -1062,9 +1033,7 @@ export default function InventoryPage() {
               : "border-transparent text-muted-foreground hover:text-foreground"
           )}
         >
-          <Package className="h-4 w-4" />
-          Products
-        </button>
+          <Package className="h-4 w-4" />{tx("Products")}</button>
         <button
           onClick={() => setTab("suppliers")}
           className={cn(
@@ -1074,9 +1043,7 @@ export default function InventoryPage() {
               : "border-transparent text-muted-foreground hover:text-foreground"
           )}
         >
-          <Truck className="h-4 w-4" />
-          Suppliers
-        </button>
+          <Truck className="h-4 w-4" />{tx("Suppliers")}</button>
       </div>
 
       {/* Products Tab */}
@@ -1086,7 +1053,7 @@ export default function InventoryPage() {
             <div className="relative w-full min-w-48 flex-1 sm:max-w-sm">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
-                placeholder="Search by name or SKU..."
+                placeholder={tx("Search by name or SKU...")}
                 value={search}
                 maxLength={INVENTORY_PRODUCT_SEARCH_MAX_LENGTH}
                 onChange={(e) => setSearch(e.target.value)}
@@ -1117,8 +1084,7 @@ export default function InventoryPage() {
             </select>
             {productsQuery.data && (
               <p className="text-sm text-muted-foreground">
-                {productsQuery.data.total} product
-                {productsQuery.data.total !== 1 ? "s" : ""}
+                {productsQuery.data.total}{" "}{tx("product")}{productsQuery.data.total !== 1 ? tx("s") : ""}
               </p>
             )}
             {canManageInventory && (
@@ -1127,8 +1093,7 @@ export default function InventoryPage() {
                 onClick={() => setShowAddProduct(true)}
                 className="ml-auto"
               >
-                <Plus className="h-4 w-4 mr-1" /> Add Product
-              </Button>
+                <Plus className="h-4 w-4 mr-1" />{" "}{tx("Add Product")}</Button>
             )}
           </div>
 
@@ -1147,9 +1112,7 @@ export default function InventoryPage() {
                 )}
               >
                 <span className="flex items-center gap-2 text-muted-foreground">
-                  <AlertTriangle className="h-4 w-4 text-amber-600" />
-                  Needs attention
-                </span>
+                  <AlertTriangle className="h-4 w-4 text-amber-600" />{tx("Needs attention")}</span>
                 <span className="mt-1 block text-xl font-semibold">
                   {productsQuery.data.alertCounts.attention}
                 </span>
@@ -1162,7 +1125,7 @@ export default function InventoryPage() {
                   alertFilter === "low_stock" && "border-primary bg-primary/5"
                 )}
               >
-                <span className="text-muted-foreground">Low stock</span>
+                <span className="text-muted-foreground">{tx("Low stock")}</span>
                 <span className="mt-1 block text-xl font-semibold">
                   {productsQuery.data.alertCounts.lowStock}
                 </span>
@@ -1175,7 +1138,7 @@ export default function InventoryPage() {
                   alertFilter === "expired" && "border-primary bg-primary/5"
                 )}
               >
-                <span className="text-muted-foreground">Expired</span>
+                <span className="text-muted-foreground">{tx("Expired")}</span>
                 <span className="mt-1 block text-xl font-semibold">
                   {productsQuery.data.alertCounts.expired}
                 </span>
@@ -1189,7 +1152,7 @@ export default function InventoryPage() {
                     "border-primary bg-primary/5"
                 )}
               >
-                <span className="text-muted-foreground">Expiring soon</span>
+                <span className="text-muted-foreground">{tx("Expiring soon")}</span>
                 <span className="mt-1 block text-xl font-semibold">
                   {productsQuery.data.alertCounts.expiringSoon}
                 </span>
@@ -1200,50 +1163,28 @@ export default function InventoryPage() {
           {productsQuery.error || productsMissing ? (
             <div className="mt-4 rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
               {productsQuery.error?.message ??
-                "Unable to load inventory products. Please retry."}
+                tx("Unable to load inventory products. Please retry.")}
             </div>
           ) : productsQuery.isLoading ? (
-            <div className="mt-6 text-center text-muted-foreground">
-              Loading...
-            </div>
+            <div className="mt-6 text-center text-muted-foreground">{tx("Loading...")}</div>
           ) : productsQuery.data && productsQuery.data.items.length > 0 ? (
             <TableScroll className="mt-4 rounded-lg border border-border">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border bg-muted/50">
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Name
-                    </th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Name")}</th>
                     <th className="px-4 py-3 text-left font-medium text-muted-foreground">
                       SKU
                     </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Category
-                    </th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-                      Price / unit
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Tax
-                    </th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-                      Cost
-                    </th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-                      Stock units
-                    </th>
-                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-                      Reorder Pt
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Lot / Expiry
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Status
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Actions
-                    </th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Category")}</th>
+                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">{tx("Price / unit")}</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Tax")}</th>
+                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">{tx("Cost")}</th>
+                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">{tx("Stock units")}</th>
+                    <th className="px-4 py-3 text-right font-medium text-muted-foreground">{tx("Reorder Pt")}</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Lot / Expiry")}</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Status")}</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Actions")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1281,7 +1222,7 @@ export default function InventoryPage() {
                           {formatCurrency(product.unitPrice)}
                         </td>
                         <td className="px-4 py-3 text-muted-foreground">
-                          {product.taxable ? "Taxable" : "Not taxable"}
+                          {product.taxable ? tx("Taxable") : tx("Not taxable")}
                         </td>
                         <td className="px-4 py-3 text-right tabular-nums text-muted-foreground">
                           {product.costPrice
@@ -1303,8 +1244,7 @@ export default function InventoryPage() {
                               : "\u2014"}
                           </span>
                           {product.expirationDate && (
-                            <span className="block text-xs">
-                              Exp {formatDateOnly(product.expirationDate)}
+                            <span className="block text-xs">{tx("Exp")}{" "}{formatDateOnly(product.expirationDate)}
                             </span>
                           )}
                         </td>
@@ -1338,7 +1278,7 @@ export default function InventoryPage() {
                                 variant="ghost"
                                 className="h-7 w-7 p-0"
                                 onClick={() => setEditingId(product.id)}
-                                title="Edit"
+                                title={tx("Edit")}
                               >
                                 <Pencil className="h-3.5 w-3.5" />
                               </Button>
@@ -1355,8 +1295,8 @@ export default function InventoryPage() {
                                 }
                                 title={
                                   product.inventoryTracked
-                                    ? "Adjust stock"
-                                    : "Start stock tracking"
+                                    ? tx("Adjust stock")
+                                    : tx("Start stock tracking")
                                 }
                                 aria-label={
                                   product.inventoryTracked
@@ -1384,9 +1324,7 @@ export default function InventoryPage() {
                               )}
                             </div>
                           ) : (
-                            <span className="text-xs text-muted-foreground">
-                              Read-only
-                            </span>
+                            <span className="text-xs text-muted-foreground">{tx("Read-only")}</span>
                           )}
                         </td>
                       </tr>
@@ -1401,17 +1339,17 @@ export default function InventoryPage() {
               icon={Package}
               title={
                 alertFilter !== "all"
-                  ? "No products match this alert filter"
+                  ? tx("No products match this alert filter")
                   : search || category
-                    ? "No products match your filters"
-                    : "No products yet"
+                    ? tx("No products match your filters")
+                    : tx("No products yet")
               }
               description={
                 alertFilter !== "all"
-                  ? "Clear the alert filter to see all inventory items."
+                  ? tx("Clear the alert filter to see all inventory items.")
                   : search || category
-                    ? "Clear the search or category filter to broaden the list."
-                    : "Add medications, supplies, food, and other inventory before dispensing or invoicing stock-backed items."
+                    ? tx("Clear the search or category filter to broaden the list.")
+                    : tx("Add medications, supplies, food, and other inventory before dispensing or invoicing stock-backed items.")
               }
               action={
                 canManageInventory &&
@@ -1419,7 +1357,7 @@ export default function InventoryPage() {
                 !search &&
                 !category
                   ? {
-                      label: "Add first product",
+                      label: tx("Add first product"),
                       onClick: () => setShowAddProduct(true),
                       icon: Plus,
                     }
@@ -1436,8 +1374,7 @@ export default function InventoryPage() {
           <div className="mt-4 flex items-center justify-between">
             {suppliersQuery.data && (
               <p className="text-sm text-muted-foreground">
-                {suppliersQuery.data.length} supplier
-                {suppliersQuery.data.length !== 1 ? "s" : ""}
+                {suppliersQuery.data.length}{" "}{tx("supplier")}{suppliersQuery.data.length !== 1 ? tx("s") : ""}
               </p>
             )}
             {canManageInventory && (
@@ -1446,8 +1383,7 @@ export default function InventoryPage() {
                 onClick={() => setShowAddSupplier(true)}
                 className="ml-auto"
               >
-                <Plus className="h-4 w-4 mr-1" /> Add Supplier
-              </Button>
+                <Plus className="h-4 w-4 mr-1" />{" "}{tx("Add Supplier")}</Button>
             )}
           </div>
 
@@ -1458,35 +1394,21 @@ export default function InventoryPage() {
           {suppliersQuery.error || suppliersMissing ? (
             <div className="mt-4 rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
               {suppliersQuery.error?.message ??
-                "Unable to load inventory suppliers. Please retry."}
+                tx("Unable to load inventory suppliers. Please retry.")}
             </div>
           ) : suppliersQuery.isLoading ? (
-            <div className="mt-6 text-center text-muted-foreground">
-              Loading...
-            </div>
+            <div className="mt-6 text-center text-muted-foreground">{tx("Loading...")}</div>
           ) : suppliersQuery.data && suppliersQuery.data.length > 0 ? (
             <TableScroll className="mt-4 rounded-lg border border-border">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border bg-muted/50">
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Name
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Email
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Phone
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Address
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Notes
-                    </th>
-                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                      Actions
-                    </th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Name")}</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Email")}</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Phone")}</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Address")}</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Notes")}</th>
+                    <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Actions")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1534,14 +1456,12 @@ export default function InventoryPage() {
                               variant="ghost"
                               className="h-7 w-7 p-0"
                               onClick={() => setEditingSupplierId(supplier.id)}
-                              title="Edit supplier"
+                              title={tx("Edit supplier")}
                             >
                               <Pencil className="h-3.5 w-3.5" />
                             </Button>
                           ) : (
-                            <span className="text-xs text-muted-foreground">
-                              Read-only
-                            </span>
+                            <span className="text-xs text-muted-foreground">{tx("Read-only")}</span>
                           )}
                         </td>
                       </tr>
@@ -1554,12 +1474,12 @@ export default function InventoryPage() {
             <EmptyState
               className="mt-6"
               icon={Truck}
-              title="No suppliers yet"
-              description="Add supplier contact details so reorder workflows have the right vendor information at hand."
+              title={tx("No suppliers yet")}
+              description={tx("Add supplier contact details so reorder workflows have the right vendor information at hand.")}
               action={
                 canManageInventory
                   ? {
-                      label: "Add first supplier",
+                      label: tx("Add first supplier"),
                       onClick: () => setShowAddSupplier(true),
                       icon: Plus,
                     }

@@ -15,25 +15,26 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TrialBadge } from "@/components/layout/trial-badge";
+import { tx } from "@/lib/i18n";
 
 const routeLabels: Record<string, string> = {
-  "/": "Dashboard",
-  "/patients": "Patients",
-  "/clients": "Clients",
-  "/schedule": "Schedule",
-  "/records": "Records",
-  "/lab-results": "Lab Inbox",
-  "/billing": "Billing",
-  "/inventory": "Inventory",
-  "/inbox": "Inbox",
-  "/recalls": "Vaccination Recalls",
-  "/care-reminders": "Care Reminders",
-  "/migration-archive": "Imported History",
-  "/whiteboard": "Whiteboard",
-  "/agent": "Agent",
-  "/controlled-substances": "Controlled Substances",
-  "/reports": "Reports",
-  "/settings": "Settings",
+  "/": tx("Dashboard"),
+  "/patients": tx("Patients"),
+  "/clients": tx("Clients"),
+  "/schedule": tx("Schedule"),
+  "/records": tx("Records"),
+  "/lab-results": tx("Lab Inbox"),
+  "/billing": tx("Billing"),
+  "/inventory": tx("Inventory"),
+  "/inbox": tx("Inbox"),
+  "/recalls": tx("Vaccination Recalls"),
+  "/care-reminders": tx("Care Reminders"),
+  "/migration-archive": tx("Imported History"),
+  "/whiteboard": tx("Whiteboard"),
+  "/agent": tx("Agent"),
+  "/controlled-substances": tx("Controlled Substances"),
+  "/reports": tx("Reports"),
+  "/settings": tx("Settings"),
 };
 
 type UserRole =
@@ -52,25 +53,25 @@ type NewAction = {
 
 const NEW_ACTIONS: NewAction[] = [
   {
-    label: "New Client",
+    label: tx("New Client"),
     href: "/clients/new",
     Icon: Users,
     roles: ["admin", "veterinarian", "technician", "front_desk"],
   },
   {
-    label: "New Patient",
+    label: tx("New Patient"),
     href: "/patients/new",
     Icon: PawPrint,
     roles: ["admin", "veterinarian", "technician", "front_desk"],
   },
   {
-    label: "New Appointment",
+    label: tx("New Appointment"),
     href: "/schedule",
     Icon: Calendar,
     roles: ["admin", "veterinarian", "front_desk"],
   },
   {
-    label: "New Invoice",
+    label: tx("New Invoice"),
     href: "/billing/new",
     Icon: Receipt,
     roles: ["admin", "front_desk"],
@@ -123,7 +124,7 @@ export function TopBar({
         <button
           type="button"
           onClick={onMenuOpen}
-          aria-label="Open navigation"
+          aria-label={tx("Open navigation")}
           className="inline-flex h-9 w-9 items-center justify-center rounded-md text-muted-foreground hover:bg-accent hover:text-foreground lg:hidden"
         >
           <Menu className="h-5 w-5" />
@@ -139,11 +140,11 @@ export function TopBar({
         <button
           type="button"
           onClick={onSearchOpen}
-          aria-label="Open search"
+          aria-label={tx("Open search")}
           className="flex h-9 items-center gap-2 rounded-md border border-input bg-background px-2 text-sm text-muted-foreground transition-colors hover:bg-accent sm:w-64 sm:px-3 md:w-80"
         >
           <Search className="h-4 w-4 shrink-0" />
-          <span className="hidden sm:inline">Search...</span>
+          <span className="hidden sm:inline">{tx("Search...")}</span>
           <kbd className="ml-auto hidden rounded border border-border bg-muted px-1.5 py-0.5 text-[10px] font-medium md:inline">
             ⌘K
           </kbd>
@@ -159,7 +160,7 @@ export function TopBar({
               aria-expanded={newMenuOpen}
             >
               <Plus className="h-4 w-4" />
-              <span className="hidden sm:inline">New</span>
+              <span className="hidden sm:inline">{tx("New")}</span>
             </Button>
             {newMenuOpen && (
               <div

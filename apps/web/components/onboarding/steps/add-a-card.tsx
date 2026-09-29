@@ -6,6 +6,7 @@ import { CreditCard, ShieldCheck } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import type { StepHandle } from "../journey-types";
+import { tx } from "@/lib/i18n";
 
 /**
  * Optional step: add a card to lock in the plan. Never forced — Continue always
@@ -35,45 +36,32 @@ export function AddACardStep({
 
   return (
     <div className="space-y-5">
-      <p className="text-sm leading-6 text-slate-600">
-        This is optional. Your 14-day trial is fully featured and needs no card.
-        Add one whenever you are ready and your plan continues without a gap when
-        the trial ends.
-      </p>
+      <p className="text-sm leading-6 text-slate-600">{tx("This is optional. Your 14-day trial is fully featured and needs no card. Add one whenever you are ready and your plan continues without a gap when the trial ends.")}</p>
 
       <div className="rounded-lg border border-slate-200 bg-slate-50/60 p-4">
         <div className="flex items-start justify-between gap-4">
-          <span className="text-sm text-slate-600">OpenVPM Cloud</span>
+          <span className="text-sm text-slate-600">{tx("OpenVPM Cloud")}</span>
           <div className="text-right">
             <p className="font-heading text-lg font-bold text-slate-900">
               ${unitPrice}
               <span className="text-sm font-normal text-slate-500">/month</span>
             </p>
-            <p className="text-sm font-medium text-emerald-700">
-              or ${annualPrice}/year
+            <p className="text-sm font-medium text-emerald-700">{tx("or $")}{annualPrice}/year
             </p>
           </div>
         </div>
-        <p className="mt-1 text-xs text-slate-500">
-          Unlimited staff included. Billed only after your free trial.
-        </p>
+        <p className="mt-1 text-xs text-slate-500">{tx("Unlimited staff included. Billed only after your free trial.")}</p>
       </div>
 
       <div className="flex items-center gap-2 text-xs text-slate-500">
-        <ShieldCheck className="h-4 w-4 text-emerald-600" />
-        Payments are handled securely by Stripe. Cancel anytime.
-      </div>
+        <ShieldCheck className="h-4 w-4 text-emerald-600" />{tx("Payments are handled securely by Stripe. Cancel anytime.")}</div>
 
       {alreadyHasCard ? (
-        <p className="text-sm font-medium text-emerald-700">
-          A card is already on file. You are all set.
-        </p>
+        <p className="text-sm font-medium text-emerald-700">{tx("A card is already on file. You are all set.")}</p>
       ) : (
         <Button asChild type="button" variant="outline">
           <Link href="/settings?tab=billing">
-            <CreditCard className="mr-2 h-4 w-4" />
-            Choose billing plan
-          </Link>
+            <CreditCard className="mr-2 h-4 w-4" />{tx("Choose billing plan")}</Link>
         </Button>
       )}
     </div>

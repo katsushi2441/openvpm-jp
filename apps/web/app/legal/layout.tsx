@@ -1,9 +1,10 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { tx } from "@/lib/i18n";
 
 export const metadata: Metadata = {
-  title: "Legal - OpenVPM",
-  description: "OpenVPM terms of service and privacy policy",
+  title: tx("Legal - OpenVPM"),
+  description: tx("OpenVPM terms of service and privacy policy"),
 };
 
 export default function LegalLayout({
@@ -15,16 +16,10 @@ export default function LegalLayout({
     <div className="min-h-screen bg-surface">
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-4">
-          <Link href="/" className="font-heading text-lg font-semibold">
-            OpenVPM
-          </Link>
+          <Link href="/" className="font-heading text-lg font-semibold">{tx("OpenVPM")}</Link>
           <nav className="flex gap-4 text-sm text-muted-foreground">
-            <Link href="/legal/terms" className="hover:text-foreground">
-              Terms
-            </Link>
-            <Link href="/legal/privacy" className="hover:text-foreground">
-              Privacy
-            </Link>
+            <Link href="/legal/terms" className="hover:text-foreground">{tx("Terms")}</Link>
+            <Link href="/legal/privacy" className="hover:text-foreground">{tx("Privacy")}</Link>
           </nav>
         </div>
       </header>

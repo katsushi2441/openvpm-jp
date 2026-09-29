@@ -12,6 +12,7 @@ import {
   CONSENT_ELECTRONIC_SIGNATURE_INTENT,
   CONSENT_SIGNER_AUTHORITY_ATTESTATION,
 } from "@/lib/consult/consent-template";
+import { tx } from "@/lib/i18n";
 
 const EXPIRED_MESSAGE =
   "This link has expired. Ask the front desk for a new code.";
@@ -151,22 +152,20 @@ function SignaturePad({
       <canvas
         ref={canvasRef}
         className="h-40 w-full touch-none rounded-lg border border-gray-300 bg-white"
-        aria-label="Signature area. Draw your signature here."
+        aria-label={tx("Signature area. Draw your signature here.")}
         onPointerDown={handleDown}
         onPointerMove={handleMove}
         onPointerUp={handleUp}
         onPointerCancel={handleUp}
       />
       <div className="mt-2 flex items-center justify-between">
-        <p className="text-xs text-gray-500">Sign above with your finger.</p>
+        <p className="text-xs text-gray-500">{tx("Sign above with your finger.")}</p>
         <button
           type="button"
           onClick={handleClear}
           className="inline-flex items-center gap-1 text-xs font-medium text-teal-700"
         >
-          <Eraser className="h-3.5 w-3.5" />
-          Clear
-        </button>
+          <Eraser className="h-3.5 w-3.5" />{tx("Clear")}</button>
       </div>
     </div>
   );
@@ -324,7 +323,7 @@ export function SignClient({ token }: { token: string }) {
     return (
       <div className="flex flex-col items-center gap-3 py-16 text-gray-500">
         <Loader2 className="h-6 w-6 animate-spin" />
-        <p className="text-sm">Loading the form…</p>
+        <p className="text-sm">{tx("Loading the form…")}</p>
       </div>
     );
   }
@@ -351,10 +350,8 @@ export function SignClient({ token }: { token: string }) {
     return (
       <div className="flex flex-col items-center gap-3 py-16 text-center">
         <CheckCircle2 className="h-10 w-10 text-teal-600" />
-        <h1 className="text-lg font-semibold text-gray-900">All signed</h1>
-        <p className="text-sm text-gray-600">
-          Thank you. The clinic has your signed form.
-        </p>
+        <h1 className="text-lg font-semibold text-gray-900">{tx("All signed")}</h1>
+        <p className="text-sm text-gray-600">{tx("Thank you. The clinic has your signed form.")}</p>
         {state.receiptToken ? (
           <>
             <button
@@ -367,18 +364,11 @@ export function SignClient({ token }: { token: string }) {
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
                 <Download className="h-4 w-4" />
-              )}
-              Download your signed PDF
-            </button>
-            <p className="max-w-sm text-xs text-gray-500">
-              This private download is available briefly on this device. Save it
-              now if you would like to keep a copy.
-            </p>
+              )}{tx("Download your signed PDF")}</button>
+            <p className="max-w-sm text-xs text-gray-500">{tx("This private download is available briefly on this device. Save it now if you would like to keep a copy.")}</p>
           </>
         ) : (
-          <p className="text-xs text-gray-500">
-            You can close this page. Ask the clinic if you need a copy.
-          </p>
+          <p className="text-xs text-gray-500">{tx("You can close this page. Ask the clinic if you need a copy.")}</p>
         )}
         {downloadError && (
           <p role="alert" className="text-sm text-red-600">
@@ -393,11 +383,8 @@ export function SignClient({ token }: { token: string }) {
     return (
       <div className="flex flex-col items-center gap-3 py-16 text-center">
         <CheckCircle2 className="h-10 w-10 text-teal-600" />
-        <h1 className="text-lg font-semibold text-gray-900">All signed</h1>
-        <p className="text-sm text-gray-600">
-          Thank you. The clinic has your signed form. Ask the clinic if you need
-          another copy.
-        </p>
+        <h1 className="text-lg font-semibold text-gray-900">{tx("All signed")}</h1>
+        <p className="text-sm text-gray-600">{tx("Thank you. The clinic has your signed form. Ask the clinic if you need another copy.")}</p>
       </div>
     );
   }
@@ -406,13 +393,8 @@ export function SignClient({ token }: { token: string }) {
     return (
       <div className="flex flex-col items-center gap-4 py-16 text-center">
         <CheckCircle2 className="h-10 w-10 text-teal-600" />
-        <h1 className="text-lg font-semibold text-gray-900">
-          Your signature is safe
-        </h1>
-        <p className="max-w-sm text-sm text-gray-600">
-          The clinic has your exact signature. Finish saving the signed document
-          without drawing it again.
-        </p>
+        <h1 className="text-lg font-semibold text-gray-900">{tx("Your signature is safe")}</h1>
+        <p className="max-w-sm text-sm text-gray-600">{tx("The clinic has your exact signature. Finish saving the signed document without drawing it again.")}</p>
         {submitError && (
           <p className="flex items-center gap-2 text-sm text-red-600">
             <AlertCircle className="h-4 w-4 shrink-0" />
@@ -436,7 +418,7 @@ export function SignClient({ token }: { token: string }) {
           onClick={() => void handleResume()}
           className="w-full max-w-sm rounded-lg bg-teal-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {submitting ? "Finishing…" : "Finish saving"}
+          {submitting ? tx("Finishing…") : tx("Finish saving")}
         </button>
       </div>
     );
@@ -455,7 +437,7 @@ export function SignClient({ token }: { token: string }) {
       <div>
         <h1 className="text-lg font-semibold text-gray-900">{consent.title}</h1>
         <p className="mt-1 text-sm text-gray-500">
-          {consent.practiceName} · For {consent.patientName}
+          {consent.practiceName}{" "}{tx("· For")}{" "}{consent.patientName}
         </p>
       </div>
 
@@ -467,9 +449,7 @@ export function SignClient({ token }: { token: string }) {
         <label
           htmlFor="signer-name"
           className="mb-1 block text-sm font-medium text-gray-700"
-        >
-          Your full name
-        </label>
+        >{tx("Your full name")}</label>
         <input
           id="signer-name"
           type="text"
@@ -478,14 +458,12 @@ export function SignClient({ token }: { token: string }) {
           value={signerName}
           onChange={(e) => setSignerName(e.target.value)}
           className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
-          placeholder="First and last name"
+          placeholder={tx("First and last name")}
         />
       </div>
 
       <fieldset className="space-y-3">
-        <legend className="text-sm font-medium text-gray-700">
-          Choose how to sign
-        </legend>
+        <legend className="text-sm font-medium text-gray-700">{tx("Choose how to sign")}</legend>
         <div className="flex gap-4" role="radiogroup">
           <label className="flex items-center gap-2 text-sm text-gray-700">
             <input
@@ -494,9 +472,7 @@ export function SignClient({ token }: { token: string }) {
               value="drawn"
               checked={signatureMethod === "drawn"}
               onChange={() => setSignatureMethod("drawn")}
-            />
-            Draw signature
-          </label>
+            />{tx("Draw signature")}</label>
           <label className="flex items-center gap-2 text-sm text-gray-700">
             <input
               type="radio"
@@ -504,9 +480,7 @@ export function SignClient({ token }: { token: string }) {
               value="typed"
               checked={signatureMethod === "typed"}
               onChange={() => setSignatureMethod("typed")}
-            />
-            Type signature
-          </label>
+            />{tx("Type signature")}</label>
         </div>
         {signatureMethod === "drawn" ? (
           <SignaturePad onChange={setSignature} />
@@ -515,9 +489,7 @@ export function SignClient({ token }: { token: string }) {
             <label
               htmlFor="typed-signature"
               className="mb-1 block text-sm font-medium text-gray-700"
-            >
-              Type your signature
-            </label>
+            >{tx("Type your signature")}</label>
             <input
               id="typed-signature"
               type="text"
@@ -526,11 +498,9 @@ export function SignClient({ token }: { token: string }) {
               value={typedSignature}
               onChange={(event) => setTypedSignature(event.target.value)}
               className="w-full rounded-lg border border-gray-300 px-3 py-2 font-serif text-lg italic focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
-              placeholder="First and last name"
+              placeholder={tx("First and last name")}
             />
-            <p className="mt-1 text-xs text-gray-500">
-              Your typed name will be saved as the signature image on the PDF.
-            </p>
+            <p className="mt-1 text-xs text-gray-500">{tx("Your typed name will be saved as the signature image on the PDF.")}</p>
           </div>
         )}
       </fieldset>
@@ -560,11 +530,9 @@ export function SignClient({ token }: { token: string }) {
       >
         {submitting ? (
           <span className="inline-flex items-center gap-2">
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Signing…
-          </span>
+            <Loader2 className="h-4 w-4 animate-spin" />{tx("Signing…")}</span>
         ) : (
-          "Agree and sign"
+          tx("Agree and sign")
         )}
       </button>
 

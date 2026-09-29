@@ -24,6 +24,7 @@ import {
 } from "@/lib/clients/policy";
 import { normalizeE164 } from "@/lib/messaging/phone";
 import { SMS_CONSENT_DISCLOSURE } from "@/lib/messaging/consent";
+import { tx } from "@/lib/i18n";
 
 function canManageClientFormRole(role?: string | null): boolean {
   return (
@@ -37,9 +38,7 @@ function canManageClientFormRole(role?: string | null): boolean {
 function NewClientPageFallback() {
   return (
     <div className="flex items-center justify-center gap-2 rounded-lg border border-border bg-card p-8 text-sm text-muted-foreground">
-      <Loader2 className="h-4 w-4 animate-spin" />
-      Checking client access...
-    </div>
+      <Loader2 className="h-4 w-4 animate-spin" />{tx("Checking client access...")}</div>
   );
 }
 
@@ -70,15 +69,13 @@ function NewClientPageContent() {
           onClick={() => router.push("/clients")}
           className="mb-4"
         >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Clients
-        </Button>
+          <ArrowLeft className="mr-2 h-4 w-4" />{tx("Back to Clients")}</Button>
         <EmptyState
           icon={AlertCircle}
-          title="Client actions are read-only"
-          description="Only staff roles with client write access can create clients."
+          title={tx("Client actions are read-only")}
+          description={tx("Only staff roles with client write access can create clients.")}
           action={{
-            label: "Back to Clients",
+            label: tx("Back to Clients"),
             onClick: () => router.push("/clients"),
           }}
         />
@@ -110,7 +107,7 @@ function NewClientForm({ firstClinicDay }: { firstClinicDay: boolean }) {
   const createClient = trpc.clients.create.useMutation({
     onSuccess: async (client) => {
       await utils.clients.list.invalidate();
-      toast.success("Client created");
+      toast.success(tx("Client created"));
       if (firstClinicDay) {
         const ownerName = `${client.firstName} ${client.lastName}`;
         router.push(
@@ -192,15 +189,13 @@ function NewClientForm({ firstClinicDay }: { firstClinicDay: boolean }) {
         onClick={() => router.push("/clients")}
         className="mb-4"
       >
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Clients
-      </Button>
+        <ArrowLeft className="mr-2 h-4 w-4" />{tx("Back to Clients")}</Button>
 
-      <h2 className="font-heading text-xl font-semibold">New Client</h2>
+      <h2 className="font-heading text-xl font-semibold">{tx("New Client")}</h2>
       <p className="mt-1 text-sm text-muted-foreground">
         {firstClinicDay
-          ? "First clinic day, step 1 of 3: add one real owner. Their pet is next."
-          : "Add a new client to your practice"}
+          ? tx("First clinic day, step 1 of 3: add one real owner. Their pet is next.")
+          : tx("Add a new client to your practice")}
       </p>
 
       {error && (
@@ -212,28 +207,24 @@ function NewClientForm({ firstClinicDay }: { firstClinicDay: boolean }) {
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="text-sm font-medium" htmlFor="firstName">
-              First Name *
-            </label>
+            <label className="text-sm font-medium" htmlFor="firstName">{tx("First Name *")}</label>
             <Input
               id="firstName"
               value={form.firstName}
               onChange={(e) => updateField("firstName", e.target.value)}
-              placeholder="First name"
+              placeholder={tx("First name")}
               className="mt-1"
               maxLength={CLIENT_NAME_MAX_LENGTH}
               required
             />
           </div>
           <div>
-            <label className="text-sm font-medium" htmlFor="lastName">
-              Last Name *
-            </label>
+            <label className="text-sm font-medium" htmlFor="lastName">{tx("Last Name *")}</label>
             <Input
               id="lastName"
               value={form.lastName}
               onChange={(e) => updateField("lastName", e.target.value)}
-              placeholder="Last name"
+              placeholder={tx("Last name")}
               className="mt-1"
               maxLength={CLIENT_NAME_MAX_LENGTH}
               required
@@ -243,9 +234,7 @@ function NewClientForm({ firstClinicDay }: { firstClinicDay: boolean }) {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="text-sm font-medium" htmlFor="email">
-              Email
-            </label>
+            <label className="text-sm font-medium" htmlFor="email">{tx("Email")}</label>
             <Input
               id="email"
               type="email"
@@ -257,9 +246,7 @@ function NewClientForm({ firstClinicDay }: { firstClinicDay: boolean }) {
             />
           </div>
           <div>
-            <label className="text-sm font-medium" htmlFor="phone">
-              Phone
-            </label>
+            <label className="text-sm font-medium" htmlFor="phone">{tx("Phone")}</label>
             <Input
               id="phone"
               value={form.phone}
@@ -275,9 +262,7 @@ function NewClientForm({ firstClinicDay }: { firstClinicDay: boolean }) {
           <label
             className="text-sm font-medium"
             htmlFor="preferredContactMethod"
-          >
-            Preferred contact for reminders
-          </label>
+          >{tx("Preferred contact for reminders")}</label>
           <select
             id="preferredContactMethod"
             value={preferredContactMethod}
@@ -288,21 +273,14 @@ function NewClientForm({ firstClinicDay }: { firstClinicDay: boolean }) {
             }
             className="mt-2 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
           >
-            <option value="phone">Phone call</option>
-            <option value="email">Email</option>
-            <option value="sms">Text message</option>
-            <option value="portal">Client portal</option>
+            <option value="phone">{tx("Phone call")}</option>
+            <option value="email">{tx("Email")}</option>
+            <option value="sms">{tx("Text message")}</option>
+            <option value="portal">{tx("Client portal")}</option>
           </select>
-          <p className="mt-2 text-xs text-muted-foreground">
-            Text message uses SMS for appointment and vaccination reminders when
-            clinic texting is active. The client&apos;s permission below is
-            still required.
-          </p>
+          <p className="mt-2 text-xs text-muted-foreground">{tx("Text message uses SMS for appointment and vaccination reminders when clinic texting is active. The client's permission below is still required.")}</p>
           {preferredContactMethod === "sms" && !smsConsent ? (
-            <p className="mt-2 text-xs font-medium text-amber-700">
-              Read the disclosure below and confirm consent before saving text
-              reminders as the preference.
-            </p>
+            <p className="mt-2 text-xs font-medium text-amber-700">{tx("Read the disclosure below and confirm consent before saving text reminders as the preference.")}</p>
           ) : null}
         </div>
 
@@ -321,31 +299,24 @@ function NewClientForm({ firstClinicDay }: { firstClinicDay: boolean }) {
             className="mt-0.5"
           />
           <span>
-            <span className="font-medium">
-              I confirm the client explicitly consented to SMS
-            </span>
+            <span className="font-medium">{tx("I confirm the client explicitly consented to SMS")}</span>
             <span className="block text-xs text-muted-foreground">
               {SMS_CONSENT_DISCLOSURE.snapshot}
             </span>
-            <span className="mt-1 block text-xs text-muted-foreground">
-              Only check this after the client has read this disclosure or you
-              have read it to them.
-              {!smsPhoneValid
-                ? " Enter a valid mobile phone number to record consent."
+            <span className="mt-1 block text-xs text-muted-foreground">{tx("Only check this after the client has read this disclosure or you have read it to them.")}{!smsPhoneValid
+                ? tx(" Enter a valid mobile phone number to record consent.")
                 : ""}
             </span>
           </span>
         </label>
 
         <div>
-          <label className="text-sm font-medium" htmlFor="address">
-            Address
-          </label>
+          <label className="text-sm font-medium" htmlFor="address">{tx("Address")}</label>
           <Input
             id="address"
             value={form.address}
             onChange={(e) => updateField("address", e.target.value)}
-            placeholder="Street address"
+            placeholder={tx("Street address")}
             className="mt-1"
             maxLength={CLIENT_ADDRESS_MAX_LENGTH}
           />
@@ -353,40 +324,34 @@ function NewClientForm({ firstClinicDay }: { firstClinicDay: boolean }) {
 
         <div className="grid gap-4 sm:grid-cols-3">
           <div>
-            <label className="text-sm font-medium" htmlFor="city">
-              City
-            </label>
+            <label className="text-sm font-medium" htmlFor="city">{tx("City")}</label>
             <Input
               id="city"
               value={form.city}
               onChange={(e) => updateField("city", e.target.value)}
-              placeholder="City"
+              placeholder={tx("City")}
               className="mt-1"
               maxLength={CLIENT_CITY_MAX_LENGTH}
             />
           </div>
           <div>
-            <label className="text-sm font-medium" htmlFor="state">
-              State
-            </label>
+            <label className="text-sm font-medium" htmlFor="state">{tx("State")}</label>
             <Input
               id="state"
               value={form.state}
               onChange={(e) => updateField("state", e.target.value)}
-              placeholder="State"
+              placeholder={tx("State")}
               className="mt-1"
               maxLength={CLIENT_STATE_MAX_LENGTH}
             />
           </div>
           <div>
-            <label className="text-sm font-medium" htmlFor="zip">
-              Zip
-            </label>
+            <label className="text-sm font-medium" htmlFor="zip">{tx("Zip")}</label>
             <Input
               id="zip"
               value={form.zip}
               onChange={(e) => updateField("zip", e.target.value)}
-              placeholder="Zip code"
+              placeholder={tx("Zip code")}
               className="mt-1"
               maxLength={CLIENT_ZIP_MAX_LENGTH}
             />
@@ -395,15 +360,13 @@ function NewClientForm({ firstClinicDay }: { firstClinicDay: boolean }) {
 
         <div className="flex gap-3 pt-4">
           <Button type="submit" disabled={!canSubmit || createClient.isPending}>
-            {createClient.isPending ? "Creating..." : "Create Client"}
+            {createClient.isPending ? tx("Creating...") : tx("Create Client")}
           </Button>
           <Button
             type="button"
             variant="outline"
             onClick={() => router.push("/clients")}
-          >
-            Cancel
-          </Button>
+          >{tx("Cancel")}</Button>
         </div>
       </form>
     </div>

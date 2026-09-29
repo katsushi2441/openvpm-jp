@@ -14,6 +14,7 @@ import {
   requestDemoRoleSwitch,
   shouldShowDemoRoleSwitcher,
 } from "@/lib/demo-role-switcher";
+import { tx } from "@/lib/i18n";
 
 const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE?.trim() === "true";
 
@@ -39,9 +40,7 @@ export function DemoRoleSwitcherView({
         <label
           htmlFor="demo-role-switcher"
           className="shrink-0 text-xs font-medium text-muted-foreground"
-        >
-          Explore as
-        </label>
+        >{tx("Explore as")}</label>
         <div className="relative">
           <UserRoundCog
             aria-hidden="true"

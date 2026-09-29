@@ -6,6 +6,7 @@ import { Camera, Loader2, RefreshCw, X } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
+import { tx } from "@/lib/i18n";
 
 const CAPTURE_POLL_INTERVAL_MS = 5_000;
 
@@ -91,32 +92,26 @@ export function CapturePhotos({
   return (
     <>
       <Button variant="outline" size="sm" onClick={handleOpen}>
-        <Camera className="mr-2 h-4 w-4" />
-        Capture photos
-      </Button>
+        <Camera className="mr-2 h-4 w-4" />{tx("Capture photos")}</Button>
 
       {open && (
         <div
           className="fixed inset-0 z-[90] overflow-y-auto bg-black/50 p-4"
           role="dialog"
           aria-modal="true"
-          aria-label="Capture photos"
+          aria-label={tx("Capture photos")}
         >
           <div className="flex min-h-full items-center justify-center">
             <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-xl">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h3 className="font-heading text-base font-semibold">
-                    Capture photos
-                  </h3>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Scan with any phone. The code works for 30 minutes.
-                  </p>
+                  <h3 className="font-heading text-base font-semibold">{tx("Capture photos")}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">{tx("Scan with any phone. The code works for 30 minutes.")}</p>
                 </div>
                 <button
                   type="button"
                   onClick={handleClose}
-                  aria-label="Close"
+                  aria-label={tx("Close")}
                   className="rounded-md p-1 text-muted-foreground transition-colors hover:text-foreground"
                 >
                   <X className="h-5 w-5" />
@@ -130,9 +125,7 @@ export function CapturePhotos({
                   </div>
                 ) : createSession.isError ? (
                   <div className="flex h-60 w-full flex-col items-center justify-center gap-3 rounded-lg border border-border bg-muted/30 p-4 text-center">
-                    <p className="text-sm text-muted-foreground">
-                      Could not make a code. Please try again.
-                    </p>
+                    <p className="text-sm text-muted-foreground">{tx("Could not make a code. Please try again.")}</p>
                     <Button
                       variant="outline"
                       size="sm"
@@ -140,9 +133,7 @@ export function CapturePhotos({
                         createSession.mutate({ patientId, appointmentId })
                       }
                     >
-                      <RefreshCw className="mr-2 h-4 w-4" />
-                      Try again
-                    </Button>
+                      <RefreshCw className="mr-2 h-4 w-4" />{tx("Try again")}</Button>
                   </div>
                 ) : (
                   <>
@@ -150,7 +141,7 @@ export function CapturePhotos({
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={qrDataUrl}
-                        alt="QR code for the photo capture link"
+                        alt={tx("QR code for the photo capture link")}
                         className="h-60 w-60 rounded-lg border border-border bg-white p-2"
                       />
                     ) : (
@@ -171,14 +162,12 @@ export function CapturePhotos({
                 <div className="flex items-center justify-between">
                   <p className="text-sm font-medium">
                     {addedCount === 0
-                      ? "No photos yet"
+                      ? tx("No photos yet")
                       : addedCount === 1
-                        ? "1 photo added"
+                        ? tx("1 photo added")
                         : `${addedCount} photos added`}
                   </p>
-                  <p className="text-xs text-muted-foreground">
-                    New photos show up here.
-                  </p>
+                  <p className="text-xs text-muted-foreground">{tx("New photos show up here.")}</p>
                 </div>
                 {recentFiles.length > 0 && (
                   <div className="mt-3 grid grid-cols-4 gap-2">
@@ -196,9 +185,7 @@ export function CapturePhotos({
               </div>
 
               <div className="mt-5 flex justify-end">
-                <Button variant="outline" size="sm" onClick={handleClose}>
-                  Done
-                </Button>
+                <Button variant="outline" size="sm" onClick={handleClose}>{tx("Done")}</Button>
               </div>
             </div>
           </div>

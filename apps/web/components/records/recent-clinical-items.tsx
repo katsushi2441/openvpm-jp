@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Clock3, Loader2 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { PATIENT_SPECIES_EMOJI } from "@/lib/patients/species";
+import { tx } from "@/lib/i18n";
 
 export function RecentClinicalItems({
   patientId,
@@ -35,19 +36,16 @@ export function RecentClinicalItems({
   return (
     <nav
       className="mb-4 rounded-lg border border-border bg-card px-3 py-2"
-      aria-label="Recently viewed patients"
+      aria-label={tx("Recently viewed patients")}
     >
       <div className="flex items-center gap-3 overflow-x-auto">
         <span className="inline-flex shrink-0 items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          <Clock3 className="h-3.5 w-3.5" />
-          Recent
-        </span>
+          <Clock3 className="h-3.5 w-3.5" />{tx("Recent")}</span>
         {recent.isLoading ? (
           <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Loader2 className="h-3.5 w-3.5 animate-spin" /> Loading
-          </span>
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />{" "}{tx("Loading")}</span>
         ) : recent.error ? (
-          <span className="text-xs text-destructive">Unavailable</span>
+          <span className="text-xs text-destructive">{tx("Unavailable")}</span>
         ) : recent.data?.length ? (
           recent.data.map((item) => {
             const resumeVisit =
@@ -67,17 +65,13 @@ export function RecentClinicalItems({
                 <span aria-hidden="true">{emoji}</span>
                 <span>{item.patientName}</span>
                 {resumeVisit ? (
-                  <span className="text-xs font-medium text-primary">
-                    In visit
-                  </span>
+                  <span className="text-xs font-medium text-primary">{tx("In visit")}</span>
                 ) : null}
               </Link>
             );
           })
         ) : (
-          <span className="text-xs text-muted-foreground">
-            Open another patient to build this list.
-          </span>
+          <span className="text-xs text-muted-foreground">{tx("Open another patient to build this list.")}</span>
         )}
       </div>
     </nav>

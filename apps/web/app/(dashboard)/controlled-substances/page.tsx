@@ -30,6 +30,7 @@ import {
   isControlledSubstanceQuantityInputValid,
   isControlledSubstanceRequiredTextInputValid,
 } from "@/lib/controlled-substances/policy";
+import { tx, uiLocale } from "@/lib/i18n";
 
 const DEA_SCHEDULES = [
   { label: "Schedule II", value: "II" },
@@ -77,9 +78,9 @@ function formatControlledSubstanceDateTime(
   };
 
   try {
-    return new Date(date).toLocaleString("en-US", options);
+    return new Date(date).toLocaleString(uiLocale(), options);
   } catch {
-    return new Date(date).toLocaleString("en-US", {
+    return new Date(date).toLocaleString(uiLocale(), {
       ...options,
       timeZone: undefined,
     });
@@ -99,7 +100,7 @@ function LogEntryForm({ onClose }: { onClose: () => void }) {
   const utils = trpc.useUtils();
   const createMutation = trpc.controlledSubstances.create.useMutation({
     onSuccess: () => {
-      toast.success("Log entry recorded");
+      toast.success(tx("Log entry recorded"));
       utils.controlledSubstances.list.invalidate();
       utils.controlledSubstances.summary.invalidate();
       onClose();
@@ -193,11 +194,11 @@ function LogEntryForm({ onClose }: { onClose: () => void }) {
       return;
     }
     if (form.action === "administered" && !form.patientId) {
-      toast.error("Patient is required for administered entries");
+      toast.error(tx("Patient is required for administered entries"));
       return;
     }
     if (form.action === "wasted" && !form.witnessedBy) {
-      toast.error("Witness is required for wasted entries");
+      toast.error(tx("Witness is required for wasted entries"));
       return;
     }
     createMutation.mutate({
@@ -218,14 +219,12 @@ function LogEntryForm({ onClose }: { onClose: () => void }) {
       onSubmit={handleSubmit}
       className="mt-4 rounded-lg border border-border bg-card p-4 space-y-3"
     >
-      <h3 className="font-medium text-sm">New Log Entry</h3>
+      <h3 className="font-medium text-sm">{tx("New Log Entry")}</h3>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div>
-          <label className="block text-xs font-medium text-muted-foreground mb-1">
-            Drug Name *
-          </label>
+          <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Drug Name *")}</label>
           <Input
-            placeholder="Drug name"
+            placeholder={tx("Drug name")}
             value={form.drugName}
             maxLength={CONTROLLED_SUBSTANCE_DRUG_NAME_MAX_LENGTH}
             onChange={(e) => setForm({ ...form, drugName: e.target.value })}
@@ -233,9 +232,7 @@ function LogEntryForm({ onClose }: { onClose: () => void }) {
           />
         </div>
         <div>
-          <label className="block text-xs font-medium text-muted-foreground mb-1">
-            DEA Schedule
-          </label>
+          <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("DEA Schedule")}</label>
           <select
             value={form.deaSchedule}
             onChange={(e) => setForm({ ...form, deaSchedule: e.target.value })}
@@ -249,9 +246,7 @@ function LogEntryForm({ onClose }: { onClose: () => void }) {
           </select>
         </div>
         <div>
-          <label className="block text-xs font-medium text-muted-foreground mb-1">
-            Action
-          </label>
+          <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Action")}</label>
           <select
             value={form.action}
             onChange={(e) => setForm({ ...form, action: e.target.value })}
@@ -266,24 +261,20 @@ function LogEntryForm({ onClose }: { onClose: () => void }) {
         </div>
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <label className="block text-xs font-medium text-muted-foreground mb-1">
-              Quantity *
-            </label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Quantity *")}</label>
             <Input
               type="number"
               step={CONTROLLED_SUBSTANCE_QUANTITY_STEP}
               min={CONTROLLED_SUBSTANCE_QUANTITY_MIN}
               max={CONTROLLED_SUBSTANCE_QUANTITY_MAX}
-              placeholder="Qty"
+              placeholder={tx("Qty")}
               value={form.quantity}
               onChange={(e) => setForm({ ...form, quantity: e.target.value })}
               required
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-muted-foreground mb-1">
-              Unit
-            </label>
+            <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Unit")}</label>
             <select
               value={form.unit}
               onChange={(e) => setForm({ ...form, unit: e.target.value })}
@@ -300,8 +291,7 @@ function LogEntryForm({ onClose }: { onClose: () => void }) {
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <div>
-          <label className="block text-xs font-medium text-muted-foreground mb-1">
-            Patient {form.action === "administered" && "*"}
+          <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Patient")}{" "}{form.action === "administered" && "*"}
           </label>
           <select
             value={form.patientId}
@@ -319,10 +309,10 @@ function LogEntryForm({ onClose }: { onClose: () => void }) {
           >
             <option value="">
               {patientsQuery.error || patientsMissing
-                ? "Unable to load patients"
+                ? tx("Unable to load patients")
                 : patientsQuery.isLoading
-                  ? "Loading patients..."
-                  : "No patient"}
+                  ? tx("Loading patients...")
+                  : tx("No patient")}
             </option>
             {patientOptions.map((patient) => (
               <option key={patient.id} value={patient.id}>
@@ -345,8 +335,7 @@ function LogEntryForm({ onClose }: { onClose: () => void }) {
           ) : null}
         </div>
         <div>
-          <label className="block text-xs font-medium text-muted-foreground mb-1">
-            Witness {form.action === "wasted" && "*"}
+          <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Witness")}{" "}{form.action === "wasted" && "*"}
           </label>
           <select
             value={form.witnessedBy}
@@ -364,10 +353,10 @@ function LogEntryForm({ onClose }: { onClose: () => void }) {
           >
             <option value="">
               {witnessesQuery.error || witnessesMissing
-                ? "Unable to load witnesses"
+                ? tx("Unable to load witnesses")
                 : witnessesQuery.isLoading
-                  ? "Loading witnesses..."
-                  : "No witness"}
+                  ? tx("Loading witnesses...")
+                  : tx("No witness")}
             </option>
             {witnessOptions.map((user) => (
               <option key={user.id} value={user.id}>
@@ -385,22 +374,18 @@ function LogEntryForm({ onClose }: { onClose: () => void }) {
           ) : null}
         </div>
         <div>
-          <label className="block text-xs font-medium text-muted-foreground mb-1">
-            Lot Number
-          </label>
+          <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Lot Number")}</label>
           <Input
-            placeholder="Lot #"
+            placeholder={tx("Lot #")}
             value={form.lotNumber}
             maxLength={CONTROLLED_SUBSTANCE_LOT_NUMBER_MAX_LENGTH}
             onChange={(e) => setForm({ ...form, lotNumber: e.target.value })}
           />
         </div>
         <div>
-          <label className="block text-xs font-medium text-muted-foreground mb-1">
-            Notes
-          </label>
+          <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Notes")}</label>
           <Input
-            placeholder="Optional notes"
+            placeholder={tx("Optional notes")}
             value={form.notes}
             maxLength={CONTROLLED_SUBSTANCE_NOTES_MAX_LENGTH}
             onChange={(e) => setForm({ ...form, notes: e.target.value })}
@@ -409,11 +394,9 @@ function LogEntryForm({ onClose }: { onClose: () => void }) {
       </div>
       <div className="flex gap-2">
         <Button type="submit" size="sm" disabled={!canSubmit}>
-          {createMutation.isPending ? "Submitting..." : "Submit Entry"}
+          {createMutation.isPending ? tx("Submitting...") : tx("Submit Entry")}
         </Button>
-        <Button type="button" variant="outline" size="sm" onClick={onClose}>
-          Cancel
-        </Button>
+        <Button type="button" variant="outline" size="sm" onClick={onClose}>{tx("Cancel")}</Button>
       </div>
       {createMutation.error && (
         <p className="text-sm text-destructive">
@@ -435,7 +418,7 @@ function SummarySection() {
         onClick={() => setExpanded(!expanded)}
         className="flex w-full items-center justify-between px-4 py-3 text-sm font-medium hover:bg-muted/30 transition-colors"
       >
-        <span>Drug Balance Summary</span>
+        <span>{tx("Drug Balance Summary")}</span>
         {expanded ? (
           <ChevronDown className="h-4 w-4 text-muted-foreground" />
         ) : (
@@ -447,36 +430,22 @@ function SummarySection() {
           {error || summaryMissing ? (
             <div className="rounded-md border border-destructive bg-destructive/10 p-3 text-sm text-destructive">
               {error?.message ??
-                "Unable to load controlled-substance balances. Please retry."}
+                tx("Unable to load controlled-substance balances. Please retry.")}
             </div>
           ) : isLoading ? (
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Loading summary...
-            </div>
+              <Loader2 className="h-4 w-4 animate-spin" />{tx("Loading summary...")}</div>
           ) : data && data.length > 0 ? (
             <TableScroll>
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="py-2 text-left font-medium text-muted-foreground">
-                      Drug
-                    </th>
-                    <th className="py-2 text-right font-medium text-muted-foreground">
-                      Received
-                    </th>
-                    <th className="py-2 text-right font-medium text-muted-foreground">
-                      Administered
-                    </th>
-                    <th className="py-2 text-right font-medium text-muted-foreground">
-                      Wasted
-                    </th>
-                    <th className="py-2 text-right font-medium text-muted-foreground">
-                      Returned
-                    </th>
-                    <th className="py-2 text-right font-medium text-muted-foreground">
-                      Net Balance
-                    </th>
+                    <th className="py-2 text-left font-medium text-muted-foreground">{tx("Drug")}</th>
+                    <th className="py-2 text-right font-medium text-muted-foreground">{tx("Received")}</th>
+                    <th className="py-2 text-right font-medium text-muted-foreground">{tx("Administered")}</th>
+                    <th className="py-2 text-right font-medium text-muted-foreground">{tx("Wasted")}</th>
+                    <th className="py-2 text-right font-medium text-muted-foreground">{tx("Returned")}</th>
+                    <th className="py-2 text-right font-medium text-muted-foreground">{tx("Net Balance")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -510,8 +479,8 @@ function SummarySection() {
             <EmptyState
               className="border-0 bg-transparent py-6"
               icon={ShieldAlert}
-              title="No balance data yet"
-              description="Balance totals will appear once controlled-substance entries are logged."
+              title={tx("No balance data yet")}
+              description={tx("Balance totals will appear once controlled-substance entries are logged.")}
             />
           )}
         </div>
@@ -528,9 +497,7 @@ export default function ControlledSubstancesPage() {
     return (
       <div className="rounded-lg border border-border bg-card p-4 text-sm text-muted-foreground">
         <div className="flex items-center gap-2">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          Checking controlled-substance access...
-        </div>
+          <Loader2 className="h-4 w-4 animate-spin" />{tx("Checking controlled-substance access...")}</div>
       </div>
     );
   }
@@ -539,10 +506,10 @@ export default function ControlledSubstancesPage() {
     return (
       <EmptyState
         icon={ShieldAlert}
-        title="Controlled substance log is restricted"
-        description="Only administrators and veterinarians can view or record controlled-substance activity."
+        title={tx("Controlled substance log is restricted")}
+        description={tx("Only administrators and veterinarians can view or record controlled-substance activity.")}
         action={{
-          label: "Back to dashboard",
+          label: tx("Back to dashboard"),
           onClick: () => router.push("/"),
         }}
       />
@@ -591,12 +558,8 @@ function ControlledSubstancesLogPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-heading text-xl font-semibold">
-            Controlled Substance Log
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            DEA-required tracking for scheduled drugs
-          </p>
+          <h2 className="font-heading text-xl font-semibold">{tx("Controlled Substance Log")}</h2>
+          <p className="text-sm text-muted-foreground">{tx("DEA-required tracking for scheduled drugs")}</p>
         </div>
         <Button
           disabled={!canRecordControlledSubstance}
@@ -605,9 +568,7 @@ function ControlledSubstancesLogPage() {
             setShowForm(true);
           }}
         >
-          <Plus className="mr-1 h-4 w-4" />
-          Log Entry
-        </Button>
+          <Plus className="mr-1 h-4 w-4" />{tx("Log Entry")}</Button>
       </div>
 
       {canRecordControlledSubstance && showForm && (
@@ -624,7 +585,7 @@ function ControlledSubstancesLogPage() {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Filter by drug name..."
+            placeholder={tx("Filter by drug name...")}
             value={search}
             maxLength={CONTROLLED_SUBSTANCE_DRUG_NAME_MAX_LENGTH}
             onChange={(e) => {
@@ -639,50 +600,28 @@ function ControlledSubstancesLogPage() {
       {logError || controlledSubstanceLogMissing ? (
         <div className="mt-4 rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
           {logError?.message ??
-            "Unable to load controlled-substance entries. Please retry."}
+            tx("Unable to load controlled-substance entries. Please retry.")}
         </div>
       ) : isLogLoading ? (
         <div className="mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          Loading controlled-substance entries...
-        </div>
+          <Loader2 className="h-4 w-4 animate-spin" />{tx("Loading controlled-substance entries...")}</div>
       ) : !verifiedLogPayload ? (
-        <div className="mt-4 rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
-          Unable to load controlled-substance entries. Please retry.
-        </div>
+        <div className="mt-4 rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">{tx("Unable to load controlled-substance entries. Please retry.")}</div>
       ) : verifiedLogPayload.log.items.length > 0 ? (
         <>
           <TableScroll className="mt-4 rounded-lg border border-border">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-muted/50">
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Date/Time
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Drug Name
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Schedule
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Action
-                  </th>
-                  <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-                    Qty/Unit
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Patient
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Performed By
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Witness
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Notes
-                  </th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Date/Time")}</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Drug Name")}</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Schedule")}</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Action")}</th>
+                  <th className="px-4 py-3 text-right font-medium text-muted-foreground">{tx("Qty/Unit")}</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Patient")}</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Performed By")}</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Witness")}</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Notes")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -737,9 +676,8 @@ function ControlledSubstancesLogPage() {
 
           {/* Pagination */}
           <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-            <p>
-              Showing {offset + 1}&ndash;
-              {Math.min(offset + limit, verifiedLogPayload.log.total)} of{" "}
+            <p>{tx("Showing")}{" "}{offset + 1}&ndash;
+              {Math.min(offset + limit, verifiedLogPayload.log.total)}{" "}{tx("of")}{" "}
               {verifiedLogPayload.log.total}
             </p>
             <div className="flex gap-2">
@@ -748,17 +686,13 @@ function ControlledSubstancesLogPage() {
                 size="sm"
                 disabled={offset === 0}
                 onClick={() => setOffset(Math.max(0, offset - limit))}
-              >
-                Previous
-              </Button>
+              >{tx("Previous")}</Button>
               <Button
                 variant="outline"
                 size="sm"
                 disabled={offset + limit >= verifiedLogPayload.log.total}
                 onClick={() => setOffset(offset + limit)}
-              >
-                Next
-              </Button>
+              >{tx("Next")}</Button>
             </div>
           </div>
         </>
@@ -768,19 +702,19 @@ function ControlledSubstancesLogPage() {
           icon={ShieldAlert}
           title={
             search
-              ? "No entries match your filter"
-              : "No controlled substance entries yet"
+              ? tx("No entries match your filter")
+              : tx("No controlled substance entries yet")
           }
           description={
             search
-              ? "Try a different drug name or clear the filter."
-              : "Record each received, administered, wasted, or returned scheduled-drug event here."
+              ? tx("Try a different drug name or clear the filter.")
+              : tx("Record each received, administered, wasted, or returned scheduled-drug event here.")
           }
           action={
             search
               ? undefined
               : {
-                  label: "Log first entry",
+                  label: tx("Log first entry"),
                   onClick: () => {
                     if (!canRecordControlledSubstance) return;
                     setShowForm(true);

@@ -9,6 +9,7 @@ import {
   AUTH_PASSWORD_MAX_LENGTH,
   AUTH_PASSWORD_MIN_LENGTH,
 } from "@/lib/auth-password-policy";
+import { tx } from "@/lib/i18n";
 
 function ResetPasswordInner() {
   const params = useSearchParams();
@@ -28,24 +29,20 @@ function ResetPasswordInner() {
     <div className="flex min-h-screen items-center justify-center bg-surface">
       <div className="w-full max-w-sm rounded-lg border border-border bg-card p-8">
         <div className="mb-6 text-center">
-          <h1 className="font-heading text-2xl font-bold text-foreground">OpenVPM</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Choose a new password</p>
+          <h1 className="font-heading text-2xl font-bold text-foreground">{tx("OpenVPM")}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{tx("Choose a new password")}</p>
         </div>
 
         {done ? (
           <div className="text-center">
-            <p className="text-sm text-foreground">Your password has been reset.</p>
+            <p className="text-sm text-foreground">{tx("Your password has been reset.")}</p>
             <Link
               href="/login"
               className="mt-6 inline-block rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-            >
-              Sign in
-            </Link>
+            >{tx("Sign in")}</Link>
           </div>
         ) : !token ? (
-          <p className="text-center text-sm text-destructive">
-            This reset link is invalid. Request a new one from the sign-in page.
-          </p>
+          <p className="text-center text-sm text-destructive">{tx("This reset link is invalid. Request a new one from the sign-in page.")}</p>
         ) : (
           <form
             onSubmit={(e) => {
@@ -61,9 +58,7 @@ function ResetPasswordInner() {
             className="space-y-4"
           >
             <div>
-              <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-foreground">
-                New password
-              </label>
+              <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-foreground">{tx("New password")}</label>
               <input
                 id="password"
                 type="password"
@@ -81,7 +76,7 @@ function ResetPasswordInner() {
               disabled={!canSubmit || reset.isPending}
               className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
             >
-              {reset.isPending ? "Resetting…" : "Reset password"}
+              {reset.isPending ? tx("Resetting…") : tx("Reset password")}
             </button>
           </form>
         )}

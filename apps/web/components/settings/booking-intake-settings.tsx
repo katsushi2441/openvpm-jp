@@ -4,6 +4,7 @@ import {
   PREVISIT_INTAKE_FIELD_DEFINITIONS,
   type PrevisitIntakeFieldKey,
 } from "@/lib/booking/previsit-intake";
+import { tx } from "@/lib/i18n";
 
 export type BookingIntakeSettingsProps = {
   selectedFieldKeys: readonly PrevisitIntakeFieldKey[];
@@ -40,18 +41,12 @@ export function BookingIntakeSettings({
         <h3
           id="booking-intake-settings-heading"
           className="text-sm font-semibold text-gray-900"
-        >
-          Pre-visit intake fields
-        </h3>
-        <p className="mt-1 text-sm text-gray-500">
-          Selected fields appear on the public appointment request. Responses
-          remain owner-reported and do not overwrite saved client or patient
-          information.
-        </p>
+        >{tx("Pre-visit intake fields")}</h3>
+        <p className="mt-1 text-sm text-gray-500">{tx("Selected fields appear on the public appointment request. Responses remain owner-reported and do not overwrite saved client or patient information.")}</p>
       </div>
 
       <fieldset className="space-y-3" disabled={disabled}>
-        <legend className="sr-only">Public appointment request fields</legend>
+        <legend className="sr-only">{tx("Public appointment request fields")}</legend>
         {PREVISIT_INTAKE_FIELD_DEFINITIONS.map((field) => {
           const inputId = `booking-intake-${field.key}`;
 
@@ -78,10 +73,7 @@ export function BookingIntakeSettings({
         })}
       </fieldset>
 
-      <p className="text-sm text-gray-500">
-        All fields are optional. Leave every field unchecked to hide this
-        section from the public request form.
-      </p>
+      <p className="text-sm text-gray-500">{tx("All fields are optional. Leave every field unchecked to hide this section from the public request form.")}</p>
     </section>
   );
 }

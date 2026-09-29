@@ -23,6 +23,7 @@ import {
   CLINICAL_CORRECTION_REASON_MIN_LENGTH,
   CLINICAL_CORRECTION_REASON_MAX_LENGTH,
 } from "@/lib/records/clinical-correction-policy";
+import { tx } from "@/lib/i18n";
 
 export function WeightCorrectionDialog({
   patientId,
@@ -45,7 +46,7 @@ export function WeightCorrectionDialog({
   const [reason, setReason] = useState("");
   const correction = trpc.patients.correctWeight.useMutation({
     onSuccess: () => {
-      toast.success("Weight corrected; original preserved in the audit log");
+      toast.success(tx("Weight corrected; original preserved in the audit log"));
       setOpen(false);
       onSaved();
     },
@@ -81,9 +82,7 @@ export function WeightCorrectionDialog({
           setReason("");
           setOpen(true);
         }}
-      >
-        Correct
-      </Button>
+      >{tx("Correct")}</Button>
       <DialogPrimitive.Root
         open={open}
         onOpenChange={(next) => {
@@ -94,14 +93,8 @@ export function WeightCorrectionDialog({
           <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/50" />
           <DialogPrimitive.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-lg border border-border bg-background p-6 shadow-lg">
             <div className="mb-4">
-              <DialogPrimitive.Title className="text-lg font-semibold">
-                Correct weight
-              </DialogPrimitive.Title>
-              <DialogPrimitive.Description className="mt-2 text-sm text-muted-foreground">
-                The original measurement is preserved with your name and
-                correction reason in the audit log. Use the same units as the
-                patient chart.
-              </DialogPrimitive.Description>
+              <DialogPrimitive.Title className="text-lg font-semibold">{tx("Correct weight")}</DialogPrimitive.Title>
+              <DialogPrimitive.Description className="mt-2 text-sm text-muted-foreground">{tx("The original measurement is preserved with your name and correction reason in the audit log. Use the same units as the patient chart.")}</DialogPrimitive.Description>
             </div>
             <form
               className="space-y-4"
@@ -117,9 +110,7 @@ export function WeightCorrectionDialog({
                 });
               }}
             >
-              <label className="block text-sm font-medium">
-                Corrected weight (
-                {measurementSystem === "us_customary" ? "lb" : "kg"})
+              <label className="block text-sm font-medium">{tx("Corrected weight (")}{measurementSystem === "us_customary" ? tx("lb") : tx("kg")})
                 <input
                   className="mt-1 w-full rounded-md border bg-background p-2"
                   type="number"
@@ -137,8 +128,7 @@ export function WeightCorrectionDialog({
                   onChange={(event) => setWeightKg(event.target.value)}
                 />
               </label>
-              <label className="block text-sm font-medium">
-                Measured at ({timeZone})
+              <label className="block text-sm font-medium">{tx("Measured at (")}{timeZone})
                 <input
                   className="mt-1 w-full rounded-md border bg-background p-2"
                   type="datetime-local"
@@ -151,9 +141,7 @@ export function WeightCorrectionDialog({
                   onChange={(event) => setMeasuredAt(event.target.value)}
                 />
               </label>
-              <label className="block text-sm font-medium">
-                Reason for correction
-                <textarea
+              <label className="block text-sm font-medium">{tx("Reason for correction")}<textarea
                   className="mt-1 w-full rounded-md border bg-background p-2"
                   required
                   minLength={CLINICAL_CORRECTION_REASON_MIN_LENGTH}
@@ -163,7 +151,7 @@ export function WeightCorrectionDialog({
                 />
               </label>
               <Button type="submit" disabled={!valid || correction.isPending}>
-                {correction.isPending ? "Saving…" : "Save correction"}
+                {correction.isPending ? tx("Saving…") : tx("Save correction")}
               </Button>
               <Button
                 type="button"
@@ -171,9 +159,7 @@ export function WeightCorrectionDialog({
                 className="ml-2"
                 disabled={correction.isPending}
                 onClick={() => setOpen(false)}
-              >
-                Cancel
-              </Button>
+              >{tx("Cancel")}</Button>
             </form>
           </DialogPrimitive.Content>
         </DialogPrimitive.Portal>

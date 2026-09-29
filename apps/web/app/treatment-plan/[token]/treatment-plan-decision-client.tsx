@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
+import { tx } from "@/lib/i18n";
 
 type OfferedLine = {
   id: string;
@@ -107,8 +108,7 @@ export function TreatmentPlanDecisionClient({ token }: { token: string }) {
   if (state.kind === "loading") {
     return (
       <div className="flex items-center justify-center gap-2 py-20 text-sm text-gray-600">
-        <Loader2 className="h-5 w-5 animate-spin" /> Loading treatment plan…
-      </div>
+        <Loader2 className="h-5 w-5 animate-spin" />{" "}{tx("Loading treatment plan…")}</div>
     );
   }
 
@@ -118,7 +118,7 @@ export function TreatmentPlanDecisionClient({ token }: { token: string }) {
         <AlertCircle className="h-8 w-8 text-amber-500" />
         <p className="text-sm text-gray-600">
           {state.kind === "expired"
-            ? "This link is no longer available. Ask the clinic for a new link."
+            ? tx("This link is no longer available. Ask the clinic for a new link.")
             : state.message}
         </p>
       </div>
@@ -129,10 +129,8 @@ export function TreatmentPlanDecisionClient({ token }: { token: string }) {
     return (
       <div className="flex flex-col items-center gap-3 py-20 text-center">
         <CheckCircle2 className="h-10 w-10 text-teal-600" />
-        <h1 className="text-lg font-semibold text-gray-900">Plan signed</h1>
-        <p className="text-sm text-gray-600">
-          The clinic has your decisions and signed document.
-        </p>
+        <h1 className="text-lg font-semibold text-gray-900">{tx("Plan signed")}</h1>
+        <p className="text-sm text-gray-600">{tx("The clinic has your decisions and signed document.")}</p>
       </div>
     );
   }
@@ -193,8 +191,7 @@ export function TreatmentPlanDecisionClient({ token }: { token: string }) {
     <div className="space-y-5">
       <div>
         <h1 className="text-xl font-semibold text-gray-950">{plan.title}</h1>
-        <p className="mt-1 text-sm text-gray-600">
-          For {plan.patientName} · Revision {plan.revisionNumber}
+        <p className="mt-1 text-sm text-gray-600">{tx("For")}{" "}{plan.patientName}{" "}{tx("· Revision")}{" "}{plan.revisionNumber}
         </p>
       </div>
 
@@ -206,8 +203,7 @@ export function TreatmentPlanDecisionClient({ token }: { token: string }) {
               key={line.id}
               className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
             >
-              <legend className="sr-only">
-                Decision for {line.description}
+              <legend className="sr-only">{tx("Decision for")}{" "}{line.description}
               </legend>
               <div className="flex items-start justify-between gap-4">
                 <div>
@@ -249,13 +245,12 @@ export function TreatmentPlanDecisionClient({ token }: { token: string }) {
                       }))
                     }
                   >
-                    {decision === "accepted" ? "Accept" : "Decline"}
+                    {decision === "accepted" ? tx("Accept") : tx("Decline")}
                   </button>
                 ))}
               </div>
               {choice?.decision === "accepted" ? (
-                <label className="mt-3 block text-sm text-gray-700">
-                  Accepted quantity (maximum {line.offeredQuantity})
+                <label className="mt-3 block text-sm text-gray-700">{tx("Accepted quantity (maximum")}{" "}{line.offeredQuantity})
                   <input
                     inputMode="decimal"
                     value={choice.acceptedQuantity}
@@ -273,9 +268,7 @@ export function TreatmentPlanDecisionClient({ token }: { token: string }) {
                 </label>
               ) : null}
               {choice?.decision === "declined" ? (
-                <label className="mt-3 block text-sm text-gray-700">
-                  Reason (optional)
-                  <input
+                <label className="mt-3 block text-sm text-gray-700">{tx("Reason (optional)")}<input
                     maxLength={2_000}
                     value={choice.declineReason}
                     onChange={(event) =>
@@ -299,15 +292,15 @@ export function TreatmentPlanDecisionClient({ token }: { token: string }) {
       <div className="rounded-xl border border-gray-200 bg-white p-4">
         <dl className="space-y-1 text-sm">
           <div className="flex justify-between">
-            <dt className="text-gray-600">Subtotal</dt>
+            <dt className="text-gray-600">{tx("Subtotal")}</dt>
             <dd>{money(plan.subtotal, plan.currency)}</dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-gray-600">Tax</dt>
+            <dt className="text-gray-600">{tx("Tax")}</dt>
             <dd>{money(plan.tax, plan.currency)}</dd>
           </div>
           <div className="flex justify-between border-t pt-2 font-semibold">
-            <dt>Total offered</dt>
+            <dt>{tx("Total offered")}</dt>
             <dd>{money(plan.total, plan.currency)}</dd>
           </div>
         </dl>
@@ -324,11 +317,9 @@ export function TreatmentPlanDecisionClient({ token }: { token: string }) {
         onClick={() => void continueToSignature()}
         className="w-full rounded-lg bg-teal-600 px-4 py-3 text-sm font-semibold text-white hover:bg-teal-700 disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {submitting ? "Saving decisions…" : "Continue to signature"}
+        {submitting ? tx("Saving decisions…") : tx("Continue to signature")}
       </button>
-      <p className="text-center text-xs text-gray-500">
-        This step records your choices. It does not charge you or schedule care.
-      </p>
+      <p className="text-center text-xs text-gray-500">{tx("This step records your choices. It does not charge you or schedule care.")}</p>
     </div>
   );
 }

@@ -14,6 +14,7 @@ import {
   type BillingCadence,
 } from "@/lib/billing/catalog";
 import { cn } from "@/lib/utils";
+import { tx, uiLocale } from "@/lib/i18n";
 
 interface CloudBillingCadencePickerProps {
   value: BillingCadence;
@@ -24,7 +25,7 @@ interface CloudBillingCadencePickerProps {
 }
 
 function dollars(value: number) {
-  return `$${value.toLocaleString("en-US")}`;
+  return `$${value.toLocaleString(uiLocale())}`;
 }
 
 export function CloudBillingCadencePicker({
@@ -38,13 +39,8 @@ export function CloudBillingCadencePicker({
 
   return (
     <fieldset disabled={disabled} className="min-w-0 w-full max-w-full">
-      <legend className="font-heading text-base font-semibold">
-        Choose a billing schedule
-      </legend>
-      <p className="mt-1 text-sm text-muted-foreground">
-        One Cloud plan with unlimited staff. Annual billing includes two months
-        free.
-      </p>
+      <legend className="font-heading text-base font-semibold">{tx("Choose a billing schedule")}</legend>
+      <p className="mt-1 text-sm text-muted-foreground">{tx("One Cloud plan with unlimited staff. Annual billing includes two months free.")}</p>
 
       <div className="mt-4 grid min-w-0 w-full max-w-full gap-3 sm:grid-cols-2">
         {CLOUD_BILLING_OPTIONS.map((option) => {
@@ -87,7 +83,7 @@ export function CloudBillingCadencePicker({
                       <Icon className="size-4" aria-hidden="true" />
                     </span>
                     {savings > 0 ? (
-                      <Badge variant="success">Save {dollars(savings)}</Badge>
+                      <Badge variant="success">{tx("Save")}{" "}{dollars(savings)}</Badge>
                     ) : null}
                   </div>
                   <div>
@@ -107,8 +103,7 @@ export function CloudBillingCadencePicker({
                     </span>
                     {normalizedLocationCount > 1 ? (
                       <p className="mt-1 text-xs text-muted-foreground">
-                        {dollars(option.priceUsd)} per active location
-                      </p>
+                        {dollars(option.priceUsd)}{" "}{tx("per active location")}</p>
                     ) : null}
                   </div>
 
@@ -117,22 +112,16 @@ export function CloudBillingCadencePicker({
                       <Check
                         className="size-3.5 text-primary"
                         aria-hidden="true"
-                      />
-                      Unlimited staff included
-                    </span>
+                      />{tx("Unlimited staff included")}</span>
                     <span className="flex items-center gap-2">
                       <Check
                         className="size-3.5 text-primary"
                         aria-hidden="true"
-                      />
-                      Secure checkout powered by Stripe
-                    </span>
+                      />{tx("Secure checkout powered by Stripe")}</span>
                   </div>
 
                   {!available ? (
-                    <p className="text-xs font-medium text-destructive">
-                      Temporarily unavailable
-                    </p>
+                    <p className="text-xs font-medium text-destructive">{tx("Temporarily unavailable")}</p>
                   ) : null}
                 </CardContent>
               </Card>

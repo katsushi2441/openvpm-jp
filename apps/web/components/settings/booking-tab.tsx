@@ -23,23 +23,24 @@ import {
   type BookingPageConfig,
   type BookingWeeklyHours,
 } from "@/lib/booking/page-config";
+import { tx } from "@/lib/i18n";
 
 const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const LEAD_TIME_OPTIONS = [
-  { value: 0, label: "No notice needed" },
-  { value: 60, label: "1 hour" },
-  { value: 240, label: "4 hours" },
-  { value: 1440, label: "1 day" },
-  { value: 2880, label: "2 days" },
+  { value: 0, label: tx("No notice needed") },
+  { value: 60, label: tx("1 hour") },
+  { value: 240, label: tx("4 hours") },
+  { value: 1440, label: tx("1 day") },
+  { value: 2880, label: tx("2 days") },
 ];
 
 const WINDOW_OPTIONS = [
-  { value: 14, label: "2 weeks" },
-  { value: 30, label: "1 month" },
-  { value: 60, label: "2 months" },
-  { value: 90, label: "3 months" },
-  { value: 180, label: "6 months" },
+  { value: 14, label: tx("2 weeks") },
+  { value: 30, label: tx("1 month") },
+  { value: 60, label: tx("2 months") },
+  { value: 90, label: tx("3 months") },
+  { value: 180, label: tx("6 months") },
 ];
 
 const inputClass =
@@ -138,10 +139,10 @@ export function BookingTab() {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(which);
-      toast.success("Copied");
+      toast.success(tx("Copied"));
       setTimeout(() => setCopied(null), 2000);
     } catch {
-      toast.error("Could not copy");
+      toast.error(tx("Could not copy"));
     }
   }
 
@@ -175,12 +176,8 @@ export function BookingTab() {
             role="alert"
             className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-900"
           >
-            <p className="text-sm font-semibold">
-              Appointment request settings could not be loaded
-            </p>
-            <p className="mt-1 text-sm text-red-800">
-              Nothing can be changed until the saved settings are available.
-            </p>
+            <p className="text-sm font-semibold">{tx("Appointment request settings could not be loaded")}</p>
+            <p className="mt-1 text-sm text-red-800">{tx("Nothing can be changed until the saved settings are available.")}</p>
             <Button
               type="button"
               variant="outline"
@@ -191,9 +188,7 @@ export function BookingTab() {
             >
               {myPage.isFetching ? (
                 <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
-              ) : null}
-              Retry loading settings
-            </Button>
+              ) : null}{tx("Retry loading settings")}</Button>
           </div>
         ) : null}
         {appointmentTypesUnavailable ? (
@@ -201,13 +196,8 @@ export function BookingTab() {
             role="alert"
             className="rounded-xl border border-red-200 bg-red-50 p-4 text-red-900"
           >
-            <p className="text-sm font-semibold">
-              Active visit types could not be loaded
-            </p>
-            <p className="mt-1 text-sm text-red-800">
-              Publishing and editing are unavailable so saved selections are
-              not accidentally erased.
-            </p>
+            <p className="text-sm font-semibold">{tx("Active visit types could not be loaded")}</p>
+            <p className="mt-1 text-sm text-red-800">{tx("Publishing and editing are unavailable so saved selections are not accidentally erased.")}</p>
             <Button
               type="button"
               variant="outline"
@@ -218,9 +208,7 @@ export function BookingTab() {
             >
               {types.isFetching ? (
                 <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
-              ) : null}
-              Retry loading visit types
-            </Button>
+              ) : null}{tx("Retry loading visit types")}</Button>
           </div>
         ) : null}
       </div>
@@ -231,15 +219,8 @@ export function BookingTab() {
     <div className="space-y-6">
       <div>
         <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-          <Globe className="h-5 w-5 text-teal-600" />
-          Online appointment requests
-        </h2>
-        <p className="text-sm text-gray-500 mt-1">
-          Give new and existing clients a simple way to request a preferred
-          appointment time. Every request lands on your schedule for your team
-          to review, assign, and confirm. Share the link, print the QR code, or
-          add the button to your website.
-        </p>
+          <Globe className="h-5 w-5 text-teal-600" />{tx("Online appointment requests")}</h2>
+        <p className="text-sm text-gray-500 mt-1">{tx("Give new and existing clients a simple way to request a preferred appointment time. Every request lands on your schedule for your team to review, assign, and confirm. Share the link, print the QR code, or add the button to your website.")}</p>
       </div>
 
       {/* Link + publish state */}
@@ -247,9 +228,7 @@ export function BookingTab() {
         <label
           htmlFor="booking-page-slug"
           className="block text-sm font-medium text-gray-700"
-        >
-          Your appointment request link
-        </label>
+        >{tx("Your appointment request link")}</label>
         <div className="flex items-center gap-2">
           <span className="text-sm text-gray-500 shrink-0">{origin}/book/</span>
           <Input
@@ -259,25 +238,21 @@ export function BookingTab() {
               setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))
             }
             maxLength={BOOKING_SLUG_MAX_LENGTH}
-            placeholder="your-clinic-name"
+            placeholder={tx("your-clinic-name")}
             className="max-w-xs"
           />
           {slug && slugValid && !slugCheck.isLoading && (
             slugTaken ? (
               <span className="flex items-center gap-1 text-xs text-red-600">
-                <X className="h-3.5 w-3.5" /> Taken
-              </span>
+                <X className="h-3.5 w-3.5" />{" "}{tx("Taken")}</span>
             ) : (
               <span className="flex items-center gap-1 text-xs text-emerald-600">
-                <Check className="h-3.5 w-3.5" /> Available
-              </span>
+                <Check className="h-3.5 w-3.5" />{" "}{tx("Available")}</span>
             )
           )}
         </div>
         {slug && !slugValid && (
-          <p className="text-xs text-red-600">
-            Use 3 to 64 lowercase letters, numbers, and dashes.
-          </p>
+          <p className="text-xs text-red-600">{tx("Use 3 to 64 lowercase letters, numbers, and dashes.")}</p>
         )}
 
         {isLive && (
@@ -292,14 +267,10 @@ export function BookingTab() {
                 <Check className="h-3.5 w-3.5 mr-1.5" />
               ) : (
                 <Copy className="h-3.5 w-3.5 mr-1.5" />
-              )}
-              Copy link
-            </Button>
+              )}{tx("Copy link")}</Button>
             <Button type="button" variant="outline" size="sm" asChild>
               <a href={liveUrl} target="_blank" rel="noreferrer">
-                <ExternalLink className="h-3.5 w-3.5 mr-1.5" />
-                Open page
-              </a>
+                <ExternalLink className="h-3.5 w-3.5 mr-1.5" />{tx("Open page")}</a>
             </Button>
             <Button
               type="button"
@@ -311,9 +282,7 @@ export function BookingTab() {
                 <Check className="h-3.5 w-3.5 mr-1.5" />
               ) : (
                 <Copy className="h-3.5 w-3.5 mr-1.5" />
-              )}
-              Copy website button
-            </Button>
+              )}{tx("Copy website button")}</Button>
           </div>
         )}
       </div>
@@ -321,10 +290,8 @@ export function BookingTab() {
       {/* Hours */}
       <div className="rounded-xl border border-gray-200 p-4 space-y-3">
         <div>
-          <h3 className="text-sm font-semibold text-gray-900">Request hours</h3>
-          <p className="text-xs text-gray-500 mt-0.5">
-            When clients can request times online. Uses your practice timezone.
-          </p>
+          <h3 className="text-sm font-semibold text-gray-900">{tx("Request hours")}</h3>
+          <p className="text-xs text-gray-500 mt-0.5">{tx("When clients can request times online. Uses your practice timezone.")}</p>
         </div>
         <div className="space-y-2">
           {WEEKDAY_LABELS.map((label, day) => {
@@ -357,7 +324,7 @@ export function BookingTab() {
                       }
                       className="rounded-md border border-gray-300 px-2 py-1 text-sm"
                     />
-                    <span className="text-gray-400">to</span>
+                    <span className="text-gray-400">{tx("to")}</span>
                     <input
                       type="time"
                       value={hours.close}
@@ -368,7 +335,7 @@ export function BookingTab() {
                     />
                   </div>
                 ) : (
-                  <span className="text-sm text-gray-400">Closed</span>
+                  <span className="text-sm text-gray-400">{tx("Closed")}</span>
                 )}
               </div>
             );
@@ -379,18 +346,11 @@ export function BookingTab() {
       {/* What can be requested */}
       <div className="rounded-xl border border-gray-200 p-4 space-y-3">
         <div>
-          <h3 className="text-sm font-semibold text-gray-900">
-            Requestable visit types
-          </h3>
-          <p className="text-xs text-gray-500 mt-0.5">
-            Select each active visit type clients may request online. The public
-            page stays unavailable until at least one type is selected.
-          </p>
+          <h3 className="text-sm font-semibold text-gray-900">{tx("Requestable visit types")}</h3>
+          <p className="text-xs text-gray-500 mt-0.5">{tx("Select each active visit type clients may request online. The public page stays unavailable until at least one type is selected.")}</p>
         </div>
         {allTypes.length === 0 ? (
-          <p className="text-sm text-gray-500">
-            No appointment types yet. Add them in the Appointment Types tab.
-          </p>
+          <p className="text-sm text-gray-500">{tx("No appointment types yet. Add them in the Appointment Types tab.")}</p>
         ) : (
           <div className="grid gap-2 sm:grid-cols-2">
             {allTypes.map((t) => (
@@ -402,7 +362,7 @@ export function BookingTab() {
                   className="h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
                 />
                 {t.name}
-                <span className="text-gray-400">({t.durationMinutes} min)</span>
+                <span className="text-gray-400">({t.durationMinutes}{" "}{tx("min)")}</span>
               </label>
             ))}
           </div>
@@ -419,15 +379,13 @@ export function BookingTab() {
 
       {/* Request rules */}
       <div className="rounded-xl border border-gray-200 p-4 space-y-4">
-        <h3 className="text-sm font-semibold text-gray-900">Request rules</h3>
+        <h3 className="text-sm font-semibold text-gray-900">{tx("Request rules")}</h3>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label
               htmlFor="booking-minimum-notice"
               className="block text-sm font-medium text-gray-700 mb-1.5"
-            >
-              Minimum notice
-            </label>
+            >{tx("Minimum notice")}</label>
             <select
               id="booking-minimum-notice"
               value={config.leadTimeMinutes}
@@ -450,9 +408,7 @@ export function BookingTab() {
             <label
               htmlFor="booking-window"
               className="block text-sm font-medium text-gray-700 mb-1.5"
-            >
-              How far ahead
-            </label>
+            >{tx("How far ahead")}</label>
             <select
               id="booking-window"
               value={config.bookingWindowDays}
@@ -481,29 +437,20 @@ export function BookingTab() {
             }
             className="mt-0.5 h-4 w-4 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
           />
-          <span>
-            Let new clients request appointments
-            <span className="block text-xs text-gray-500">
-              New clients and their pets are added to your records automatically.
-            </span>
+          <span>{tx("Let new clients request appointments")}<span className="block text-xs text-gray-500">{tx("New clients and their pets are added to your records automatically.")}</span>
           </span>
         </label>
-        <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-900">
-          Requests are never confirmed automatically. Your team reviews the
-          requested time, assigns a doctor and room as needed, and confirms it
-          from the schedule.
-        </p>
+        <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-900">{tx("Requests are never confirmed automatically. Your team reviews the requested time, assigns a doctor and room as needed, and confirms it from the schedule.")}</p>
       </div>
 
       {/* Look and feel */}
       <div className="rounded-xl border border-gray-200 p-4 space-y-4">
-        <h3 className="text-sm font-semibold text-gray-900">Look and feel</h3>
+        <h3 className="text-sm font-semibold text-gray-900">{tx("Look and feel")}</h3>
         <div>
           <label
             htmlFor="booking-welcome-message"
             className="block text-sm font-medium text-gray-700 mb-1.5"
-          >
-            Welcome message <span className="text-gray-400 font-normal">(optional)</span>
+          >{tx("Welcome message")}{" "}<span className="text-gray-400 font-normal">{tx("(optional)")}</span>
           </label>
           <textarea
             id="booking-welcome-message"
@@ -513,7 +460,7 @@ export function BookingTab() {
             }
             rows={2}
             maxLength={BOOKING_WELCOME_MAX_LENGTH}
-            placeholder="A short hello shown at the top of your page"
+            placeholder={tx("A short hello shown at the top of your page")}
             className={`${inputClass} resize-none`}
           />
         </div>
@@ -521,9 +468,7 @@ export function BookingTab() {
           <label
             htmlFor="booking-accent-color"
             className="text-sm font-medium text-gray-700"
-          >
-            Accent color
-          </label>
+          >{tx("Accent color")}</label>
           <input
             id="booking-accent-color"
             type="color"
@@ -539,10 +484,8 @@ export function BookingTab() {
       {/* QR code, only when live */}
       {isLive && (
         <div className="rounded-xl border border-gray-200 p-4">
-          <h3 className="text-sm font-semibold text-gray-900 mb-1">QR code</h3>
-          <p className="text-xs text-gray-500 mb-3">
-            Print it for your front desk. Clients scan it to request a visit.
-          </p>
+          <h3 className="text-sm font-semibold text-gray-900 mb-1">{tx("QR code")}</h3>
+          <p className="text-xs text-gray-500 mb-3">{tx("Print it for your front desk. Clients scan it to request a visit.")}</p>
           <div className="inline-block rounded-lg bg-white p-3 border border-gray-100">
             <QRCodeSVG value={liveUrl} size={144} />
           </div>
@@ -564,7 +507,7 @@ export function BookingTab() {
           {save.isPending && published ? (
             <Loader2 className="h-4 w-4 mr-1.5 animate-spin" />
           ) : null}
-          {isLive ? "Save changes" : "Publish page"}
+          {isLive ? tx("Save changes") : tx("Publish page")}
         </Button>
         {isLive ? (
           <Button
@@ -572,23 +515,17 @@ export function BookingTab() {
             variant="outline"
             onClick={() => handleSave(false)}
             disabled={save.isPending}
-          >
-            Unpublish
-          </Button>
+          >{tx("Unpublish")}</Button>
         ) : (
           <Button
             type="button"
             variant="outline"
             onClick={() => handleSave(false)}
             disabled={!slugValid || slugTaken || save.isPending}
-          >
-            Save draft
-          </Button>
+          >{tx("Save draft")}</Button>
         )}
         {published && !isLive && !save.isPending && (
-          <span className="text-xs text-gray-500">
-            Publishing makes your page public right away.
-          </span>
+          <span className="text-xs text-gray-500">{tx("Publishing makes your page public right away.")}</span>
         )}
       </div>
     </div>

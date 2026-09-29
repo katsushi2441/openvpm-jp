@@ -38,6 +38,7 @@ import {
   formatClinicalDateTime,
 } from "@/lib/records/clinical-dates";
 import { communicationStatusLabel } from "@/lib/communications/status";
+import { tx } from "@/lib/i18n";
 
 const speciesEmoji: Record<string, string> = PATIENT_SPECIES_EMOJI;
 
@@ -80,9 +81,7 @@ function CommunicationChannelIcon({
 function ClientDetailLoadingPanel() {
   return (
     <div className="flex items-center justify-center gap-2 rounded-lg border border-border bg-card p-8 text-sm text-muted-foreground">
-      <Loader2 className="h-4 w-4 animate-spin" />
-      Loading client...
-    </div>
+      <Loader2 className="h-4 w-4 animate-spin" />{tx("Loading client...")}</div>
   );
 }
 
@@ -111,7 +110,7 @@ export default function ClientDetailPage() {
       setIssuedPortalToken(result.accessToken);
       utils.clients.getById.invalidate({ id: params.id });
       setConfirmRotatePortal(false);
-      toast.success("One-time portal link created");
+      toast.success(tx("One-time portal link created"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -126,13 +125,13 @@ export default function ClientDetailPage() {
     return (
       <EmptyState
         icon={AlertCircle}
-        title="Unable to load client"
+        title={tx("Unable to load client")}
         description={
           error?.message ??
-          "Choose a client from the Clients list before opening the detail page."
+          tx("Choose a client from the Clients list before opening the detail page.")
         }
         action={{
-          label: "Back to Clients",
+          label: tx("Back to Clients"),
           onClick: () => router.push("/clients"),
           icon: ArrowLeft,
         }}
@@ -153,10 +152,10 @@ export default function ClientDetailPage() {
       await navigator.clipboard.writeText(
         `${window.location.origin}${portalPath}`
       );
-      toast.success("Portal link copied");
+      toast.success(tx("Portal link copied"));
       emitGuideSignal(GUIDE_SIGNALS.portalLinkCopied);
     } catch {
-      toast.error("Could not copy portal link");
+      toast.error(tx("Could not copy portal link"));
     }
   };
 
@@ -177,9 +176,7 @@ export default function ClientDetailPage() {
         onClick={() => router.push("/clients")}
         className="mb-4"
       >
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Clients
-      </Button>
+        <ArrowLeft className="mr-2 h-4 w-4" />{tx("Back to Clients")}</Button>
 
       <div className="rounded-lg border border-border bg-card p-6">
         <div className="flex items-start justify-between">
@@ -213,9 +210,7 @@ export default function ClientDetailPage() {
               variant="outline"
               size="sm"
               onClick={() => router.push(`/clients/${client.id}/edit`)}
-            >
-              Edit
-            </Button>
+            >{tx("Edit")}</Button>
           )}
         </div>
       </div>
@@ -226,17 +221,10 @@ export default function ClientDetailPage() {
       >
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <h3 className="font-heading text-lg font-semibold">
-              Client Portal
-            </h3>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Create a private, one-time link so the client can start a secure
-              portal session. Links expire after 15 minutes.
-            </p>
+            <h3 className="font-heading text-lg font-semibold">{tx("Client Portal")}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">{tx("Create a private, one-time link so the client can start a secure portal session. Links expire after 15 minutes.")}</p>
             {!canManageClientDetails ? (
-              <p className="mt-3 text-sm text-muted-foreground">
-                Portal links are available to staff with client write access.
-              </p>
+              <p className="mt-3 text-sm text-muted-foreground">{tx("Portal links are available to staff with client write access.")}</p>
             ) : portalPath ? (
               <div className="mt-3 break-all rounded-md border border-border bg-muted px-3 py-2 text-sm">
                 {portalPath}
@@ -244,19 +232,16 @@ export default function ClientDetailPage() {
             ) : (
               <p className="mt-3 text-sm text-muted-foreground">
                 {client.portalAccessState === "ready"
-                  ? "A one-time link is active, but its secret is no longer displayed. Reset access to create another."
+                  ? tx("A one-time link is active, but its secret is no longer displayed. Reset access to create another.")
                   : client.portalAccessState === "consumed"
-                    ? "The client has used their latest link. Reset access only if they need a new session."
+                    ? tx("The client has used their latest link. Reset access only if they need a new session.")
                     : client.portalAccessState === "expired"
-                      ? "The latest one-time link has expired."
-                      : "No portal link has been issued for this client yet."}
+                      ? tx("The latest one-time link has expired.")
+                      : tx("No portal link has been issued for this client yet.")}
               </p>
             )}
             {confirmRotatePortal ? (
-              <p className="mt-2 text-xs text-amber-700">
-                Resetting access invalidates the previous link and signs this
-                client out of every active portal session.
-              </p>
+              <p className="mt-2 text-xs text-amber-700">{tx("Resetting access invalidates the previous link and signs this client out of every active portal session.")}</p>
             ) : null}
           </div>
           <div className="flex shrink-0 flex-wrap gap-2">
@@ -268,9 +253,7 @@ export default function ClientDetailPage() {
                   onClick={copyPortalLink}
                   className="gap-2"
                 >
-                  <Copy className="h-4 w-4" />
-                  Copy
-                </Button>
+                  <Copy className="h-4 w-4" />{tx("Copy")}</Button>
                 <Button
                   variant="outline"
                   size="sm"
@@ -278,9 +261,7 @@ export default function ClientDetailPage() {
                   className="gap-2"
                 >
                   <a href={portalPath} target="_blank" rel="noreferrer">
-                    <ExternalLink className="h-4 w-4" />
-                    Open
-                  </a>
+                    <ExternalLink className="h-4 w-4" />{tx("Open")}</a>
                 </Button>
               </>
             ) : null}
@@ -294,12 +275,12 @@ export default function ClientDetailPage() {
               >
                 <RefreshCw className="h-4 w-4" />
                 {rotatePortalToken.isPending
-                  ? "Updating..."
+                  ? tx("Updating...")
                   : client.portalAccessState !== "not_issued"
                     ? confirmRotatePortal
-                      ? "Confirm Reset"
-                      : "Reset Access"
-                    : "Create Link"}
+                      ? tx("Confirm Reset")
+                      : tx("Reset Access")
+                    : tx("Create Link")}
               </Button>
             )}
             {canManageClientDetails && confirmRotatePortal ? (
@@ -307,9 +288,7 @@ export default function ClientDetailPage() {
                 variant="ghost"
                 size="sm"
                 onClick={() => setConfirmRotatePortal(false)}
-              >
-                Cancel
-              </Button>
+              >{tx("Cancel")}</Button>
             ) : null}
           </div>
         </div>
@@ -323,8 +302,7 @@ export default function ClientDetailPage() {
       />
 
       <div className="mt-6">
-        <h3 className="font-heading text-lg font-semibold mb-4">
-          Patients ({client.patients.length})
+        <h3 className="font-heading text-lg font-semibold mb-4">{tx("Patients (")}{client.patients.length})
         </h3>
         {client.patients.length > 0 ? (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -356,7 +334,7 @@ export default function ClientDetailPage() {
                           : "bg-amber-100 text-amber-700"
                     }`}
                   >
-                    {patient.status ?? "active"}
+                    {patient.status ?? tx("active")}
                   </span>
                 </div>
               </div>
@@ -365,11 +343,11 @@ export default function ClientDetailPage() {
         ) : (
           <EmptyState
             icon={PawPrint}
-            title="No patients for this client yet"
+            title={tx("No patients for this client yet")}
             action={
               canManageClientDetails
                 ? {
-                    label: "Add patient",
+                    label: tx("Add patient"),
                     onClick: () => {
                       const ownerName = `${client.firstName} ${client.lastName}`;
                       router.push(
@@ -418,24 +396,18 @@ function CommunicationLogPanel({ clientId }: { clientId: string }) {
   return (
     <div className="mt-6 rounded-lg border border-border bg-card p-6">
       <div>
-        <h3 className="font-heading text-lg font-semibold">
-          Communication Log
-        </h3>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Calls, texts, emails, and portal requests linked to this client.
-        </p>
+        <h3 className="font-heading text-lg font-semibold">{tx("Communication Log")}</h3>
+        <p className="mt-1 text-sm text-muted-foreground">{tx("Calls, texts, emails, and portal requests linked to this client.")}</p>
       </div>
 
       {communicationLogError || communicationLogMissing ? (
         <div className="mt-4 rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
           {communicationLogError?.message ??
-            "Unable to load communication log. Please retry."}
+            tx("Unable to load communication log. Please retry.")}
         </div>
       ) : isCommunicationLogLoading ? (
         <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          Loading communication log...
-        </div>
+          <Loader2 className="h-4 w-4 animate-spin" />{tx("Loading communication log...")}</div>
       ) : verifiedCommunicationSettings &&
         communications &&
         communications.length > 0 ? (
@@ -467,7 +439,7 @@ function CommunicationLogPanel({ clientId }: { clientId: string }) {
                       <p className="text-sm font-medium">{message.subject}</p>
                     ) : null}
                     <p className="whitespace-pre-wrap text-sm text-muted-foreground">
-                      {message.content?.trim() || "No content"}
+                      {message.content?.trim() || tx("No content")}
                     </p>
                   </div>
                   <div className="flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground">
@@ -486,8 +458,8 @@ function CommunicationLogPanel({ clientId }: { clientId: string }) {
         <EmptyState
           className="mt-4"
           icon={MessageSquare}
-          title="No communication log yet"
-          description="Messages, calls, and portal requests linked to this client will appear here."
+          title={tx("No communication log yet")}
+          description={tx("Messages, calls, and portal requests linked to this client will appear here.")}
         />
       )}
     </div>
@@ -544,7 +516,7 @@ function WellnessEnrollmentPanel({
   );
   const enroll = trpc.wellness.enroll.useMutation({
     onSuccess: () => {
-      toast.success("Wellness enrollment created");
+      toast.success(tx("Wellness enrollment created"));
       utils.wellness.listEnrollments.invalidate({
         clientId: client.id,
         status: "active",
@@ -558,7 +530,7 @@ function WellnessEnrollmentPanel({
   });
   const cancelEnrollment = trpc.wellness.cancel.useMutation({
     onSuccess: () => {
-      toast.success("Wellness enrollment cancelled");
+      toast.success(tx("Wellness enrollment cancelled"));
       utils.wellness.listEnrollments.invalidate({
         clientId: client.id,
         status: "active",
@@ -587,26 +559,21 @@ function WellnessEnrollmentPanel({
           <HeartPulse className="mt-0.5 h-5 w-5 text-primary" />
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="font-heading text-lg font-semibold">
-                Wellness Membership
-              </h3>
-              <Badge variant="secondary">Invoice schedule</Badge>
+              <h3 className="font-heading text-lg font-semibold">{tx("Wellness Membership")}</h3>
+              <Badge variant="secondary">{tx("Invoice schedule")}</Badge>
             </div>
             <p className="mt-1 text-sm text-muted-foreground">
               {isLoading
-                ? "Loading plans..."
+                ? tx("Loading plans...")
                 : error
                 ? error.message
                 : plansMissing
-                ? "Unable to load wellness plans. Please retry."
+                ? tx("Unable to load wellness plans. Please retry.")
                 : activePlans.length === 0
-                ? "No active wellness plans configured."
-                : `${activePlans.length} active plan${activePlans.length === 1 ? "" : "s"}`}
+                ? tx("No active wellness plans configured.")
+                : `${activePlans.length} active plan${activePlans.length === 1 ? "" : tx("s")}`}
             </p>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Enrollment creates scheduled invoices; saved cards are not
-              auto-charged.
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">{tx("Enrollment creates scheduled invoices; saved cards are not auto-charged.")}</p>
           </div>
         </div>
 
@@ -618,7 +585,7 @@ function WellnessEnrollmentPanel({
               onChange={(e) => setSelectedPlanId(e.target.value)}
               disabled={enroll.isPending || !enrollmentsReady}
             >
-              <option value="">Select plan</option>
+              <option value="">{tx("Select plan")}</option>
               {activePlans.map((plan) => (
                 <option key={plan.id} value={plan.id}>
                   {plan.name}
@@ -631,7 +598,7 @@ function WellnessEnrollmentPanel({
               onChange={(e) => setSelectedPatientId(e.target.value)}
               disabled={enroll.isPending || !enrollmentsReady}
             >
-              <option value="">Client account</option>
+              <option value="">{tx("Client account")}</option>
               {activePatients.map((patient) => (
                 <option key={patient.id} value={patient.id}>
                   {patient.name}
@@ -653,9 +620,7 @@ function WellnessEnrollmentPanel({
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
                 <HeartPulse className="mr-2 h-4 w-4" />
-              )}
-              Enroll
-            </Button>
+              )}{tx("Enroll")}</Button>
           </div>
         )}
       </div>
@@ -664,27 +629,21 @@ function WellnessEnrollmentPanel({
           {enrollmentsQuery.error.message}
         </div>
       ) : enrollmentsMissing ? (
-        <div className="mt-4 rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
-          Unable to load wellness memberships. Please retry.
-        </div>
+        <div className="mt-4 rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">{tx("Unable to load wellness memberships. Please retry.")}</div>
       ) : enrollmentsQuery.isLoading ? (
         <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          Loading memberships...
-        </div>
+          <Loader2 className="h-4 w-4 animate-spin" />{tx("Loading memberships...")}</div>
       ) : activeEnrollments.length > 0 ? (
         <div className="mt-4 overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-muted/50">
-                <th className="px-4 py-3 text-left font-medium">Plan</th>
-                <th className="px-4 py-3 text-left font-medium">Patient</th>
-                <th className="px-4 py-3 text-left font-medium">
-                  Next Invoice
-                </th>
-                <th className="px-4 py-3 text-right font-medium">Price</th>
+                <th className="px-4 py-3 text-left font-medium">{tx("Plan")}</th>
+                <th className="px-4 py-3 text-left font-medium">{tx("Patient")}</th>
+                <th className="px-4 py-3 text-left font-medium">{tx("Next Invoice")}</th>
+                <th className="px-4 py-3 text-right font-medium">{tx("Price")}</th>
                 <th className="px-4 py-3 text-right font-medium">
-                  {canManageWellnessMemberships ? "Actions" : "Access"}
+                  {canManageWellnessMemberships ? tx("Actions") : tx("Access")}
                 </th>
               </tr>
             </thead>
@@ -698,7 +657,7 @@ function WellnessEnrollmentPanel({
                     {enrollment.planName}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
-                    {enrollment.patientName || "Client account"}
+                    {enrollment.patientName || tx("Client account")}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {formatClinicalDate(
@@ -719,7 +678,7 @@ function WellnessEnrollmentPanel({
                         onClick={() =>
                           handleCancelEnrollment(enrollment.enrollmentId)
                         }
-                        title="Cancel enrollment"
+                        title={tx("Cancel enrollment")}
                       >
                         {cancelEnrollment.isPending ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
@@ -728,9 +687,7 @@ function WellnessEnrollmentPanel({
                         )}
                       </Button>
                     ) : (
-                      <span className="text-xs text-muted-foreground">
-                        Read-only
-                      </span>
+                      <span className="text-xs text-muted-foreground">{tx("Read-only")}</span>
                     )}
                   </td>
                 </tr>

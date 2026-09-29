@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { TourStep } from "./tour-steps";
+import { tx } from "@/lib/i18n";
 
 const CARD_W = 320;
 const CARD_H = 260; // placement estimate, matches the viewport clamp below
@@ -160,7 +161,7 @@ export function Coachmark({
         <button
           type="button"
           onClick={onSkip}
-          aria-label="Skip tour"
+          aria-label={tx("Skip tour")}
           className="absolute right-3 top-3 text-muted-foreground transition-colors hover:text-foreground"
         >
           <X className="h-4 w-4" />
@@ -185,9 +186,7 @@ export function Coachmark({
           </div>
           <div className="flex items-center gap-2">
             {index > 0 ? (
-              <Button variant="ghost" size="sm" onClick={onBack}>
-                Back
-              </Button>
+              <Button variant="ghost" size="sm" onClick={onBack}>{tx("Back")}</Button>
             ) : null}
             {/* On do-it steps (advanceOn) the page owns the primary action,
                 so the button reads as the way past, not the way forward. */}
@@ -196,7 +195,7 @@ export function Coachmark({
               variant={!isLast && step.advanceOn ? "ghost" : "default"}
               onClick={onNext}
             >
-              {isLast ? "Finish" : step.advanceOn ? "Skip this step" : "Next"}
+              {isLast ? tx("Finish") : step.advanceOn ? tx("Skip this step") : tx("Next")}
             </Button>
           </div>
         </div>
@@ -206,9 +205,7 @@ export function Coachmark({
             type="button"
             onClick={onSkip}
             className="mt-2 text-xs text-muted-foreground hover:underline"
-          >
-            Skip tour
-          </button>
+          >{tx("Skip tour")}</button>
         ) : null}
       </div>
     </>

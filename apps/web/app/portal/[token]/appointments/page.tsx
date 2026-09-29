@@ -14,6 +14,7 @@ import { EmptyState } from "@/components/common/empty-state";
 import { splitPortalAppointments } from "@/lib/portal/appointments";
 import { formatPortalDateTime } from "@/lib/portal/date";
 import { PATIENT_SPECIES_EMOJI } from "@/lib/patients/species";
+import { tx } from "@/lib/i18n";
 
 const statusStyles: Record<string, string> = {
   scheduled: "bg-blue-100 text-blue-700",
@@ -62,8 +63,8 @@ export default function AppointmentsPage() {
         <EmptyState
           className="py-12"
           icon={AlertCircle}
-          title="Unable to load appointments"
-          description="Please refresh this page or contact your clinic if the portal link has expired."
+          title={tx("Unable to load appointments")}
+          description={tx("Please refresh this page or contact your clinic if the portal link has expired.")}
         />
       </div>
     );
@@ -89,12 +90,10 @@ export default function AppointmentsPage() {
             strokeLinejoin="round"
             d="M15.75 19.5L8.25 12l7.5-7.5"
           />
-        </svg>
-        Back to portal
-      </Link>
+        </svg>{tx("Back to portal")}</Link>
 
       <div className="mb-8 flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold text-gray-900">Appointments</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{tx("Appointments")}</h1>
         <Link
           href="/portal/book"
           className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
@@ -111,24 +110,20 @@ export default function AppointmentsPage() {
               strokeLinejoin="round"
               d="M12 4.5v15m7.5-7.5h-15"
             />
-          </svg>
-          Request appointment
-        </Link>
+          </svg>{tx("Request appointment")}</Link>
       </div>
 
       {/* Upcoming and active */}
       <section className="mb-10">
         <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-primary" />
-          Upcoming and requests
-        </h2>
+          <span className="h-2 w-2 rounded-full bg-primary" />{tx("Upcoming and requests")}</h2>
         {upcoming.length === 0 ? (
           <EmptyState
             className="py-10"
             icon={CalendarClock}
-            title="No upcoming appointments or requests"
+            title={tx("No upcoming appointments or requests")}
             action={{
-              label: "Request appointment",
+              label: tx("Request appointment"),
               onClick: () => router.push("/portal/book"),
               icon: CalendarPlus,
             }}
@@ -151,7 +146,7 @@ export default function AppointmentsPage() {
                           {speciesEmoji[appt.patientSpecies] || "🐾"}
                         </span>
                       )}
-                      {appt.patientName || "No patient"}
+                      {appt.patientName || tx("No patient")}
                       {appt.typeName && (
                         <span className="text-gray-400">
                           {" "}
@@ -160,8 +155,7 @@ export default function AppointmentsPage() {
                       )}
                     </p>
                     {appt.doctorName && (
-                      <p className="text-sm text-gray-400 mt-0.5">
-                        with {appt.doctorName}
+                      <p className="text-sm text-gray-400 mt-0.5">{tx("with")}{" "}{appt.doctorName}
                       </p>
                     )}
                     {appt.locationName && (
@@ -188,14 +182,12 @@ export default function AppointmentsPage() {
       {/* Past */}
       <section>
         <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <span className="h-2 w-2 rounded-full bg-gray-400" />
-          Past
-        </h2>
+          <span className="h-2 w-2 rounded-full bg-gray-400" />{tx("Past")}</h2>
         {past.length === 0 ? (
           <EmptyState
             className="py-10"
             icon={History}
-            title="No past appointments"
+            title={tx("No past appointments")}
           />
         ) : (
           <div className="space-y-3">
@@ -215,7 +207,7 @@ export default function AppointmentsPage() {
                           {speciesEmoji[appt.patientSpecies] || "🐾"}
                         </span>
                       )}
-                      {appt.patientName || "No patient"}
+                      {appt.patientName || tx("No patient")}
                       {appt.typeName && (
                         <span className="text-gray-400">
                           {" "}
@@ -224,8 +216,7 @@ export default function AppointmentsPage() {
                       )}
                     </p>
                     {appt.doctorName && (
-                      <p className="text-sm text-gray-400 mt-0.5">
-                        with {appt.doctorName}
+                      <p className="text-sm text-gray-400 mt-0.5">{tx("with")}{" "}{appt.doctorName}
                       </p>
                     )}
                     {appt.locationName && (

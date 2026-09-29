@@ -38,6 +38,7 @@ import { formatCurrency } from "@/lib/locale/format";
 import { TEMPLATE_CATALOG_SEARCH_MAX_LENGTH } from "@/lib/templates/catalog-search";
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
+import { tx } from "@/lib/i18n";
 
 type CatalogItem = {
   id: string;
@@ -158,8 +159,7 @@ function TreatmentPlanCatalogPicker({
         }}
       >
         <span className="inline-flex items-center gap-2">
-          <Search className="h-4 w-4" /> Add a service or product
-        </span>
+          <Search className="h-4 w-4" />{" "}{tx("Add a service or product")}</span>
         <ChevronsUpDown className="h-4 w-4 text-muted-foreground" />
       </Button>
 
@@ -170,7 +170,7 @@ function TreatmentPlanCatalogPicker({
             <input
               ref={inputRef}
               role="combobox"
-              aria-label="Search treatment plan catalog"
+              aria-label={tx("Search treatment plan catalog")}
               aria-autocomplete="list"
               aria-expanded="true"
               aria-controls={listboxId}
@@ -181,7 +181,7 @@ function TreatmentPlanCatalogPicker({
               }
               maxLength={TEMPLATE_CATALOG_SEARCH_MAX_LENGTH}
               value={search}
-              placeholder="Search name, code, or category"
+              placeholder={tx("Search name, code, or category")}
               className="min-w-0 flex-1 bg-transparent py-3 text-sm outline-none placeholder:text-muted-foreground"
               onChange={(event) => setSearch(event.target.value)}
               onKeyDown={handleKeyDown}
@@ -189,7 +189,7 @@ function TreatmentPlanCatalogPicker({
             {search ? (
               <button
                 type="button"
-                aria-label="Clear search"
+                aria-label={tx("Clear search")}
                 className="rounded p-2 text-muted-foreground hover:bg-accent"
                 onClick={() => {
                   setSearch("");
@@ -204,22 +204,17 @@ function TreatmentPlanCatalogPicker({
             ref={listRef}
             id={listboxId}
             role="listbox"
-            aria-label="Available services and products"
+            aria-label={tx("Available services and products")}
             aria-busy={queryIsStale || catalogQuery.isFetching}
             className="max-h-72 overflow-y-auto p-1"
           >
             {queryIsStale || catalogQuery.isFetching ? (
               <div className="flex items-center justify-center gap-2 px-3 py-6 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" /> Searching...
-              </div>
+                <Loader2 className="h-4 w-4 animate-spin" />{" "}{tx("Searching...")}</div>
             ) : catalogQuery.error ? (
-              <div role="alert" className="px-3 py-6 text-sm text-destructive">
-                Catalog search failed. Edit the search to retry.
-              </div>
+              <div role="alert" className="px-3 py-6 text-sm text-destructive">{tx("Catalog search failed. Edit the search to retry.")}</div>
             ) : results.length === 0 ? (
-              <p className="px-3 py-6 text-center text-sm text-muted-foreground">
-                No active catalog items match.
-              </p>
+              <p className="px-3 py-6 text-center text-sm text-muted-foreground">{tx("No active catalog items match.")}</p>
             ) : (
               results.map((item, index) => (
                 <button
@@ -241,7 +236,7 @@ function TreatmentPlanCatalogPicker({
                       {item.name}
                     </span>
                     <span className="block truncate text-xs text-muted-foreground">
-                      {item.itemType === "service" ? "Service" : "Product"}
+                      {item.itemType === "service" ? tx("Service") : tx("Product")}
                       {[item.code, item.category].filter(Boolean).length
                         ? ` · ${[item.code, item.category].filter(Boolean).join(" · ")}`
                         : ""}
@@ -407,7 +402,7 @@ export function TreatmentPlanComposer({
       });
       await navigator.clipboard.writeText(result.url).catch(() => undefined);
       await utils.visitTreatmentPlans.getForAppointment.invalidate(context);
-      toast.success("Client link created and copied");
+      toast.success(tx("Client link created and copied"));
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : "Could not create client link",
@@ -422,11 +417,8 @@ export function TreatmentPlanComposer({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Treatment plan</CardTitle>
-          <CardDescription>
-            Treatment plans are temporarily unavailable. Refresh before adding
-            one.
-          </CardDescription>
+          <CardTitle>{tx("Treatment plan")}</CardTitle>
+          <CardDescription>{tx("Treatment plans are temporarily unavailable. Refresh before adding one.")}</CardDescription>
         </CardHeader>
       </Card>
     );
@@ -438,15 +430,11 @@ export function TreatmentPlanComposer({
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <CardTitle className="flex items-center gap-2">
-              <ClipboardList className="h-5 w-5 text-primary" /> Treatment plan
-            </CardTitle>
-            <CardDescription className="mt-1.5">
-              Build the plan you’ll review with the client.
-            </CardDescription>
+              <ClipboardList className="h-5 w-5 text-primary" />{" "}{tx("Treatment plan")}</CardTitle>
+            <CardDescription className="mt-1.5">{tx("Build the plan you’ll review with the client.")}</CardDescription>
           </div>
           {plan ? (
-            <Badge variant="secondary">
-              Revision {plan.revision.revisionNumber}
+            <Badge variant="secondary">{tx("Revision")}{" "}{plan.revision.revisionNumber}
             </Badge>
           ) : null}
         </div>
@@ -463,10 +451,8 @@ export function TreatmentPlanComposer({
 
         {lines.length === 0 ? (
           <div className="rounded-md border border-dashed border-border px-4 py-8 text-center">
-            <p className="text-sm font-medium">No items yet</p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Search your existing catalog to start this treatment plan.
-            </p>
+            <p className="text-sm font-medium">{tx("No items yet")}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{tx("Search your existing catalog to start this treatment plan.")}</p>
           </div>
         ) : (
           <div className="divide-y rounded-md border border-border">
@@ -487,9 +473,7 @@ export function TreatmentPlanComposer({
                     <label
                       htmlFor={`treatment-plan-quantity-${line.itemType}-${line.id}`}
                       className="mb-1 block text-xs text-muted-foreground sm:sr-only"
-                    >
-                      Quantity
-                    </label>
+                    >{tx("Quantity")}</label>
                     <Input
                       id={`treatment-plan-quantity-${line.itemType}-${line.id}`}
                       aria-label={`Quantity for ${line.name}`}
@@ -585,10 +569,7 @@ export function TreatmentPlanComposer({
         )}
 
         {lines.some((line) => !validQuantity(line.quantity)) ? (
-          <p role="alert" className="text-sm text-destructive">
-            Quantities must be greater than zero with up to three decimal
-            places.
-          </p>
+          <p role="alert" className="text-sm text-destructive">{tx("Quantities must be greater than zero with up to three decimal places.")}</p>
         ) : null}
 
         {quoteQuery.error ? (
@@ -599,9 +580,9 @@ export function TreatmentPlanComposer({
 
         <div className="flex flex-col gap-4 border-t border-border pt-4 sm:flex-row sm:items-end sm:justify-between">
           <div className="grid grid-cols-3 gap-x-5 gap-y-1 text-sm">
-            <span className="text-muted-foreground">Subtotal</span>
-            <span className="text-muted-foreground">Tax</span>
-            <span className="font-medium">Total</span>
+            <span className="text-muted-foreground">{tx("Subtotal")}</span>
+            <span className="text-muted-foreground">{tx("Tax")}</span>
+            <span className="font-medium">{tx("Total")}</span>
             <span className="tabular-nums">
               {quote ? formatCurrency(quote.subtotal, currency) : "—"}
             </span>
@@ -630,23 +611,17 @@ export function TreatmentPlanComposer({
             ) : (
               <Check className="mr-2 h-4 w-4" />
             )}
-            {plan ? "Save new revision" : "Save treatment plan"}
+            {plan ? tx("Save new revision") : tx("Save treatment plan")}
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground">
-          Saving this plan does not charge the client, adjust inventory, or
-          schedule care.
-        </p>
+        <p className="text-xs text-muted-foreground">{tx("Saving this plan does not charge the client, adjust inventory, or schedule care.")}</p>
 
         {plan?.clientDecisionsEnabled && !plan.response ? (
           <div className="space-y-3 rounded-md border border-border bg-muted/30 p-4">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <p className="text-sm font-medium">
-                  Client review and signature
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  The link expires in one hour and is locked to revision{" "}
+                <p className="text-sm font-medium">{tx("Client review and signature")}</p>
+                <p className="text-xs text-muted-foreground">{tx("The link expires in one hour and is locked to revision")}{" "}
                   {plan.revision.revisionNumber}.
                 </p>
               </div>
@@ -667,10 +642,10 @@ export function TreatmentPlanComposer({
                   <Link2 className="mr-2 h-4 w-4" />
                 )}
                 {plan.activePresentation?.status === "pending"
-                  ? "Replace client link"
+                  ? tx("Replace client link")
                   : plan.activePresentation?.status === "awaiting_signature"
-                    ? "Awaiting signature"
-                    : "Create client link"}
+                    ? tx("Awaiting signature")
+                    : tx("Create client link")}
               </Button>
             </div>
             {presentationLink ? (
@@ -678,16 +653,16 @@ export function TreatmentPlanComposer({
                 <Input
                   readOnly
                   value={presentationLink.url}
-                  aria-label="Client treatment plan link"
+                  aria-label={tx("Client treatment plan link")}
                 />
                 <Button
                   type="button"
                   variant="outline"
                   size="icon"
-                  aria-label="Copy client treatment plan link"
+                  aria-label={tx("Copy client treatment plan link")}
                   onClick={() => {
                     void navigator.clipboard.writeText(presentationLink.url);
-                    toast.success("Link copied");
+                    toast.success(tx("Link copied"));
                   }}
                 >
                   <Copy className="h-4 w-4" />
@@ -702,8 +677,7 @@ export function TreatmentPlanComposer({
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <p className="flex items-center gap-2 text-sm font-semibold text-teal-950">
-                  <FileCheck2 className="h-4 w-4" /> Client response signed
-                </p>
+                  <FileCheck2 className="h-4 w-4" />{" "}{tx("Client response signed")}</p>
                 <p className="mt-1 text-xs text-teal-900/70">
                   {plan.response.signerName} ·{" "}
                   {new Date(plan.response.decidedAt).toLocaleString()}
@@ -714,9 +688,7 @@ export function TreatmentPlanComposer({
                   href={plan.response.signedFileUrl}
                   target="_blank"
                   rel="noreferrer"
-                >
-                  Signed document
-                </a>
+                >{tx("Signed document")}</a>
               </Button>
             </div>
             <div className="divide-y divide-teal-100 rounded-md border border-teal-100 bg-white">

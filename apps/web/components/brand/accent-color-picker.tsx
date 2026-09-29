@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Check, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { tx } from "@/lib/i18n";
 
 const PRESETS = ["#0d9488", "#16a34a", "#f97316", "#db2777"];
 const FALLBACK = "#0d9488";
@@ -86,7 +87,7 @@ export function AccentColorPicker({
       <div className="relative" ref={ref}>
         <button
           type="button"
-          aria-label="Custom accent color"
+          aria-label={tx("Custom accent color")}
           disabled={disabled}
           onClick={() => setOpen((o) => !o)}
           className={cn(
@@ -106,9 +107,7 @@ export function AccentColorPicker({
 
         {open ? (
           <div className="absolute left-0 top-11 z-30 w-56 rounded-lg border border-border bg-popover p-3 shadow-lg">
-            <p className="mb-2 text-xs font-medium text-foreground">
-              Your brand color
-            </p>
+            <p className="mb-2 text-xs font-medium text-foreground">{tx("Your brand color")}</p>
             <div className="flex items-center gap-2">
               <input
                 type="color"
@@ -117,7 +116,7 @@ export function AccentColorPicker({
                   setDraft(e.target.value);
                   commit(e.target.value);
                 }}
-                aria-label="Pick color"
+                aria-label={tx("Pick color")}
                 className="h-9 w-10 shrink-0 cursor-pointer rounded-md border border-input bg-transparent p-0.5"
               />
               <input
@@ -134,7 +133,7 @@ export function AccentColorPicker({
                 placeholder={FALLBACK}
                 maxLength={7}
                 spellCheck={false}
-                aria-label="Hex color"
+                aria-label={tx("Hex color")}
                 className="h-9 w-full min-w-0 rounded-md border border-input bg-background px-2 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-ring"
               />
             </div>
@@ -146,9 +145,7 @@ export function AccentColorPicker({
               }}
               disabled={!normalizeHex(draft) || disabled}
               className="mt-2.5 h-8 w-full rounded-md bg-primary text-xs font-medium text-primary-foreground disabled:opacity-50"
-            >
-              Use this color
-            </button>
+            >{tx("Use this color")}</button>
           </div>
         ) : null}
       </div>

@@ -115,6 +115,7 @@ import {
   type BodyConditionScale,
   type MeasurementSystem,
 } from "@/lib/ambulatory-workspace";
+import { tx } from "@/lib/i18n";
 
 function PatientChartChunkLoading() {
   return (
@@ -170,10 +171,10 @@ function calculateAge(dob: string | null): string {
   const adjustedYears = months < 0 ? years - 1 : years;
 
   if (adjustedYears === 0) {
-    return `${adjustedMonths} month${adjustedMonths !== 1 ? "s" : ""}`;
+    return `${adjustedMonths} month${adjustedMonths !== 1 ? tx("s") : ""}`;
   }
   if (adjustedMonths === 0) {
-    return `${adjustedYears} year${adjustedYears !== 1 ? "s" : ""}`;
+    return `${adjustedYears} year${adjustedYears !== 1 ? tx("s") : ""}`;
   }
   return `${adjustedYears}y ${adjustedMonths}m`;
 }
@@ -189,14 +190,14 @@ type Tab =
   | "invoices";
 
 const tabs: { id: Tab; label: string }[] = [
-  { id: "overview", label: "Overview" },
-  { id: "records", label: "Medical Records" },
-  { id: "documents", label: "Documents" },
-  { id: "appointments", label: "Appointments" },
-  { id: "weight", label: "Weight History" },
-  { id: "vitals", label: "Vitals" },
-  { id: "vaccinations", label: "Vaccinations" },
-  { id: "invoices", label: "Invoices" },
+  { id: "overview", label: tx("Overview") },
+  { id: "records", label: tx("Medical Records") },
+  { id: "documents", label: tx("Documents") },
+  { id: "appointments", label: tx("Appointments") },
+  { id: "weight", label: tx("Weight History") },
+  { id: "vitals", label: tx("Vitals") },
+  { id: "vaccinations", label: tx("Vaccinations") },
+  { id: "invoices", label: tx("Invoices") },
 ];
 
 function canManagePatientDetailRole(role?: string | null): boolean {
@@ -429,7 +430,7 @@ export default function PatientDetailPage() {
         kind: "success",
       });
       await refreshPatientDetail();
-      toast.success("Patient photo updated");
+      toast.success(tx("Patient photo updated"));
     } catch (err) {
       if (photoUploadAttemptRef.current === attempt) {
         photoUploadAttemptRef.current = settleManagedUploadAttempt(attempt, {
@@ -508,7 +509,7 @@ export default function PatientDetailPage() {
   );
   const addWeight = trpc.patients.addWeight.useMutation({
     onSuccess: () => {
-      toast.success("Weight recorded");
+      toast.success(tx("Weight recorded"));
       setWeightMeasuredAt("");
       void refreshPatientDetail();
       setWeightKg("");
@@ -541,7 +542,7 @@ export default function PatientDetailPage() {
   const [allergyReaction, setAllergyReaction] = useState("");
   const addAllergy = trpc.patients.addAllergy.useMutation({
     onSuccess: () => {
-      toast.success("Allergy recorded");
+      toast.success(tx("Allergy recorded"));
       void refreshPatientDetail();
       setAllergyName("");
       setAllergyReaction("");
@@ -561,7 +562,7 @@ export default function PatientDetailPage() {
   });
   const correctAllergy = trpc.patients.markAllergyEnteredInError.useMutation({
     onSuccess: () => {
-      toast.success("Allergy correction recorded");
+      toast.success(tx("Allergy correction recorded"));
       void refreshPatientDetail();
     },
     onError: (err) => toast.error(err.message),
@@ -586,7 +587,7 @@ export default function PatientDetailPage() {
   const isPageLoading = !loadError && (isLoading || recordsSettingsLoading);
 
   if (isPageLoading) {
-    return <PatientDetailLoadingPanel label="Loading patient..." />;
+    return <PatientDetailLoadingPanel label={tx("Loading patient...")} />;
   }
 
   if (
@@ -598,15 +599,15 @@ export default function PatientDetailPage() {
     return (
       <EmptyState
         icon={AlertTriangle}
-        title="Unable to load patient"
+        title={tx("Unable to load patient")}
         description={
           loadError?.message ??
           (recordsSettingsMissing || !verifiedRecordsSettings
-            ? "Unable to load clinical settings. Please retry."
-            : "Choose a patient from the Patients list before opening the detail page.")
+            ? tx("Unable to load clinical settings. Please retry.")
+            : tx("Choose a patient from the Patients list before opening the detail page."))
         }
         action={{
-          label: "Back to Patients",
+          label: tx("Back to Patients"),
           onClick: () => router.push("/patients"),
           icon: ArrowLeft,
         }}
@@ -867,7 +868,7 @@ export default function PatientDetailPage() {
         generatedDate: formatClinicalDate(new Date(), recordsTimeZone),
       }).save(`${patientData.name.replace(/\s+/g, "_")}_medical_summary.pdf`);
 
-      toast.success("Medical summary downloaded");
+      toast.success(tx("Medical summary downloaded"));
     } catch (err) {
       toast.error(
         err instanceof Error
@@ -892,9 +893,7 @@ export default function PatientDetailPage() {
         onClick={() => router.push("/patients")}
         className="mb-4"
       >
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Patients
-      </Button>
+        <ArrowLeft className="mr-2 h-4 w-4" />{tx("Back to Patients")}</Button>
 
       <RecentClinicalItems
         patientId={patient.id}
@@ -906,20 +905,16 @@ export default function PatientDetailPage() {
           <div className="flex items-start gap-3">
             <GitMerge className="mt-0.5 h-4 w-4 shrink-0" />
             <div>
-              <p className="font-semibold">
-                Opened the canonical chart for a merged patient identity
-              </p>
+              <p className="font-semibold">{tx("Opened the canonical chart for a merged patient identity")}</p>
               <p className="mt-1">
-                {patient.mergeMetadata.sourceSnapshot.name} was merged into this
-                chart by {patient.mergeMetadata.performedByName} on{" "}
+                {patient.mergeMetadata.sourceSnapshot.name}{" "}{tx("was merged into this chart by")}{" "}{patient.mergeMetadata.performedByName}{" "}{tx("on")}{" "}
                 {formatClinicalDateTime(
                   patient.mergeMetadata.createdAt,
                   recordsTimeZone,
                 )}
                 .
               </p>
-              <p className="mt-1 text-blue-800 dark:text-blue-200">
-                Reason: {patient.mergeMetadata.reason}
+              <p className="mt-1 text-blue-800 dark:text-blue-200">{tx("Reason:")}{" "}{patient.mergeMetadata.reason}
               </p>
             </div>
           </div>
@@ -950,7 +945,7 @@ export default function PatientDetailPage() {
                       disabled={uploadingPhoto}
                       onClick={() => fileInputRef.current?.click()}
                       className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity group-hover:opacity-100 disabled:cursor-wait"
-                      title="Upload photo"
+                      title={tx("Upload photo")}
                     >
                       {uploadingPhoto ? (
                         <Loader2 className="h-5 w-5 animate-spin text-white" />
@@ -974,9 +969,7 @@ export default function PatientDetailPage() {
                   disabled={uploadingPhoto}
                   onClick={() => void uploadPatientPhoto()}
                   className="whitespace-nowrap text-xs font-medium text-destructive underline underline-offset-2 disabled:opacity-50"
-                >
-                  Try photo again
-                </button>
+                >{tx("Try photo again")}</button>
               ) : null}
             </div>
             <div>
@@ -989,7 +982,7 @@ export default function PatientDetailPage() {
                     "inline-block h-2.5 w-2.5 rounded-full",
                     statusColor,
                   )}
-                  title={patient.status ?? "active"}
+                  title={patient.status ?? tx("active")}
                 />
               </div>
               <p className="text-sm text-muted-foreground">
@@ -1003,9 +996,9 @@ export default function PatientDetailPage() {
                 {formatSex(patient.sex)}
               </p>
               <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                {patient.color && <span>Color: {patient.color}</span>}
+                {patient.color && <span>{tx("Color:")}{" "}{patient.color}</span>}
                 {patient.microchipNumber && (
-                  <span>Microchip: {patient.microchipNumber}</span>
+                  <span>{tx("Microchip:")}{" "}{patient.microchipNumber}</span>
                 )}
               </div>
               {patient.clientFirstName && (
@@ -1027,9 +1020,9 @@ export default function PatientDetailPage() {
                 <div className="flex flex-wrap items-center justify-end gap-2">
                   {fieldVisitLocations.length > 1 ? (
                     <label>
-                      <span className="sr-only">Field visit location</span>
+                      <span className="sr-only">{tx("Field visit location")}</span>
                       <select
-                        aria-label="Field visit location"
+                        aria-label={tx("Field visit location")}
                         value={selectedFieldVisitLocationId}
                         disabled={
                           fieldVisitLocationsUnavailable ||
@@ -1040,7 +1033,7 @@ export default function PatientDetailPage() {
                         }
                         className="h-9 rounded-md border border-input bg-background px-3 text-sm"
                       >
-                        <option value="">Select location...</option>
+                        <option value="">{tx("Select location...")}</option>
                         {fieldVisitLocations.map((location) => (
                           <option key={location.id} value={location.id}>
                             {location.name}
@@ -1070,8 +1063,8 @@ export default function PatientDetailPage() {
                       <Stethoscope className="mr-2 h-4 w-4" />
                     )}
                     {startFieldVisit.isPending
-                      ? "Starting visit..."
-                      : "Start field visit"}
+                      ? tx("Starting visit...")
+                      : tx("Start field visit")}
                   </Button>
                 </div>
                 {fieldVisitLocationsQuery.error ||
@@ -1080,13 +1073,11 @@ export default function PatientDetailPage() {
                   fieldVisitLocations.length === 0) ? (
                   <p className="max-w-xs text-right text-xs text-destructive">
                     {fieldVisitLocationsQuery.error?.message ??
-                      "Add an active location before starting a field visit."}
+                      tx("Add an active location before starting a field visit.")}
                   </p>
                 ) : fieldVisitLocations.length > 1 &&
                   !selectedFieldVisitLocationId ? (
-                  <p className="text-xs text-muted-foreground">
-                    Choose where this field visit is managed.
-                  </p>
+                  <p className="text-xs text-muted-foreground">{tx("Choose where this field visit is managed.")}</p>
                 ) : null}
               </div>
             ) : null}
@@ -1097,17 +1088,13 @@ export default function PatientDetailPage() {
               </>
             )}
             <Button variant="outline" size="sm" onClick={handleDownloadSummary}>
-              <FileDown className="mr-2 h-4 w-4" />
-              Download Summary
-            </Button>
+              <FileDown className="mr-2 h-4 w-4" />{tx("Download Summary")}</Button>
             {canManagePatientDetail && (
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => router.push(`/patients/${patient.id}/edit`)}
-              >
-                Edit
-              </Button>
+              >{tx("Edit")}</Button>
             )}
           </div>
         </div>
@@ -1117,13 +1104,10 @@ export default function PatientDetailPage() {
         <section className="mt-4 rounded-lg border border-primary/20 bg-primary/5 p-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
-              <h3 className="text-sm font-semibold">Patient snapshot</h3>
-              <p className="text-xs text-muted-foreground">
-                The field essentials before treatment begins.
-              </p>
+              <h3 className="text-sm font-semibold">{tx("Patient snapshot")}</h3>
+              <p className="text-xs text-muted-foreground">{tx("The field essentials before treatment begins.")}</p>
             </div>
-            <span className="text-xs font-medium text-muted-foreground">
-              Latest weight: {latestWeight}
+            <span className="text-xs font-medium text-muted-foreground">{tx("Latest weight:")}{" "}{latestWeight}
             </span>
           </div>
           {problemsQuery.isLoading ||
@@ -1132,9 +1116,7 @@ export default function PatientDetailPage() {
           snapshotVitalsQuery.isLoading ||
           vaccinationsQuery.isLoading ? (
             <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" />
-              Loading clinical snapshot...
-            </div>
+              <Loader2 className="h-4 w-4 animate-spin" />{tx("Loading clinical snapshot...")}</div>
           ) : problemsQuery.error ||
             prescriptionsQuery.error ||
             recentVisitsQuery.error ||
@@ -1145,68 +1127,53 @@ export default function PatientDetailPage() {
             !recentVisitsQuery.data ||
             !snapshotVitalsQuery.data ||
             !vaccinationsQuery.data ? (
-            <p className="mt-3 text-sm text-destructive">
-              The complete clinical snapshot could not be verified. Open the
-              chart sections below before relying on history.
-            </p>
+            <p className="mt-3 text-sm text-destructive">{tx("The complete clinical snapshot could not be verified. Open the chart sections below before relying on history.")}</p>
           ) : (
             <dl className="mt-3 grid gap-3 text-sm sm:grid-cols-2 xl:grid-cols-6">
               <div>
-                <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  Allergies
-                </dt>
+                <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{tx("Allergies")}</dt>
                 <dd className="mt-1">
                   {patient.allergies.length
                     ? patient.allergies
                         .map((allergy) => allergy.allergen)
                         .join(", ")
-                    : "None recorded"}
+                    : tx("None recorded")}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  Active problems
-                </dt>
+                <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{tx("Active problems")}</dt>
                 <dd className="mt-1">
                   {activeProblems.length
                     ? activeProblems
                         .map((problem) => problem.description)
                         .join(", ")
-                    : "None recorded"}
+                    : tx("None recorded")}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  Active medications
-                </dt>
+                <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{tx("Active medications")}</dt>
                 <dd className="mt-1">
                   {activePrescriptions.length
                     ? activePrescriptions
                         .map((prescription) => prescription.medicationName)
                         .join(", ")
-                    : "None recorded"}
+                    : tx("None recorded")}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  Last visit
-                </dt>
+                <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{tx("Last visit")}</dt>
                 <dd className="mt-1">
                   {latestVisit
                     ? `${formatClinicalDate(latestVisit.startTime, recordsTimeZone)} · ${latestVisit.origin === "field" ? "Field visit" : (latestVisit.typeName ?? "Appointment")}`
-                    : "No prior visits"}
+                    : tx("No prior visits")}
                 </dd>
               </div>
               <div>
-                <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  Latest vitals
-                </dt>
+                <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{tx("Latest vitals")}</dt>
                 <dd className="mt-1">{latestVitalsSummary}</dd>
               </div>
               <div>
-                <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  BCS / vaccines
-                </dt>
+                <dt className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{tx("BCS / vaccines")}</dt>
                 <dd className="mt-1">
                   BCS{" "}
                   {latestSnapshotBcs?.bodyConditionScore !== null &&
@@ -1216,7 +1183,7 @@ export default function PatientDetailPage() {
                       {latestSnapshotBcs.bodyConditionScale}
                     </>
                   ) : (
-                    "not recorded"
+                    tx("not recorded")
                   )}
                   {" · "}
                   {vaccinationSummary}
@@ -1232,9 +1199,7 @@ export default function PatientDetailPage() {
         <div className="mt-4 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 p-4 dark:border-red-900 dark:bg-red-950/30">
           <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-red-600 dark:text-red-400" />
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-semibold text-red-800 dark:text-red-300">
-              Allergies
-            </p>
+            <p className="text-sm font-semibold text-red-800 dark:text-red-300">{tx("Allergies")}</p>
             <div className="mt-2 grid gap-2 md:grid-cols-2">
               {patient.allergies.map((allergy) => (
                 <div
@@ -1254,15 +1219,14 @@ export default function PatientDetailPage() {
                       {allergy.severity}
                     </span>
                   </div>
-                  <p className="mt-1 text-xs">
-                    Reaction: {allergy.reaction || "Not documented"}
+                  <p className="mt-1 text-xs">{tx("Reaction:")}{" "}{allergy.reaction || tx("Not documented")}
                   </p>
                   <ClinicalCorrectionControl
                     correction={null}
                     canCorrect={canCorrectClinicalRecords}
                     isPending={correctAllergy.isPending}
                     triggerLabel="Mark allergy entered in error"
-                    description="The original allergy and this permanent reason remain in staff chart history. The allergy will stop feeding current alerts, prescription safety, AI context, PDF summaries, and the client portal."
+                    description={tx("The original allergy and this permanent reason remain in staff chart history. The allergy will stop feeding current alerts, prescription safety, AI context, PDF summaries, and the client portal.")}
                     timeZone={recordsTimeZone}
                     onCorrect={(reason) =>
                       correctAllergy.mutateAsync({
@@ -1282,9 +1246,7 @@ export default function PatientDetailPage() {
                   onClick={() => setShowAllergyForm(true)}
                   className="inline-flex items-center gap-1 rounded-full border border-dashed border-red-300 px-2.5 py-0.5 text-xs font-medium text-red-700 transition-colors hover:bg-red-100 dark:border-red-800 dark:text-red-300 dark:hover:bg-red-950"
                 >
-                  <Plus className="h-3 w-3" />
-                  Add
-                </button>
+                  <Plus className="h-3 w-3" />{tx("Add")}</button>
               ) : null}
             </div>
             {showAllergyForm ? (
@@ -1320,15 +1282,13 @@ export default function PatientDetailPage() {
             />
           ) : (
             <div className="flex flex-wrap items-center justify-between gap-2 text-sm text-muted-foreground">
-              <span>No known allergies recorded.</span>
+              <span>{tx("No known allergies recorded.")}</span>
               <button
                 type="button"
                 onClick={() => setShowAllergyForm(true)}
                 className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline"
               >
-                <Plus className="h-3.5 w-3.5" />
-                Add allergy
-              </button>
+                <Plus className="h-3.5 w-3.5" />{tx("Add allergy")}</button>
             </div>
           )}
         </div>
@@ -1339,9 +1299,7 @@ export default function PatientDetailPage() {
           Boolean(allergy.correctionId) || Boolean(allergy.deletedAt),
       ) ? (
         <details className="mt-3 rounded-lg border border-border bg-card px-4 py-3">
-          <summary className="cursor-pointer text-sm font-medium">
-            Allergy correction history
-          </summary>
+          <summary className="cursor-pointer text-sm font-medium">{tx("Allergy correction history")}</summary>
           <div className="mt-3 grid gap-3 md:grid-cols-2">
             {patient.allergyHistory
               .filter(
@@ -1359,8 +1317,7 @@ export default function PatientDetailPage() {
                       {allergy.severity}
                     </span>
                   </div>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Reaction: {allergy.reaction || "Not documented"}
+                  <p className="mt-1 text-xs text-muted-foreground">{tx("Reaction:")}{" "}{allergy.reaction || tx("Not documented")}
                   </p>
                   {allergy.correctionId &&
                   allergy.correctionReason &&
@@ -1378,11 +1335,7 @@ export default function PatientDetailPage() {
                       timeZone={recordsTimeZone}
                     />
                   ) : (
-                    <div className="mt-3 rounded-md border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
-                      Legacy removal retained. This predates permanent allergy
-                      correction attribution, so no reason or clinician is
-                      available.
-                    </div>
+                    <div className="mt-3 rounded-md border border-border bg-muted/40 p-3 text-xs text-muted-foreground">{tx("Legacy removal retained. This predates permanent allergy correction attribution, so no reason or clinician is available.")}</div>
                   )}
                 </div>
               ))}
@@ -1394,7 +1347,7 @@ export default function PatientDetailPage() {
       <div className="mt-6 overflow-x-auto border-b border-border">
         <div
           role="tablist"
-          aria-label="Patient chart sections"
+          aria-label={tx("Patient chart sections")}
           className="flex min-w-max gap-0"
         >
           {tabs.map((tab) => (
@@ -1431,16 +1384,14 @@ export default function PatientDetailPage() {
       >
         {activeTab === "overview" && (
           <div className="rounded-lg border border-border bg-card p-6">
-            <h3 className="font-heading text-base font-semibold mb-4">
-              Basic Information
-            </h3>
+            <h3 className="font-heading text-base font-semibold mb-4">{tx("Basic Information")}</h3>
             <dl className="grid gap-4 sm:grid-cols-2">
               <div>
-                <dt className="text-sm text-muted-foreground">Name</dt>
+                <dt className="text-sm text-muted-foreground">{tx("Name")}</dt>
                 <dd className="mt-0.5 text-sm font-medium">{patient.name}</dd>
               </div>
               <div>
-                <dt className="text-sm text-muted-foreground">Species</dt>
+                <dt className="text-sm text-muted-foreground">{tx("Species")}</dt>
                 <dd className="mt-0.5 text-sm font-medium">
                   {patient.species
                     ? patient.species.charAt(0).toUpperCase() +
@@ -1449,51 +1400,49 @@ export default function PatientDetailPage() {
                 </dd>
               </div>
               <div>
-                <dt className="text-sm text-muted-foreground">Breed</dt>
+                <dt className="text-sm text-muted-foreground">{tx("Breed")}</dt>
                 <dd className="mt-0.5 text-sm font-medium">
                   {patient.breed || "\u2014"}
                 </dd>
               </div>
               <div>
-                <dt className="text-sm text-muted-foreground">Sex</dt>
+                <dt className="text-sm text-muted-foreground">{tx("Sex")}</dt>
                 <dd className="mt-0.5 text-sm font-medium">
                   {formatSex(patient.sex)}
                 </dd>
               </div>
               <div>
-                <dt className="text-sm text-muted-foreground">Date of Birth</dt>
+                <dt className="text-sm text-muted-foreground">{tx("Date of Birth")}</dt>
                 <dd className="mt-0.5 text-sm font-medium">
                   {formatClinicalDate(patient.dob, recordsTimeZone, "\u2014")}
                 </dd>
               </div>
               <div>
-                <dt className="text-sm text-muted-foreground">Age</dt>
+                <dt className="text-sm text-muted-foreground">{tx("Age")}</dt>
                 <dd className="mt-0.5 text-sm font-medium">
                   {calculateAge(patient.dob)}
                 </dd>
               </div>
               <div>
-                <dt className="text-sm text-muted-foreground">Color</dt>
+                <dt className="text-sm text-muted-foreground">{tx("Color")}</dt>
                 <dd className="mt-0.5 text-sm font-medium">
                   {patient.color || "\u2014"}
                 </dd>
               </div>
               <div>
-                <dt className="text-sm text-muted-foreground">
-                  Microchip Number
-                </dt>
+                <dt className="text-sm text-muted-foreground">{tx("Microchip Number")}</dt>
                 <dd className="mt-0.5 text-sm font-medium">
                   {patient.microchipNumber || "\u2014"}
                 </dd>
               </div>
               <div>
-                <dt className="text-sm text-muted-foreground">Status</dt>
+                <dt className="text-sm text-muted-foreground">{tx("Status")}</dt>
                 <dd className="mt-0.5 text-sm font-medium capitalize">
-                  {patient.status ?? "active"}
+                  {patient.status ?? tx("active")}
                 </dd>
               </div>
               <div>
-                <dt className="text-sm text-muted-foreground">Owner</dt>
+                <dt className="text-sm text-muted-foreground">{tx("Owner")}</dt>
                 <dd className="mt-0.5 text-sm font-medium">
                   {patient.clientFirstName
                     ? `${patient.clientFirstName} ${patient.clientLastName}`
@@ -1506,10 +1455,7 @@ export default function PatientDetailPage() {
 
         {activeTab === "weight" && (
           <div className="space-y-6">
-            <p className="text-sm text-muted-foreground">
-              Includes weights recorded here and in vitals. Review a vitals
-              entry in the Vitals tab to correct its original clinical record.
-            </p>
+            <p className="text-sm text-muted-foreground">{tx("Includes weights recorded here and in vitals. Review a vitals entry in the Vitals tab to correct its original clinical record.")}</p>
             {canManagePatientDetail && (
               <form
                 onSubmit={handleRecordWeight}
@@ -1517,9 +1463,7 @@ export default function PatientDetailPage() {
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                   <div className="w-full sm:max-w-xs">
-                    <label className="mb-1 block text-xs font-medium text-muted-foreground">
-                      Weight (
-                      {chartMeasurementSystem === "us_customary" ? "lb" : "kg"})
+                    <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("Weight (")}{chartMeasurementSystem === "us_customary" ? tx("lb") : tx("kg")})
                     </label>
                     <input
                       type="number"
@@ -1550,9 +1494,7 @@ export default function PatientDetailPage() {
                       className="w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/30"
                     />
                   </div>
-                  <label className="block text-xs font-medium text-muted-foreground">
-                    Measured at (
-                    {recordsSettingsTimeZone ?? "loading clinic timezone…"})
+                  <label className="block text-xs font-medium text-muted-foreground">{tx("Measured at (")}{recordsSettingsTimeZone ?? tx("loading clinic timezone…")})
                     <input
                       type="datetime-local"
                       value={weightMeasuredAt}
@@ -1567,10 +1509,7 @@ export default function PatientDetailPage() {
                       }
                       className="mt-1 w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm"
                     />
-                    <span className="mt-1 block font-normal">
-                      Leave blank to record now; set a date for historical
-                      records.
-                    </span>
+                    <span className="mt-1 block font-normal">{tx("Leave blank to record now; set a date for historical records.")}</span>
                   </label>
                   <Button type="submit" disabled={!canSubmitWeight}>
                     {addWeight.isPending ? (
@@ -1578,7 +1517,7 @@ export default function PatientDetailPage() {
                     ) : (
                       <Plus className="mr-2 h-4 w-4" />
                     )}
-                    {addWeight.isPending ? "Saving..." : "Record weight"}
+                    {addWeight.isPending ? tx("Saving...") : tx("Record weight")}
                   </Button>
                 </div>
               </form>
@@ -1593,23 +1532,15 @@ export default function PatientDetailPage() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-border bg-muted/50">
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                          Date
-                        </th>
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                          Weight (
-                          {chartMeasurementSystem === "us_customary"
-                            ? "lb"
-                            : "kg"}
+                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Date")}</th>
+                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Weight (")}{chartMeasurementSystem === "us_customary"
+                            ? tx("lb")
+                            : tx("kg")}
                           )
                         </th>
-                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                          Recorded By
-                        </th>
+                        <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Recorded By")}</th>
                         {canCorrectClinicalRecords ? (
-                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                            Correction
-                          </th>
+                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Correction")}</th>
                         ) : null}
                       </tr>
                     </thead>
@@ -1642,9 +1573,7 @@ export default function PatientDetailPage() {
                                   variant="ghost"
                                   size="sm"
                                   onClick={() => setActiveTab("vitals")}
-                                >
-                                  Review vitals
-                                </Button>
+                                >{tx("Review vitals")}</Button>
                               ) : (
                                 <WeightCorrectionDialog
                                   patientId={patient.id}
@@ -1665,7 +1594,7 @@ export default function PatientDetailPage() {
                 </div>
               </>
             ) : (
-              <EmptyState icon={Activity} title="No weight records yet" />
+              <EmptyState icon={Activity} title={tx("No weight records yet")} />
             )}
           </div>
         )}
@@ -1746,7 +1675,7 @@ function VitalsTab({
   );
   const record = trpc.vitals.record.useMutation({
     onSuccess: () => {
-      toast.success("Vitals recorded");
+      toast.success(tx("Vitals recorded"));
       void utils.patients.getById.invalidate();
       utils.vitals.listByPatient.invalidate({ patientId });
       setForm(initialVitalsForm());
@@ -1755,7 +1684,7 @@ function VitalsTab({
   });
   const correctVital = trpc.vitals.markEnteredInError.useMutation({
     onSuccess: async () => {
-      toast.success("Vital signs retained and marked entered in error");
+      toast.success(tx("Vital signs retained and marked entered in error"));
       await utils.patients.getById.invalidate();
       await utils.vitals.listByPatient.invalidate({ patientId });
     },
@@ -1831,8 +1760,7 @@ function VitalsTab({
         >
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
             <div>
-              <label className="mb-1 block text-xs font-medium text-muted-foreground">
-                Temp ({measurementSystem === "us_customary" ? "F" : "C"})
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("Temp (")}{measurementSystem === "us_customary" ? "F" : "C"})
               </label>
               <input
                 type="number"
@@ -1860,9 +1788,7 @@ function VitalsTab({
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-muted-foreground">
-                HR (bpm)
-              </label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("HR (bpm)")}</label>
               <input
                 type="number"
                 min={VITALS_HEART_RATE_MIN_BPM}
@@ -1877,9 +1803,7 @@ function VitalsTab({
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-muted-foreground">
-                RR (bpm)
-              </label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("RR (bpm)")}</label>
               <input
                 type="number"
                 min={VITALS_RESPIRATORY_RATE_MIN_BPM}
@@ -1896,8 +1820,7 @@ function VitalsTab({
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-muted-foreground">
-                Weight ({measurementSystem === "us_customary" ? "lb" : "kg"})
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("Weight (")}{measurementSystem === "us_customary" ? tx("lb") : tx("kg")})
               </label>
               <input
                 type="number"
@@ -1924,8 +1847,7 @@ function VitalsTab({
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-muted-foreground">
-                BCS (1-{bodyConditionScale})
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("BCS (1-")}{bodyConditionScale})
               </label>
               <input
                 type="number"
@@ -1944,9 +1866,7 @@ function VitalsTab({
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-muted-foreground">
-                Pain (0-10)
-              </label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("Pain (0-10)")}</label>
               <input
                 type="number"
                 min={VITALS_PAIN_SCORE_MIN}
@@ -1961,9 +1881,7 @@ function VitalsTab({
               />
             </div>
             <div>
-              <label className="mb-1 block text-xs font-medium text-muted-foreground">
-                CRT (sec)
-              </label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("CRT (sec)")}</label>
               <input
                 type="number"
                 min={VITALS_CAPILLARY_REFILL_MIN_SEC}
@@ -1980,15 +1898,13 @@ function VitalsTab({
               />
             </div>
             <div className="col-span-2">
-              <label className="mb-1 block text-xs font-medium text-muted-foreground">
-                Mucous Membrane
-              </label>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("Mucous Membrane")}</label>
               <input
                 type="text"
                 value={form.mucousMembrane}
                 maxLength={VITALS_MUCOUS_MEMBRANE_MAX_LENGTH}
                 onChange={set("mucousMembrane")}
-                placeholder="e.g. Pink and moist"
+                placeholder={tx("e.g. Pink and moist")}
                 className="w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/30"
               />
             </div>
@@ -1998,12 +1914,12 @@ function VitalsTab({
             value={form.notes ?? ""}
             maxLength={VITALS_NOTES_MAX_LENGTH}
             onChange={set("notes")}
-            placeholder="Notes (optional)"
+            placeholder={tx("Notes (optional)")}
             className="mt-3 w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/30"
           />
           <div className="mt-3 flex justify-end">
             <Button type="submit" disabled={!canSubmitVitals}>
-              {record.isPending ? "Saving..." : "Record vitals"}
+              {record.isPending ? tx("Saving...") : tx("Record vitals")}
             </Button>
           </div>
         </form>
@@ -2016,9 +1932,9 @@ function VitalsTab({
       ) : vitalsMissing ? (
         <PatientDetailErrorPanel message="Unable to load vitals. Please retry." />
       ) : isLoading ? (
-        <PatientDetailLoadingPanel label="Loading vitals..." />
+        <PatientDetailLoadingPanel label={tx("Loading vitals...")} />
       ) : !vitals || vitals.length === 0 ? (
-        <EmptyState icon={Activity} title="No vitals recorded yet" />
+        <EmptyState icon={Activity} title={tx("No vitals recorded yet")} />
       ) : (
         <>
           {measurementSystem === "metric" && bodyConditionScale === 9 ? (
@@ -2028,14 +1944,14 @@ function VitalsTab({
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-muted/50 text-left text-muted-foreground">
-                  <th className="px-3 py-2 font-medium">Date</th>
-                  <th className="px-3 py-2 font-medium">Temp</th>
+                  <th className="px-3 py-2 font-medium">{tx("Date")}</th>
+                  <th className="px-3 py-2 font-medium">{tx("Temp")}</th>
                   <th className="px-3 py-2 font-medium">HR</th>
                   <th className="px-3 py-2 font-medium">RR</th>
-                  <th className="px-3 py-2 font-medium">Weight</th>
+                  <th className="px-3 py-2 font-medium">{tx("Weight")}</th>
                   <th className="px-3 py-2 font-medium">BCS</th>
-                  <th className="px-3 py-2 font-medium">Pain</th>
-                  <th className="px-3 py-2 font-medium">Chart status</th>
+                  <th className="px-3 py-2 font-medium">{tx("Pain")}</th>
+                  <th className="px-3 py-2 font-medium">{tx("Chart status")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -2155,14 +2071,14 @@ function VaccinationsTab({
       onSuccess: async () => {
         setEditor(null);
         await utils.records.listVaccinations.invalidate({ patientId });
-        toast.success("Certificate details updated with an audit entry");
+        toast.success(tx("Certificate details updated with an audit entry"));
       },
       onError: (err) => toast.error(err.message),
     });
   const correctVaccination =
     trpc.records.markVaccinationEnteredInError.useMutation({
       onSuccess: async () => {
-        toast.success("Vaccination retained and marked entered in error");
+        toast.success(tx("Vaccination retained and marked entered in error"));
         await utils.records.listVaccinations.invalidate({ patientId });
       },
       onError: (err) => toast.error(err.message),
@@ -2264,7 +2180,7 @@ function VaccinationsTab({
           })
           .save(`${safePatientName}_rabies_vaccination_certificate.pdf`);
       }
-      toast.success("Certificate downloaded");
+      toast.success(tx("Certificate downloaded"));
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : "Unable to create certificate",
@@ -2287,11 +2203,11 @@ function VaccinationsTab({
   }
 
   if (isLoading) {
-    return <PatientDetailLoadingPanel label="Loading vaccinations..." />;
+    return <PatientDetailLoadingPanel label={tx("Loading vaccinations...")} />;
   }
 
   if (!vaccinations || vaccinations.length === 0) {
-    return <EmptyState icon={Shield} title="No vaccination records yet" />;
+    return <EmptyState icon={Shield} title={tx("No vaccination records yet")} />;
   }
 
   return (
@@ -2299,11 +2215,8 @@ function VaccinationsTab({
       {canPrepareCertificate ? (
         <div className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="font-medium">Vaccination certificates</p>
-            <p className="text-xs text-muted-foreground">
-              Every prepared certificate receives a unique ID and an audit
-              entry. Rabies certificates must pass a required-field check.
-            </p>
+            <p className="font-medium">{tx("Vaccination certificates")}</p>
+            <p className="text-xs text-muted-foreground">{tx("Every prepared certificate receives a unique ID and an audit entry. Rabies certificates must pass a required-field check.")}</p>
           </div>
           <Button
             variant="outline"
@@ -2314,9 +2227,7 @@ function VaccinationsTab({
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
               <FileDown className="mr-2 h-4 w-4" />
-            )}
-            Download vaccination certificate
-          </Button>
+            )}{tx("Download vaccination certificate")}</Button>
         </div>
       ) : null}
 
@@ -2347,19 +2258,14 @@ function VaccinationsTab({
         >
           <div className="mb-4 flex items-start justify-between gap-3">
             <div>
-              <p className="font-medium">Edit certificate details</p>
-              <p className="text-xs text-muted-foreground">
-                Clinical history is preserved. A reason is recorded with every
-                change.
-              </p>
+              <p className="font-medium">{tx("Edit certificate details")}</p>
+              <p className="text-xs text-muted-foreground">{tx("Clinical history is preserved. A reason is recorded with every change.")}</p>
             </div>
             <Button
               type="button"
               variant="ghost"
               onClick={() => setEditor(null)}
-            >
-              Cancel
-            </Button>
+            >{tx("Cancel")}</Button>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {(
@@ -2386,9 +2292,7 @@ function VaccinationsTab({
                 />
               </label>
             ))}
-            <label className="space-y-1 text-xs font-medium text-muted-foreground">
-              Dose type
-              <select
+            <label className="space-y-1 text-xs font-medium text-muted-foreground">{tx("Dose type")}<select
                 value={editor.doseType}
                 onChange={(event) =>
                   setEditor({
@@ -2398,14 +2302,12 @@ function VaccinationsTab({
                 }
                 className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground"
               >
-                <option value="">Not recorded</option>
-                <option value="initial">Initial</option>
-                <option value="booster">Booster</option>
+                <option value="">{tx("Not recorded")}</option>
+                <option value="initial">{tx("Initial")}</option>
+                <option value="booster">{tx("Booster")}</option>
               </select>
             </label>
-            <label className="space-y-1 text-xs font-medium text-muted-foreground">
-              Licensed duration
-              <select
+            <label className="space-y-1 text-xs font-medium text-muted-foreground">{tx("Licensed duration")}<select
                 value={editor.licensedDurationMonths}
                 onChange={(event) =>
                   setEditor({
@@ -2415,15 +2317,13 @@ function VaccinationsTab({
                 }
                 className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground"
               >
-                <option value="">Not recorded</option>
-                <option value="12">1 year</option>
-                <option value="36">3 years</option>
-                <option value="48">4 years</option>
+                <option value="">{tx("Not recorded")}</option>
+                <option value="12">{tx("1 year")}</option>
+                <option value="36">{tx("3 years")}</option>
+                <option value="48">{tx("4 years")}</option>
               </select>
             </label>
-            <label className="space-y-1 text-xs font-medium text-muted-foreground">
-              Supervising veterinarian
-              <select
+            <label className="space-y-1 text-xs font-medium text-muted-foreground">{tx("Supervising veterinarian")}<select
                 value={editor.supervisingVeterinarianId}
                 onChange={(event) =>
                   setEditor({
@@ -2433,20 +2333,18 @@ function VaccinationsTab({
                 }
                 className="h-9 w-full rounded-md border border-border bg-background px-3 text-sm text-foreground"
               >
-                <option value="">Not recorded</option>
+                <option value="">{tx("Not recorded")}</option>
                 {providers.data?.map((provider) => (
                   <option key={provider.id} value={provider.id}>
                     {provider.name}
                     {provider.licenseNumber
                       ? ` — ${provider.licenseNumber}`
-                      : " — license missing"}
+                      : tx(" — license missing")}
                   </option>
                 ))}
               </select>
             </label>
-            <label className="space-y-1 text-xs font-medium text-muted-foreground sm:col-span-2 lg:col-span-4">
-              Reason for change (required, at least 10 characters)
-              <textarea
+            <label className="space-y-1 text-xs font-medium text-muted-foreground sm:col-span-2 lg:col-span-4">{tx("Reason for change (required, at least 10 characters)")}<textarea
                 value={editor.reason}
                 minLength={10}
                 maxLength={500}
@@ -2468,9 +2366,7 @@ function VaccinationsTab({
             >
               {updateCertificateDetails.isPending ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : null}
-              Save audited changes
-            </Button>
+              ) : null}{tx("Save audited changes")}</Button>
           </div>
         </form>
       ) : null}
@@ -2479,27 +2375,13 @@ function VaccinationsTab({
         <table className="w-full min-w-[960px] text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/50">
-              <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                Vaccine Name
-              </th>
-              <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                Date Given
-              </th>
-              <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                Next Due
-              </th>
-              <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                Product / Lot
-              </th>
-              <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                Administered By
-              </th>
-              <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                Certificate
-              </th>
-              <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                Status
-              </th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Vaccine Name")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Date Given")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Next Due")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Product / Lot")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Administered By")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Certificate")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Status")}</th>
             </tr>
           </thead>
           <tbody>
@@ -2520,8 +2402,7 @@ function VaccinationsTab({
                 </td>
                 <td className="px-4 py-3">
                   <span>{vax.productName ?? "—"}</span>
-                  <span className="block text-xs text-muted-foreground">
-                    Lot {vax.lotNumber ?? "—"}
+                  <span className="block text-xs text-muted-foreground">{tx("Lot")}{" "}{vax.lotNumber ?? "—"}
                   </span>
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">
@@ -2536,9 +2417,7 @@ function VaccinationsTab({
                       variant="outline"
                       disabled={prepareCertificate.isPending}
                       onClick={() => downloadCertificate("rabies", vax.id)}
-                    >
-                      Rabies PDF
-                    </Button>
+                    >{tx("Rabies PDF")}</Button>
                   ) : (
                     <span className="text-xs text-muted-foreground">—</span>
                   )}
@@ -2565,20 +2444,14 @@ function VaccinationsTab({
                           reason: "",
                         })
                       }
-                    >
-                      Edit details
-                    </Button>
+                    >{tx("Edit details")}</Button>
                   ) : null}
                 </td>
                 <td className="px-4 py-3">
                   {vax.correctionId ? (
-                    <span className="inline-flex items-center rounded-full bg-destructive/10 px-2.5 py-0.5 text-xs font-medium text-destructive">
-                      Entered in error
-                    </span>
+                    <span className="inline-flex items-center rounded-full bg-destructive/10 px-2.5 py-0.5 text-xs font-medium text-destructive">{tx("Entered in error")}</span>
                   ) : (
-                    <span className="text-xs text-muted-foreground">
-                      Recorded
-                    </span>
+                    <span className="text-xs text-muted-foreground">{tx("Recorded")}</span>
                   )}
                   <ClinicalCorrectionControl
                     correction={
@@ -2636,7 +2509,7 @@ function MedicalRecordsTab({
   } = trpc.records.listSoapNotes.useQuery({ patientId });
   const correctSoap = trpc.records.markSoapNoteEnteredInError.useMutation({
     onSuccess: async () => {
-      toast.success("SOAP note retained and marked entered in error");
+      toast.success(tx("SOAP note retained and marked entered in error"));
       await utils.records.listSoapNotes.invalidate({ patientId });
     },
     onError: (err) => toast.error(err.message),
@@ -2660,12 +2533,12 @@ function MedicalRecordsTab({
         ) : notesMissing ? (
           <PatientDetailErrorPanel message="Unable to load medical records. Please retry." />
         ) : isLoading ? (
-          <PatientDetailLoadingPanel label="Loading medical records..." />
+          <PatientDetailLoadingPanel label={tx("Loading medical records...")} />
         ) : !notes || notes.length === 0 ? (
           <EmptyState
             icon={FileText}
-            title="No medical records yet"
-            description="SOAP notes written in Records will show up here."
+            title={tx("No medical records yet")}
+            description={tx("SOAP notes written in Records will show up here.")}
           />
         ) : (
           notes.map((note) => {
@@ -2706,12 +2579,10 @@ function MedicalRecordsTab({
                             timeZone,
                             "Unknown",
                           )
-                        : "Unknown"}
+                        : tx("Unknown")}
                     </p>
                     {note.imported ? (
-                      <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
-                        Imported
-                      </span>
+                      <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">{tx("Imported")}</span>
                     ) : null}
                     <span
                       className={cn(
@@ -2721,20 +2592,19 @@ function MedicalRecordsTab({
                           : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
                       )}
                     >
-                      {note.status === "draft" ? "Draft" : "Finalized"}
+                      {note.status === "draft" ? tx("Draft") : tx("Finalized")}
                     </span>
                   </div>
                   <p className="text-xs text-muted-foreground">
                     {note.imported
                       ? note.authorName
                         ? `Imported by ${note.authorName}`
-                        : "Imported record"
-                      : (note.authorName ?? "Unknown author")}
+                        : tx("Imported record")
+                      : (note.authorName ?? tx("Unknown author"))}
                   </p>
                 </div>
                 {note.status === "finalized" ? (
-                  <p className="mb-3 text-xs text-muted-foreground">
-                    Finalized by {note.finalizerName ?? "Unknown clinician"}
+                  <p className="mb-3 text-xs text-muted-foreground">{tx("Finalized by")}{" "}{note.finalizerName ?? tx("Unknown clinician")}
                     {note.finalizedAt
                       ? ` on ${formatClinicalDateTime(note.finalizedAt, timeZone)}`
                       : ""}
@@ -2743,21 +2613,15 @@ function MedicalRecordsTab({
                   <a
                     href={`/records/new-soap/${encodeURIComponent(patientId)}?appointmentId=${encodeURIComponent(note.appointmentId)}`}
                     className="mb-3 inline-flex text-xs font-medium text-primary hover:underline"
-                  >
-                    Resume draft
-                  </a>
+                  >{tx("Resume draft")}</a>
                 ) : null}
                 {note.replacesSoapNoteId ? (
                   <div className="mb-3 rounded-md border border-primary/30 bg-primary/5 p-3 text-sm">
-                    <p className="font-medium text-primary">
-                      Current replacement SOAP
-                    </p>
+                    <p className="font-medium text-primary">{tx("Current replacement SOAP")}</p>
                     <a
                       href={`#soap-note-${note.replacesSoapNoteId}`}
                       className="mt-1 inline-flex text-xs font-medium text-primary hover:underline"
-                    >
-                      View retained original
-                    </a>
+                    >{tx("View retained original")}</a>
                   </div>
                 ) : null}
                 <dl className="grid gap-3 sm:grid-cols-2">
@@ -2783,9 +2647,7 @@ function MedicalRecordsTab({
                 </dl>
                 {note.addenda.length > 0 ? (
                   <div className="mt-4 space-y-2 border-t border-border pt-3">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                      Addenda
-                    </p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{tx("Addenda")}</p>
                     {note.addenda.map((addendum) => (
                       <div
                         key={addendum.id}
@@ -2825,7 +2687,7 @@ function MedicalRecordsTab({
                           : null
                       }
                       triggerLabel="Void without replacement"
-                      description="The original stays in permanent chart history but leaves current clinical summaries immediately. If its content needs correction, cancel and use Replace finalized SOAP. Use void alone only when no replacement belongs on this encounter; closeout will require a documented reason."
+                      description={tx("The original stays in permanent chart history but leaves current clinical summaries immediately. If its content needs correction, cancel and use Replace finalized SOAP. Use void alone only when no replacement belongs on this encounter; closeout will require a documented reason.")}
                       canCorrect={canCorrectClinicalRecords}
                       isPending={
                         correctSoap.isPending &&
@@ -2844,9 +2706,7 @@ function MedicalRecordsTab({
                         <a
                           href={`#soap-note-${note.replacementSoapNoteId}`}
                           className="text-sm font-medium text-primary hover:underline"
-                        >
-                          View signed replacement
-                        </a>
+                        >{tx("View signed replacement")}</a>
                       </div>
                     ) : canCorrectClinicalRecords &&
                       (!note.correctionId ||
@@ -2858,8 +2718,8 @@ function MedicalRecordsTab({
                             href={`/records/replace-soap/${encodeURIComponent(patientId)}?sourceNoteId=${encodeURIComponent(note.id)}&return=patient`}
                           >
                             {note.correctionId
-                              ? "Create missing replacement"
-                              : "Replace finalized SOAP"}
+                              ? tx("Create missing replacement")
+                              : tx("Replace finalized SOAP")}
                           </Link>
                         </Button>
                       </div>
@@ -2868,15 +2728,11 @@ function MedicalRecordsTab({
                         <Button asChild size="sm" variant="outline">
                           <a
                             href={`/records/new-soap/${encodeURIComponent(patientId)}?appointmentId=${encodeURIComponent(note.appointmentId)}`}
-                          >
-                            Review encounter SOAP draft
-                          </a>
+                          >{tx("Review encounter SOAP draft")}</a>
                         </Button>
                       </div>
                     ) : note.correctionId && hasOtherCurrentAppointmentSoap ? (
-                      <p className="mt-3 text-right text-xs text-muted-foreground">
-                        This encounter already has a current finalized SOAP.
-                      </p>
+                      <p className="mt-3 text-right text-xs text-muted-foreground">{tx("This encounter already has a current finalized SOAP.")}</p>
                     ) : null}
                   </>
                 ) : null}
@@ -2907,7 +2763,7 @@ function SoapAddendumControl({
       setContent("");
       setOpen(false);
       setOperationId(crypto.randomUUID());
-      toast.success("Addendum added to the finalized record");
+      toast.success(tx("Addendum added to the finalized record"));
       await utils.records.listSoapNotes.invalidate({ patientId });
     },
     onError: (error) => toast.error(error.message),
@@ -2925,19 +2781,13 @@ function SoapAddendumControl({
           setOpen(true);
         }}
       >
-        <Plus className="mr-2 h-4 w-4" />
-        Add addendum
-      </Button>
+        <Plus className="mr-2 h-4 w-4" />{tx("Add addendum")}</Button>
     );
   }
   return (
     <div className="mt-4 rounded-md border border-border p-3">
-      <label className="text-sm font-medium" htmlFor={`addendum-${noteId}`}>
-        Add attributed addendum
-      </label>
-      <p className="mt-1 text-xs text-muted-foreground">
-        Addenda cannot be edited or deleted after saving.
-      </p>
+      <label className="text-sm font-medium" htmlFor={`addendum-${noteId}`}>{tx("Add attributed addendum")}</label>
+      <p className="mt-1 text-xs text-muted-foreground">{tx("Addenda cannot be edited or deleted after saving.")}</p>
       <textarea
         id={`addendum-${noteId}`}
         value={content}
@@ -2960,7 +2810,7 @@ function SoapAddendumControl({
             })
           }
         >
-          {addendum.isPending ? "Saving..." : "Save addendum"}
+          {addendum.isPending ? tx("Saving...") : tx("Save addendum")}
         </Button>
         <Button
           type="button"
@@ -2972,9 +2822,7 @@ function SoapAddendumControl({
             setContent("");
             setOperationId(crypto.randomUUID());
           }}
-        >
-          Cancel
-        </Button>
+        >{tx("Cancel")}</Button>
       </div>
     </div>
   );
@@ -3018,14 +2866,14 @@ function AppointmentsTab({
     );
   }
   if (isLoading) {
-    return <PatientDetailLoadingPanel label="Loading appointments..." />;
+    return <PatientDetailLoadingPanel label={tx("Loading appointments...")} />;
   }
   if (!visits || visits.length === 0) {
     return (
       <EmptyState
         icon={CalendarDays}
-        title="No appointments yet"
-        description="Visits booked on the schedule will show up here."
+        title={tx("No appointments yet")}
+        description={tx("Visits booked on the schedule will show up here.")}
       />
     );
   }
@@ -3036,23 +2884,13 @@ function AppointmentsTab({
         <thead>
           <tr className="border-b border-border bg-muted/50">
             <th className="w-10 px-2 py-3">
-              <span className="sr-only">Documents</span>
+              <span className="sr-only">{tx("Documents")}</span>
             </th>
-            <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-              When
-            </th>
-            <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-              Type
-            </th>
-            <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-              Doctor
-            </th>
-            <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-              Status
-            </th>
-            <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-              Notes
-            </th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("When")}</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Type")}</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Doctor")}</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Status")}</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Notes")}</th>
           </tr>
         </thead>
         <tbody>
@@ -3070,8 +2908,8 @@ function AppointmentsTab({
                       aria-expanded={expanded}
                       aria-label={
                         expanded
-                          ? "Hide documents for this visit"
-                          : "Show documents for this visit"
+                          ? tx("Hide documents for this visit")
+                          : tx("Show documents for this visit")
                       }
                       className="rounded-md p-1 text-muted-foreground transition-colors hover:text-foreground"
                     >
@@ -3089,7 +2927,7 @@ function AppointmentsTab({
                           timeZone,
                           "Unknown",
                         )
-                      : "Unknown"}
+                      : tx("Unknown")}
                   </td>
                   <td className="px-4 py-3">
                     <span className="inline-flex items-center gap-2">
@@ -3204,10 +3042,10 @@ function PatientFileRows({
                         : ""
                     }`
                   : file.category === "lab-results"
-                    ? "Lab report"
+                    ? tx("Lab report")
                     : file.category === "documents"
-                      ? "External record"
-                      : "Document"}
+                      ? tx("External record")
+                      : tx("Document")}
                 {" · "}
                 {formatClinicalDateTime(file.createdAt, timeZone, "Unknown")}
               </p>
@@ -3218,17 +3056,13 @@ function PatientFileRows({
               rel="noreferrer"
               className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-primary hover:underline"
             >
-              <ExternalLink className="h-3.5 w-3.5" />
-              View
-            </a>
+              <ExternalLink className="h-3.5 w-3.5" />{tx("View")}</a>
             <a
               href={file.fileUrl}
               download={file.fileName}
               className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-primary hover:underline"
             >
-              <Download className="h-3.5 w-3.5" />
-              Download
-            </a>
+              <Download className="h-3.5 w-3.5" />{tx("Download")}</a>
           </li>
         );
       })}
@@ -3253,16 +3087,12 @@ function VisitDocuments({
   if (isLoading) {
     return (
       <div className="flex items-center gap-2 text-xs text-muted-foreground">
-        <Loader2 className="h-3.5 w-3.5 animate-spin" />
-        Loading documents...
-      </div>
+        <Loader2 className="h-3.5 w-3.5 animate-spin" />{tx("Loading documents...")}</div>
     );
   }
   if (error || !data) {
     return (
-      <p className="text-xs text-destructive">
-        Unable to load documents for this visit.
-      </p>
+      <p className="text-xs text-destructive">{tx("Unable to load documents for this visit.")}</p>
     );
   }
 
@@ -3271,10 +3101,7 @@ function VisitDocuments({
 
   if (photos.length === 0 && documents.length === 0) {
     return (
-      <p className="text-xs text-muted-foreground">
-        Nothing attached to this visit yet. Photos and consents captured during
-        the visit show up here.
-      </p>
+      <p className="text-xs text-muted-foreground">{tx("Nothing attached to this visit yet. Photos and consents captured during the visit show up here.")}</p>
     );
   }
 
@@ -3311,11 +3138,11 @@ const documentFilters: {
   id: PatientFileKind | "all" | "lab";
   label: string;
 }[] = [
-  { id: "all", label: "All" },
-  { id: "photo", label: "Photos" },
-  { id: "consent", label: "Consents" },
-  { id: "document", label: "Documents" },
-  { id: "lab", label: "Lab reports" },
+  { id: "all", label: tx("All") },
+  { id: "photo", label: tx("Photos") },
+  { id: "consent", label: tx("Consents") },
+  { id: "document", label: tx("Documents") },
+  { id: "lab", label: tx("Lab reports") },
 ];
 
 function DocumentsTab({
@@ -3354,7 +3181,7 @@ function DocumentsTab({
     );
   }
   if (isLoading) {
-    return <PatientDetailLoadingPanel label="Loading documents..." />;
+    return <PatientDetailLoadingPanel label={tx("Loading documents...")} />;
   }
   if (!data || data.length === 0) {
     return (
@@ -3362,8 +3189,8 @@ function DocumentsTab({
         <PatientDocumentUpload key={patientId} patientId={patientId} />
         <EmptyState
           icon={Paperclip}
-          title="No documents yet"
-          description="Upload outside records and lab reports here. Captured photos and signed consents also appear in this list."
+          title={tx("No documents yet")}
+          description={tx("Upload outside records and lab reports here. Captured photos and signed consents also appear in this list.")}
         />
       </div>
     );
@@ -3401,14 +3228,12 @@ function DocumentsTab({
       </div>
 
       {visible.length === 0 ? (
-        <div className="rounded-lg border border-border bg-card p-6 text-sm text-muted-foreground">
-          Nothing here yet for this filter.
-        </div>
+        <div className="rounded-lg border border-border bg-card p-6 text-sm text-muted-foreground">{tx("Nothing here yet for this filter.")}</div>
       ) : (
         <div className="space-y-4">
           {photos.length > 0 && (
             <div className="rounded-lg border border-border bg-card p-4">
-              <h3 className="mb-3 text-sm font-medium">Photos</h3>
+              <h3 className="mb-3 text-sm font-medium">{tx("Photos")}</h3>
               <PatientPhotoGrid photos={photos} />
             </div>
           )}
@@ -3452,14 +3277,14 @@ function InvoicesTab({ patientId }: { patientId: string }) {
     );
   }
   if (isLoading) {
-    return <PatientDetailLoadingPanel label="Loading invoices..." />;
+    return <PatientDetailLoadingPanel label={tx("Loading invoices...")} />;
   }
   if (!data || data.items.length === 0) {
     return (
       <EmptyState
         icon={Receipt}
-        title="No invoices yet"
-        description="Invoices created in Billing for this patient will show up here."
+        title={tx("No invoices yet")}
+        description={tx("Invoices created in Billing for this patient will show up here.")}
       />
     );
   }
@@ -3469,18 +3294,10 @@ function InvoicesTab({ patientId }: { patientId: string }) {
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-border bg-muted/50">
-            <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-              Created
-            </th>
-            <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-              Total
-            </th>
-            <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-              Paid
-            </th>
-            <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-              Status
-            </th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Created")}</th>
+            <th className="px-4 py-3 text-right font-medium text-muted-foreground">{tx("Total")}</th>
+            <th className="px-4 py-3 text-right font-medium text-muted-foreground">{tx("Paid")}</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Status")}</th>
             <th className="px-4 py-3" />
           </tr>
         </thead>
@@ -3510,16 +3327,14 @@ function InvoicesTab({ patientId }: { patientId: string }) {
                     ] ?? "bg-gray-100 text-gray-600",
                   )}
                 >
-                  {invoice.isEstimate ? "estimate" : invoice.status}
+                  {invoice.isEstimate ? tx("estimate") : invoice.status}
                 </span>
               </td>
               <td className="px-4 py-3 text-right">
                 <Link
                   href="/billing"
                   className="text-xs font-medium text-primary hover:underline"
-                >
-                  Open in Billing
-                </Link>
+                >{tx("Open in Billing")}</Link>
               </td>
             </tr>
           ))}
@@ -3558,16 +3373,14 @@ function AllergyForm({
         <label
           htmlFor="allergy-allergen"
           className="mb-1 block text-xs font-medium text-muted-foreground"
-        >
-          Allergen
-        </label>
+        >{tx("Allergen")}</label>
         <input
           id="allergy-allergen"
           type="text"
           value={allergyName}
           maxLength={255}
           required
-          placeholder="Penicillin"
+          placeholder={tx("Penicillin")}
           onChange={(event) => setAllergyName(event.target.value)}
           className="w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/30"
         />
@@ -3576,9 +3389,7 @@ function AllergyForm({
         <label
           htmlFor="allergy-severity"
           className="mb-1 block text-xs font-medium text-muted-foreground"
-        >
-          Severity
-        </label>
+        >{tx("Severity")}</label>
         <select
           id="allergy-severity"
           value={allergySeverity}
@@ -3589,24 +3400,22 @@ function AllergyForm({
           }
           className="rounded-md border border-border bg-background px-2 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/30"
         >
-          <option value="mild">Mild</option>
-          <option value="moderate">Moderate</option>
-          <option value="severe">Severe</option>
+          <option value="mild">{tx("Mild")}</option>
+          <option value="moderate">{tx("Moderate")}</option>
+          <option value="severe">{tx("Severe")}</option>
         </select>
       </div>
       <div className="w-full sm:w-56">
         <label
           htmlFor="allergy-reaction"
           className="mb-1 block text-xs font-medium text-muted-foreground"
-        >
-          Reaction (optional)
-        </label>
+        >{tx("Reaction (optional)")}</label>
         <input
           id="allergy-reaction"
           type="text"
           value={allergyReaction}
           maxLength={2000}
-          placeholder="Facial swelling"
+          placeholder={tx("Facial swelling")}
           onChange={(event) => setAllergyReaction(event.target.value)}
           className="w-full rounded-md border border-border bg-background px-2 py-1.5 text-sm outline-none focus:ring-2 focus:ring-primary/30"
         />
@@ -3618,11 +3427,9 @@ function AllergyForm({
           ) : (
             <Plus className="mr-1.5 h-3.5 w-3.5" />
           )}
-          {isPending ? "Saving..." : "Save allergy"}
+          {isPending ? tx("Saving...") : tx("Save allergy")}
         </Button>
-        <Button type="button" variant="ghost" size="sm" onClick={onCancel}>
-          Cancel
-        </Button>
+        <Button type="button" variant="ghost" size="sm" onClick={onCancel}>{tx("Cancel")}</Button>
       </div>
     </form>
   );

@@ -13,6 +13,7 @@ import {
   type PatientHistoryStateFilter,
 } from "@/lib/records/patient-history";
 import { trpc } from "@/lib/trpc";
+import { tx } from "@/lib/i18n";
 
 type HistoryCursor = {
   occurredAt: string;
@@ -159,11 +160,8 @@ export function PatientHistorySearch({
       <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="font-medium">Find in patient history</p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Reduce a long chart to matching SOAP, medications, labs, and other
-              clinical records.
-            </p>
+            <p className="font-medium">{tx("Find in patient history")}</p>
+            <p className="mt-1 text-sm text-muted-foreground">{tx("Reduce a long chart to matching SOAP, medications, labs, and other clinical records.")}</p>
           </div>
           <Button
             type="button"
@@ -171,9 +169,7 @@ export function PatientHistorySearch({
             className="min-h-11 w-full sm:w-auto"
             onClick={() => setPanelOpen(true)}
           >
-            <Search className="mr-2 h-4 w-4" />
-            Find in history
-          </Button>
+            <Search className="mr-2 h-4 w-4" />{tx("Find in history")}</Button>
         </div>
       </div>
     );
@@ -189,23 +185,20 @@ export function PatientHistorySearch({
 
   return (
     <section
-      aria-label="Find in patient history"
+      aria-label={tx("Find in patient history")}
       className="rounded-lg border border-border bg-card p-4"
     >
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
-          <h3 className="font-semibold">Find in patient history</h3>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Exact text only. Private staff notes and worklists are never
-            searched here.
-          </p>
+          <h3 className="font-semibold">{tx("Find in patient history")}</h3>
+          <p className="mt-1 text-sm text-muted-foreground">{tx("Exact text only. Private staff notes and worklists are never searched here.")}</p>
         </div>
         <Button
           type="button"
           variant="ghost"
           size="icon"
           className="min-h-11 min-w-11"
-          aria-label="Close history filters"
+          aria-label={tx("Close history filters")}
           onClick={() => {
             clearFilters();
             setPanelOpen(false);
@@ -220,9 +213,7 @@ export function PatientHistorySearch({
           <label
             htmlFor="patient-history-query"
             className="text-sm font-medium"
-          >
-            Search medical history
-          </label>
+          >{tx("Search medical history")}</label>
           <div className="mt-1 flex flex-col gap-2 sm:flex-row">
             <Input
               id="patient-history-query"
@@ -230,7 +221,7 @@ export function PatientHistorySearch({
               value={query}
               maxLength={120}
               autoComplete="off"
-              placeholder="Try carprofen, condition, or procedure"
+              placeholder={tx("Try carprofen, condition, or procedure")}
               className="min-h-11 flex-1"
               onChange={(event) => setQuery(event.target.value)}
             />
@@ -240,13 +231,13 @@ export function PatientHistorySearch({
               disabled={search.isFetching}
             >
               <Search className="mr-2 h-4 w-4" />
-              {search.isFetching ? "Searching..." : "Apply filters"}
+              {search.isFetching ? tx("Searching...") : tx("Apply filters")}
             </Button>
           </div>
         </div>
 
         <fieldset>
-          <legend className="text-sm font-medium">Record types</legend>
+          <legend className="text-sm font-medium">{tx("Record types")}</legend>
           <div className="mt-2 flex flex-wrap gap-2">
             {PATIENT_HISTORY_RECORD_TYPES.map((recordType) => {
               const selected = recordTypes.includes(recordType);
@@ -268,13 +259,11 @@ export function PatientHistorySearch({
               );
             })}
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">
-            At least one record type stays selected.
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{tx("At least one record type stays selected.")}</p>
         </fieldset>
 
         <fieldset>
-          <legend className="text-sm font-medium">Record state</legend>
+          <legend className="text-sm font-medium">{tx("Record state")}</legend>
           <div className="mt-2 flex flex-wrap gap-2">
             {(["all", "current", "corrected"] as const).map((value) => (
               <button
@@ -296,10 +285,10 @@ export function PatientHistorySearch({
         </fieldset>
 
         <fieldset>
-          <legend className="text-sm font-medium">Clinical date</legend>
+          <legend className="text-sm font-medium">{tx("Clinical date")}</legend>
           <div className="mt-2 grid gap-3 sm:grid-cols-2">
             <label className="text-sm">
-              <span className="text-muted-foreground">From</span>
+              <span className="text-muted-foreground">{tx("From")}</span>
               <Input
                 type="date"
                 value={fromDate}
@@ -311,7 +300,7 @@ export function PatientHistorySearch({
               />
             </label>
             <label className="text-sm">
-              <span className="text-muted-foreground">To</span>
+              <span className="text-muted-foreground">{tx("To")}</span>
               <Input
                 type="date"
                 value={toDate}
@@ -331,9 +320,7 @@ export function PatientHistorySearch({
         </fieldset>
 
         <div className="flex justify-end">
-          <Button type="button" variant="ghost" onClick={clearFilters}>
-            Clear filters
-          </Button>
+          <Button type="button" variant="ghost" onClick={clearFilters}>{tx("Clear filters")}</Button>
         </div>
       </form>
 
@@ -347,9 +334,7 @@ export function PatientHistorySearch({
               <div className="flex items-start gap-2 text-destructive">
                 <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
                 <div>
-                  <p className="font-medium">
-                    Unable to search patient history
-                  </p>
+                  <p className="font-medium">{tx("Unable to search patient history")}</p>
                   <p className="mt-1 text-sm">{search.error.message}</p>
                 </div>
               </div>
@@ -358,31 +343,22 @@ export function PatientHistorySearch({
                 variant="outline"
                 className="mt-3"
                 onClick={retry}
-              >
-                Retry
-              </Button>
+              >{tx("Retry")}</Button>
             </div>
           ) : search.isFetching && !search.data ? (
-            <p className="py-8 text-center text-sm text-muted-foreground">
-              Searching authorized history...
-            </p>
+            <p className="py-8 text-center text-sm text-muted-foreground">{tx("Searching authorized history...")}</p>
           ) : search.data ? (
             <>
               <p className="text-sm text-muted-foreground" aria-live="polite">
                 {search.data.total === 0
-                  ? "No matching records"
+                  ? tx("No matching records")
                   : `Showing ${pageStart}-${pageEnd} of ${search.data.total} matching records`}
               </p>
 
               {search.data.items.length === 0 ? (
                 <div className="mt-3 rounded-md border border-dashed border-border p-6 text-center">
-                  <p className="font-medium">
-                    No history matches these filters
-                  </p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Try a different exact term, record type, state, or date
-                    range.
-                  </p>
+                  <p className="font-medium">{tx("No history matches these filters")}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{tx("Try a different exact term, record type, state, or date range.")}</p>
                 </div>
               ) : (
                 <div className="mt-3 space-y-3">
@@ -410,28 +386,18 @@ export function PatientHistorySearch({
                             {statusLabel(item.status)}
                           </span>
                           {item.imported ? (
-                            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
-                              Imported
-                            </span>
+                            <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">{tx("Imported")}</span>
                           ) : null}
                           {item.corrected ? (
-                            <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-xs text-destructive">
-                              Corrected · retained
-                            </span>
+                            <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-xs text-destructive">{tx("Corrected · retained")}</span>
                           ) : (
-                            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
-                              Current
-                            </span>
+                            <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">{tx("Current")}</span>
                           )}
                           {item.replacesRecordId ? (
-                            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">
-                              Current replacement
-                            </span>
+                            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary">{tx("Current replacement")}</span>
                           ) : null}
                           {item.replacementRecordId ? (
-                            <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">
-                              Original replaced
-                            </span>
+                            <span className="rounded-full bg-muted px-2 py-0.5 text-xs text-muted-foreground">{tx("Original replaced")}</span>
                           ) : null}
                         </div>
                       </div>
@@ -440,9 +406,7 @@ export function PatientHistorySearch({
                           {item.summary}
                         </p>
                       ) : (
-                        <p className="mt-3 text-sm text-muted-foreground">
-                          No additional text is stored for this record.
-                        </p>
+                        <p className="mt-3 text-sm text-muted-foreground">{tx("No additional text is stored for this record.")}</p>
                       )}
                     </article>
                   ))}
@@ -451,8 +415,7 @@ export function PatientHistorySearch({
 
               {search.data.total > 0 ? (
                 <div className="mt-4 flex flex-col-reverse gap-2 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-xs text-muted-foreground">
-                    Page {pageNumber}
+                  <p className="text-xs text-muted-foreground">{tx("Page")}{" "}{pageNumber}
                   </p>
                   <div className="grid grid-cols-2 gap-2 sm:flex">
                     <Button
@@ -461,18 +424,14 @@ export function PatientHistorySearch({
                       className="min-h-11"
                       disabled={cursorStack.length <= 1 || search.isFetching}
                       onClick={goToPreviousPage}
-                    >
-                      Previous
-                    </Button>
+                    >{tx("Previous")}</Button>
                     <Button
                       type="button"
                       variant="outline"
                       className="min-h-11"
                       disabled={!search.data.nextCursor || search.isFetching}
                       onClick={goToNextPage}
-                    >
-                      Next
-                    </Button>
+                    >{tx("Next")}</Button>
                   </div>
                 </div>
               ) : null}
@@ -480,10 +439,7 @@ export function PatientHistorySearch({
           ) : null}
         </div>
       ) : (
-        <p className="mt-4 border-t border-border pt-4 text-sm text-muted-foreground">
-          Apply filters to enter the read-only search view. The complete SOAP
-          timeline remains below.
-        </p>
+        <p className="mt-4 border-t border-border pt-4 text-sm text-muted-foreground">{tx("Apply filters to enter the read-only search view. The complete SOAP timeline remains below.")}</p>
       )}
     </section>
   );

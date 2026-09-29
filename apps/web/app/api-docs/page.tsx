@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { WEBHOOK_EVENT_DEFINITIONS } from "@/lib/webhook-events";
+import { tx } from "@/lib/i18n";
 
 export const metadata: Metadata = {
-  title: "OpenVPM API Reference",
-  description: "API documentation for OpenVPM veterinary practice management",
+  title: tx("OpenVPM API Reference"),
+  description: tx("API documentation for OpenVPM veterinary practice management"),
 };
 
 // ── Endpoint definitions ─────────────────────────────────────
@@ -27,17 +28,17 @@ interface Section {
 const sections: Section[] = [
   {
     id: "auth",
-    title: "Authentication",
+    title: tx("Authentication"),
     description:
-      "Register practices and retrieve the current user session. Dashboard procedures use session cookies; portal and REST endpoints use their own token/key flows.",
+      tx("Register practices and retrieve the current user session. Dashboard procedures use session cookies; portal and REST endpoints use their own token/key flows."),
     endpoints: [
       {
         name: "auth.register",
         method: "POST",
-        description: "Register a new practice with an admin user account.",
+        description: tx("Register a new practice with an admin user account."),
         input: `{
   practiceName: string,
-  country: "US" | "CA" | "GB" | "IE" | "AU",
+  country: "US" | "CA" | "GB" | "IE" | "AU" | "JP",
   name?: string,
   email: string,
   password: string   // min 8 characters
@@ -48,7 +49,7 @@ const sections: Section[] = [
       {
         name: "auth.me",
         method: "GET",
-        description: "Get the current authenticated user and practice details.",
+        description: tx("Get the current authenticated user and practice details."),
         response: `{
   id: string,
   email: string,
@@ -63,13 +64,13 @@ const sections: Section[] = [
   },
   {
     id: "clients",
-    title: "Clients",
-    description: "Manage pet owners / client records.",
+    title: tx("Clients"),
+    description: tx("Manage pet owners / client records."),
     endpoints: [
       {
         name: "clients.list",
         method: "GET",
-        description: "List clients with optional search and pagination.",
+        description: tx("List clients with optional search and pagination."),
         input: `{
   search?: string,
   limit?: number,    // 1-100, default 25
@@ -84,14 +85,14 @@ const sections: Section[] = [
         name: "clients.search",
         method: "GET",
         description:
-          "Quick search clients by name, email, or phone. Returns up to 10 results.",
+          tx("Quick search clients by name, email, or phone. Returns up to 10 results."),
         input: `{ query: string }`,
         response: `Client[]`,
       },
       {
         name: "clients.getById",
         method: "GET",
-        description: "Get a single client with their patients.",
+        description: tx("Get a single client with their patients."),
         input: `{ id: string }`,
         response: `{
   ...Client,
@@ -102,7 +103,7 @@ const sections: Section[] = [
         name: "clients.create",
         method: "POST",
         description:
-          "Create a new client record and issue a private portal access token.",
+          tx("Create a new client record and issue a private portal access token."),
         input: `{
   firstName: string,
   lastName: string,
@@ -119,7 +120,7 @@ const sections: Section[] = [
         name: "clients.rotatePortalAccessToken",
         method: "POST",
         description:
-          "Create or rotate a client's private portal link. Existing portal URLs stop working immediately after rotation.",
+          tx("Create or rotate a client's private portal link. Existing portal URLs stop working immediately after rotation."),
         input: `{ id: string }`,
         response: `{
   id: string,
@@ -129,7 +130,7 @@ const sections: Section[] = [
       {
         name: "clients.update",
         method: "POST",
-        description: "Update an existing client.",
+        description: tx("Update an existing client."),
         input: `{
   id: string,
   firstName?: string,
@@ -146,7 +147,7 @@ const sections: Section[] = [
       {
         name: "clients.delete",
         method: "POST",
-        description: "Soft-delete a client record.",
+        description: tx("Soft-delete a client record."),
         input: `{ id: string }`,
         response: `{ success: true }`,
       },
@@ -154,13 +155,13 @@ const sections: Section[] = [
   },
   {
     id: "patients",
-    title: "Patients",
-    description: "Manage animal patient records, weights, and allergies.",
+    title: tx("Patients"),
+    description: tx("Manage animal patient records, weights, and allergies."),
     endpoints: [
       {
         name: "patients.list",
         method: "GET",
-        description: "List patients with optional filters.",
+        description: tx("List patients with optional filters."),
         input: `{
   search?: string,
   species?: string,
@@ -177,7 +178,7 @@ const sections: Section[] = [
         name: "patients.search",
         method: "GET",
         description:
-          "Quick search by patient, owner, or breed. Returns up to 10 deterministically ordered results.",
+          tx("Quick search by patient, owner, or breed. Returns up to 10 deterministically ordered results."),
         input: `{ query: string }`,
         response: `Patient[]`,
       },
@@ -185,7 +186,7 @@ const sections: Section[] = [
         name: "patients.getById",
         method: "GET",
         description:
-          "Get full patient details including weights, allergies, and owner info.",
+          tx("Get full patient details including weights, allergies, and owner info."),
         input: `{ id: string }`,
         response: `{
   ...Patient,
@@ -197,7 +198,7 @@ const sections: Section[] = [
       {
         name: "patients.create",
         method: "POST",
-        description: "Create a new patient record.",
+        description: tx("Create a new patient record."),
         input: `{
   clientId: string,
   name: string,
@@ -213,7 +214,7 @@ const sections: Section[] = [
       {
         name: "patients.update",
         method: "POST",
-        description: "Update an existing patient record.",
+        description: tx("Update an existing patient record."),
         input: `{
   id: string,
   name?: string,
@@ -230,14 +231,14 @@ const sections: Section[] = [
       {
         name: "patients.delete",
         method: "POST",
-        description: "Soft-delete a patient record.",
+        description: tx("Soft-delete a patient record."),
         input: `{ id: string }`,
         response: `{ success: true }`,
       },
       {
         name: "patients.addWeight",
         method: "POST",
-        description: "Record a weight measurement.",
+        description: tx("Record a weight measurement."),
         input: `{
   patientId: string,
   weight: number,
@@ -248,7 +249,7 @@ const sections: Section[] = [
       {
         name: "patients.addAllergy",
         method: "POST",
-        description: "Record a known allergy.",
+        description: tx("Record a known allergy."),
         input: `{
   patientId: string,
   allergen: string,
@@ -261,13 +262,13 @@ const sections: Section[] = [
   },
   {
     id: "appointments",
-    title: "Appointments",
-    description: "Schedule and manage appointments.",
+    title: tx("Appointments"),
+    description: tx("Schedule and manage appointments."),
     endpoints: [
       {
         name: "appointments.list",
         method: "GET",
-        description: "List appointments within a date range.",
+        description: tx("List appointments within a date range."),
         input: `{
   startDate: string,  // ISO date
   endDate: string,    // ISO date
@@ -279,14 +280,14 @@ const sections: Section[] = [
       {
         name: "appointments.getById",
         method: "GET",
-        description: "Get full appointment details.",
+        description: tx("Get full appointment details."),
         input: `{ id: string }`,
         response: `Appointment`,
       },
       {
         name: "appointments.create",
         method: "POST",
-        description: "Schedule a new appointment.",
+        description: tx("Schedule a new appointment."),
         input: `{
   patientId: string,
   clientId: string,
@@ -305,7 +306,7 @@ const sections: Section[] = [
         name: "appointments.updateStatus",
         method: "POST",
         description:
-          "Update appointment status (e.g., confirm, check in, exam, check out, cancel).",
+          tx("Update appointment status (e.g., confirm, check in, exam, check out, cancel)."),
         input: `{
   id: string,
   status: "scheduled" | "confirmed" | "checked_in" | "in_exam" | "checked_out" | "no_show" | "cancelled"
@@ -315,25 +316,25 @@ const sections: Section[] = [
       {
         name: "appointments.listTypes",
         method: "GET",
-        description: "List available appointment types for the practice.",
+        description: tx("List available appointment types for the practice."),
         response: `AppointmentType[]`,
       },
       {
         name: "appointments.listDoctors",
         method: "GET",
-        description: "List veterinarians available for scheduling.",
+        description: tx("List veterinarians available for scheduling."),
         response: `Doctor[]`,
       },
       {
         name: "appointments.listLocations",
         method: "GET",
-        description: "List active clinic locations available for scheduling.",
+        description: tx("List active clinic locations available for scheduling."),
         response: `Array<{ id: string, name: string, address: string | null, phone: string | null, isPrimary: boolean }>`,
       },
       {
         name: "appointments.listRooms",
         method: "GET",
-        description: "List exam rooms, optionally for one clinic location.",
+        description: tx("List exam rooms, optionally for one clinic location."),
         input: `{ locationId?: string }`,
         response: `Room[]`,
       },
@@ -341,14 +342,14 @@ const sections: Section[] = [
   },
   {
     id: "records",
-    title: "Medical Records",
+    title: tx("Medical Records"),
     description:
-      "SOAP notes, vaccinations, lab results, procedures, problems, and prescriptions.",
+      tx("SOAP notes, vaccinations, lab results, procedures, problems, and prescriptions."),
     endpoints: [
       {
         name: "records.listSoapNotes",
         method: "GET",
-        description: "List SOAP notes for a patient.",
+        description: tx("List SOAP notes for a patient."),
         input: `{ patientId: string }`,
         response: `SoapNote[]`,
       },
@@ -356,7 +357,7 @@ const sections: Section[] = [
         name: "records.createSoapNote",
         method: "POST",
         description:
-          "Create an immediately finalized, immutable SOAP note for an active in-exam appointment. Conflicts with an existing draft or effective finalized note.",
+          tx("Create an immediately finalized, immutable SOAP note for an active in-exam appointment. Conflicts with an existing draft or effective finalized note."),
         input: `{
   patientId: string,
   appointmentId: string,
@@ -370,14 +371,14 @@ const sections: Section[] = [
       {
         name: "records.listVaccinations",
         method: "GET",
-        description: "List vaccination records for a patient.",
+        description: tx("List vaccination records for a patient."),
         input: `{ patientId: string }`,
         response: `Vaccination[]`,
       },
       {
         name: "records.createVaccination",
         method: "POST",
-        description: "Record a vaccination.",
+        description: tx("Record a vaccination."),
         input: `{
   patientId: string,
   vaccineName: string,
@@ -392,14 +393,14 @@ const sections: Section[] = [
       {
         name: "records.listLabResults",
         method: "GET",
-        description: "List lab results for a patient.",
+        description: tx("List lab results for a patient."),
         input: `{ patientId: string }`,
         response: `LabResult[]`,
       },
       {
         name: "records.createLabResult",
         method: "POST",
-        description: "Create a lab result entry.",
+        description: tx("Create a lab result entry."),
         input: `{
   patientId: string,
   testName: string,
@@ -412,7 +413,7 @@ const sections: Section[] = [
       {
         name: "records.updateLabResultStatus",
         method: "POST",
-        description: "Update the status of a lab result.",
+        description: tx("Update the status of a lab result."),
         input: `{
   id: string,
   status: "pending" | "completed" | "reviewed"
@@ -422,14 +423,14 @@ const sections: Section[] = [
       {
         name: "records.listProcedures",
         method: "GET",
-        description: "List procedures performed on a patient.",
+        description: tx("List procedures performed on a patient."),
         input: `{ patientId: string }`,
         response: `Procedure[]`,
       },
       {
         name: "records.createProcedure",
         method: "POST",
-        description: "Record a procedure.",
+        description: tx("Record a procedure."),
         input: `{
   patientId: string,
   name: string,
@@ -441,14 +442,14 @@ const sections: Section[] = [
       {
         name: "records.listProblems",
         method: "GET",
-        description: "List active and resolved problems for a patient.",
+        description: tx("List active and resolved problems for a patient."),
         input: `{ patientId: string }`,
         response: `Problem[]`,
       },
       {
         name: "records.createProblem",
         method: "POST",
-        description: "Add a problem to the patient's problem list.",
+        description: tx("Add a problem to the patient's problem list."),
         input: `{
   patientId: string,
   description: string,
@@ -460,7 +461,7 @@ const sections: Section[] = [
       {
         name: "records.updateProblemStatus",
         method: "POST",
-        description: "Mark a problem as resolved or reactivate it.",
+        description: tx("Mark a problem as resolved or reactivate it."),
         input: `{
   id: string,
   status: "active" | "resolved"
@@ -470,14 +471,14 @@ const sections: Section[] = [
       {
         name: "records.listPrescriptions",
         method: "GET",
-        description: "List prescriptions for a patient.",
+        description: tx("List prescriptions for a patient."),
         input: `{ patientId: string }`,
         response: `Prescription[]`,
       },
       {
         name: "records.createPrescription",
         method: "POST",
-        description: "Create a prescription.",
+        description: tx("Create a prescription."),
         input: `{
   patientId: string,
   medicationName: string,
@@ -497,13 +498,13 @@ const sections: Section[] = [
   },
   {
     id: "billing",
-    title: "Billing",
-    description: "Invoices, payments, services, and estimates.",
+    title: tx("Billing"),
+    description: tx("Invoices, payments, services, and estimates."),
     endpoints: [
       {
         name: "billing.listInvoices",
         method: "GET",
-        description: "List invoices with optional filters.",
+        description: tx("List invoices with optional filters."),
         input: `{
   status?: string,
   isEstimate?: boolean,
@@ -518,7 +519,7 @@ const sections: Section[] = [
       {
         name: "billing.getInvoice",
         method: "GET",
-        description: "Get full invoice with line items and payments.",
+        description: tx("Get full invoice with line items and payments."),
         input: `{ id: string }`,
         response: `{
   ...Invoice,
@@ -529,7 +530,7 @@ const sections: Section[] = [
       {
         name: "billing.createInvoice",
         method: "POST",
-        description: "Create an invoice or estimate.",
+        description: tx("Create an invoice or estimate."),
         input: `{
   clientId: string,
   patientId?: string,
@@ -549,7 +550,7 @@ const sections: Section[] = [
         name: "billing.updateInvoiceStatus",
         method: "POST",
         description:
-          "Update a workflow status. Paid is derived from recorded payments or adjustments and cannot be set directly.",
+          tx("Update a workflow status. Paid is derived from recorded payments or adjustments and cannot be set directly."),
         input: `{
   id: string,
   status: "draft" | "sent" | "overdue" | "void"
@@ -559,14 +560,14 @@ const sections: Section[] = [
       {
         name: "billing.convertEstimateToInvoice",
         method: "POST",
-        description: "Convert an approved estimate into a billable invoice.",
+        description: tx("Convert an approved estimate into a billable invoice."),
         input: `{ id: string }`,
         response: `Invoice`,
       },
       {
         name: "billing.recordPayment",
         method: "POST",
-        description: "Record a payment against an invoice.",
+        description: tx("Record a payment against an invoice."),
         input: `{
   invoiceId: string,
   amount: number,
@@ -579,28 +580,28 @@ const sections: Section[] = [
         name: "billing.createCardPaymentCheckout",
         method: "POST",
         description:
-          "Create a Stripe Checkout link for the remaining adjusted invoice balance.",
+          tx("Create a Stripe Checkout link for the remaining adjusted invoice balance."),
         input: `{ invoiceId: string }`,
         response: `{ url: string }`,
       },
       {
         name: "billing.listPayments",
         method: "GET",
-        description: "List payments for an invoice.",
+        description: tx("List payments for an invoice."),
         input: `{ invoiceId: string }`,
         response: `Payment[]`,
       },
       {
         name: "billing.listAdjustments",
         method: "GET",
-        description: "List credits and write-offs for an invoice.",
+        description: tx("List credits and write-offs for an invoice."),
         input: `{ invoiceId: string }`,
         response: `InvoiceAdjustment[]`,
       },
       {
         name: "billing.applyInvoiceAdjustment",
         method: "POST",
-        description: "Apply a credit or write-off to an invoice balance.",
+        description: tx("Apply a credit or write-off to an invoice balance."),
         input: `{
   invoiceId: string,
   type: "credit" | "write_off",
@@ -612,26 +613,26 @@ const sections: Section[] = [
       {
         name: "billing.voidInvoice",
         method: "POST",
-        description: "Void an invoice with no payment or adjustment history.",
+        description: tx("Void an invoice with no payment or adjustment history."),
         input: `{ id: string }`,
         response: `Invoice`,
       },
       {
         name: "billing.listServices",
         method: "GET",
-        description: "List all services offered by the practice.",
+        description: tx("List all services offered by the practice."),
         response: `Service[]`,
       },
       {
         name: "billing.listArchivedServices",
         method: "GET",
-        description: "List archived services for administrator recovery.",
+        description: tx("List archived services for administrator recovery."),
         response: `Service[]`,
       },
       {
         name: "billing.createService",
         method: "POST",
-        description: "Create a service in the practice charge catalog.",
+        description: tx("Create a service in the practice charge catalog."),
         input: `{ name: string, code?: string, category?: string, defaultPrice: string }`,
         response: `Service`,
       },
@@ -639,7 +640,7 @@ const sections: Section[] = [
         name: "billing.updateService",
         method: "POST",
         description:
-          "Update a service if its browser version is still current.",
+          tx("Update a service if its browser version is still current."),
         input: `{ id: string, expected: { name: string, code?: string, category?: string, defaultPrice: string }, name: string, code?: string, category?: string, defaultPrice: string }`,
         response: `Service`,
       },
@@ -647,35 +648,35 @@ const sections: Section[] = [
         name: "billing.archiveService",
         method: "POST",
         description:
-          "Remove a service from future charge pickers without changing historical invoices.",
+          tx("Remove a service from future charge pickers without changing historical invoices."),
         input: `{ id: string, expected: { name: string, code?: string, category?: string, defaultPrice: string } }`,
         response: `{ success: true }`,
       },
       {
         name: "billing.restoreService",
         method: "POST",
-        description: "Restore an archived service to future charge pickers.",
+        description: tx("Restore an archived service to future charge pickers."),
         input: `{ id: string, expected: { name: string, code?: string, category?: string, defaultPrice: string } }`,
         response: `{ success: true }`,
       },
       {
         name: "billing.listProducts",
         method: "GET",
-        description: "List products available for invoicing.",
+        description: tx("List products available for invoicing."),
         response: `Product[]`,
       },
     ],
   },
   {
     id: "portal",
-    title: "Client Portal",
+    title: tx("Client Portal"),
     description:
-      "Token-based public access for pet owners. No session required -- uses a unique access token per client.",
+      tx("Token-based public access for pet owners. No session required -- uses a unique access token per client."),
     endpoints: [
       {
         name: "portal.getClient",
         method: "GET",
-        description: "Get client profile and pets via portal token.",
+        description: tx("Get client profile and pets via portal token."),
         input: `{ token: string }`,
         response: `{
   client: Client,
@@ -687,7 +688,7 @@ const sections: Section[] = [
       {
         name: "portal.getPetDetail",
         method: "GET",
-        description: "Get full pet details including medical history.",
+        description: tx("Get full pet details including medical history."),
         input: `{
   token: string,
   patientId: string
@@ -704,7 +705,7 @@ const sections: Section[] = [
       {
         name: "portal.getAppointments",
         method: "GET",
-        description: "List upcoming appointments for the client.",
+        description: tx("List upcoming appointments for the client."),
         input: `{ token: string }`,
         response: `Appointment[]`,
         auth: "Portal token",
@@ -712,7 +713,7 @@ const sections: Section[] = [
       {
         name: "portal.getInvoices",
         method: "GET",
-        description: "List invoices for the client.",
+        description: tx("List invoices for the client."),
         input: `{ token: string }`,
         response: `Invoice[]`,
         auth: "Portal token",
@@ -720,7 +721,7 @@ const sections: Section[] = [
       {
         name: "portal.getMessages",
         method: "GET",
-        description: "List portal messages for the client.",
+        description: tx("List portal messages for the client."),
         input: `{ token: string }`,
         response: `{
   timezone: string | null,
@@ -740,7 +741,7 @@ const sections: Section[] = [
         name: "portal.createMessage",
         method: "POST",
         description:
-          "Send a portal message from the client into the shared inbox.",
+          tx("Send a portal message from the client into the shared inbox."),
         input: `{
   token: string,
   content: string
@@ -752,7 +753,7 @@ const sections: Section[] = [
         name: "portal.markMessagesRead",
         method: "POST",
         description:
-          "Mark outbound clinic portal messages as read after the client opens the thread.",
+          tx("Mark outbound clinic portal messages as read after the client opens the thread."),
         input: `{ token: string }`,
         response: `{ success: true, updated: number }`,
         auth: "Portal token",
@@ -760,7 +761,7 @@ const sections: Section[] = [
       {
         name: "portal.getAppointmentTypes",
         method: "GET",
-        description: "List appointment types available for portal booking.",
+        description: tx("List appointment types available for portal booking."),
         input: `{ token: string }`,
         response: `Array<{ id: string, name: string, durationMinutes: number, requiresDoctor: number }>`,
         auth: "Portal token",
@@ -768,7 +769,7 @@ const sections: Section[] = [
       {
         name: "portal.availableSlots",
         method: "GET",
-        description: "List suggested open times for a portal booking date.",
+        description: tx("List suggested open times for a portal booking date."),
         input: `{
   token: string,
   date: string, // YYYY-MM-DD
@@ -783,7 +784,7 @@ const sections: Section[] = [
         name: "portal.requestAppointment",
         method: "POST",
         description:
-          "Submit an appointment request from the portal using an exact requested time.",
+          tx("Submit an appointment request from the portal using an exact requested time."),
         input: `{
   token: string,
   patientId: string,
@@ -800,14 +801,14 @@ const sections: Section[] = [
   },
   {
     id: "apiKeys",
-    title: "API Keys",
+    title: tx("API Keys"),
     description:
-      "Admin-only API key management for server-to-server integrations. Raw keys are returned once at creation.",
+      tx("Admin-only API key management for server-to-server integrations. Raw keys are returned once at creation."),
     endpoints: [
       {
         name: "apiKeys.list",
         method: "GET",
-        description: "List active API keys for the practice.",
+        description: tx("List active API keys for the practice."),
         response: `Array<{
   id: string,
   name: string,
@@ -822,7 +823,7 @@ const sections: Section[] = [
         name: "apiKeys.create",
         method: "POST",
         description:
-          "Create an API key for REST integrations. The raw key is returned once and is never stored in plaintext. The agent:write scope must be paired with agent:run or *.",
+          tx("Create an API key for REST integrations. The raw key is returned once and is never stored in plaintext. The agent:write scope must be paired with agent:run or *."),
         input: `{
   name: string,
   scopes: Array<"clients:read" | "patients:read" | "appointments:read" | "appointments:write" | "records:write" | "agent:run" | "agent:write" | "*">
@@ -833,7 +834,7 @@ const sections: Section[] = [
       {
         name: "apiKeys.revoke",
         method: "POST",
-        description: "Revoke an API key.",
+        description: tx("Revoke an API key."),
         input: `{ id: string }`,
         response: `{ success: true }`,
         auth: "Admin only",
@@ -842,14 +843,14 @@ const sections: Section[] = [
   },
   {
     id: "restApi",
-    title: "REST API",
+    title: tx("REST API"),
     description:
       "API-key authenticated /api/v1 endpoints for external integrations. Send Authorization: Bearer <api-key>.",
     endpoints: [
       {
         name: "GET /api/v1/clients",
         method: "GET",
-        description: "List clients for the authenticated practice.",
+        description: tx("List clients for the authenticated practice."),
         input: `?limit=25&offset=0`,
         response: `{ data: Client[], pagination: Pagination }`,
         auth: "API key: clients:read",
@@ -857,14 +858,14 @@ const sections: Section[] = [
       {
         name: "GET /api/v1/clients/:id",
         method: "GET",
-        description: "Fetch a single client.",
+        description: tx("Fetch a single client."),
         response: `{ data: Client }`,
         auth: "API key: clients:read",
       },
       {
         name: "GET /api/v1/patients",
         method: "GET",
-        description: "List patients, optionally filtered by client.",
+        description: tx("List patients, optionally filtered by client."),
         input: `?client_id=uuid&limit=25&offset=0`,
         response: `{ data: Patient[], pagination: Pagination }`,
         auth: "API key: patients:read",
@@ -872,7 +873,7 @@ const sections: Section[] = [
       {
         name: "GET /api/v1/patients/:id",
         method: "GET",
-        description: "Fetch a single patient.",
+        description: tx("Fetch a single patient."),
         response: `{ data: Patient }`,
         auth: "API key: patients:read",
       },
@@ -880,7 +881,7 @@ const sections: Section[] = [
         name: "GET /api/v1/appointments",
         method: "GET",
         description:
-          "List appointments, optionally filtered by client, patient, clinic location, status, or start-time window. Date-only filters use UTC day bounds.",
+          tx("List appointments, optionally filtered by client, patient, clinic location, status, or start-time window. Date-only filters use UTC day bounds."),
         input: `?client_id=uuid&patient_id=uuid&location_id=uuid&status=scheduled&from=YYYY-MM-DD-or-ISO-timestamp&to=YYYY-MM-DD-or-ISO-timestamp&limit=25&offset=0`,
         response: `{ data: Appointment[], pagination: Pagination }`,
         auth: "API key: appointments:read",
@@ -888,7 +889,7 @@ const sections: Section[] = [
       {
         name: "GET /api/v1/appointments/:id",
         method: "GET",
-        description: "Fetch a single appointment.",
+        description: tx("Fetch a single appointment."),
         response: `{ data: Appointment }`,
         auth: "API key: appointments:read",
       },
@@ -896,7 +897,7 @@ const sections: Section[] = [
         name: "POST /api/v1/appointments",
         method: "POST",
         description:
-          "Create an appointment and emit the appointment.created webhook with camelCase appointment fields.",
+          tx("Create an appointment and emit the appointment.created webhook with camelCase appointment fields."),
         input: `{
   client_id?: string,
   patient_id?: string,
@@ -915,7 +916,7 @@ const sections: Section[] = [
         name: "POST /api/v1/soap-notes",
         method: "POST",
         description:
-          "Create an immediately finalized, immutable SOAP note for an external AI scribe during an active in-exam appointment and emit the soap_note.created webhook. Returns a conflict when the encounter already has a draft or effective finalized note.",
+          tx("Create an immediately finalized, immutable SOAP note for an external AI scribe during an active in-exam appointment and emit the soap_note.created webhook. Returns a conflict when the encounter already has a draft or effective finalized note."),
         input: `{
   patient_id: string,
   appointment_id: string,
@@ -933,7 +934,7 @@ const sections: Section[] = [
         name: "POST /api/v1/agent",
         method: "POST",
         description:
-          "Run the OpenVPM Agent from an external automation. Instruction text is trimmed and must be nonblank. Cloud trials require signed Stripe billing-setup evidence before AI is enabled; the rest of the free trial remains available. Write-enabled runs require agent:write plus each write tool's resource scope.",
+          tx("Run the OpenVPM Agent from an external automation. Instruction text is trimmed and must be nonblank. Cloud trials require signed Stripe billing-setup evidence before AI is enabled; the rest of the free trial remains available. Write-enabled runs require agent:write plus each write tool's resource scope."),
         input: `{
   instruction: string,
   allow_writes?: boolean
@@ -945,14 +946,14 @@ const sections: Section[] = [
   },
   {
     id: "webhooks",
-    title: "Webhooks",
+    title: tx("Webhooks"),
     description:
-      "Subscribe to real-time events. Webhook payloads are signed with HMAC-SHA256 using the secret provided at creation.",
+      tx("Subscribe to real-time events. Webhook payloads are signed with HMAC-SHA256 using the secret provided at creation."),
     endpoints: [
       {
         name: "webhooks.list",
         method: "GET",
-        description: "List all webhooks for the practice.",
+        description: tx("List all webhooks for the practice."),
         response: `Webhook[]`,
         auth: "Admin only",
       },
@@ -960,7 +961,7 @@ const sections: Section[] = [
         name: "webhooks.create",
         method: "POST",
         description:
-          "Create a webhook subscription. The secret is returned once and cannot be retrieved again.",
+          tx("Create a webhook subscription. The secret is returned once and cannot be retrieved again."),
         input: `{
   url: string,
   events: WebhookEvent[]
@@ -974,7 +975,7 @@ const sections: Section[] = [
       {
         name: "webhooks.toggle",
         method: "POST",
-        description: "Enable or disable a webhook.",
+        description: tx("Enable or disable a webhook."),
         input: `{ id: string }`,
         response: `Webhook`,
         auth: "Admin only",
@@ -982,7 +983,7 @@ const sections: Section[] = [
       {
         name: "webhooks.delete",
         method: "POST",
-        description: "Delete a webhook subscription.",
+        description: tx("Delete a webhook subscription."),
         input: `{ id: string }`,
         response: `{ success: true }`,
         auth: "Admin only",
@@ -991,13 +992,13 @@ const sections: Section[] = [
   },
   {
     id: "inventory",
-    title: "Inventory",
-    description: "Track products, stock levels, and suppliers.",
+    title: tx("Inventory"),
+    description: tx("Track products, stock levels, and suppliers."),
     endpoints: [
       {
         name: "inventory.list",
         method: "GET",
-        description: "List inventory items with optional filters.",
+        description: tx("List inventory items with optional filters."),
         input: `{
   search?: string,
   category?: string,
@@ -1022,7 +1023,7 @@ const sections: Section[] = [
       {
         name: "inventory.create",
         method: "POST",
-        description: "Add a new inventory item.",
+        description: tx("Add a new inventory item."),
         input: `{
   name: string,
   sku?: string,
@@ -1040,7 +1041,7 @@ const sections: Section[] = [
         name: "inventory.update",
         method: "POST",
         description:
-          "Update inventory item metadata. Use inventory.adjustStock for stock quantity changes so every movement has a reason.",
+          tx("Update inventory item metadata. Use inventory.adjustStock for stock quantity changes so every movement has a reason."),
         input: `{
   id: string,
   name?: string,
@@ -1057,7 +1058,7 @@ const sections: Section[] = [
       {
         name: "inventory.adjustStock",
         method: "POST",
-        description: "Adjust stock quantity (positive or negative).",
+        description: tx("Adjust stock quantity (positive or negative)."),
         input: `{
   id: string,
   adjustment: number,
@@ -1068,13 +1069,13 @@ const sections: Section[] = [
       {
         name: "inventory.listSuppliers",
         method: "GET",
-        description: "List all suppliers.",
+        description: tx("List all suppliers."),
         response: `Supplier[]`,
       },
       {
         name: "inventory.createSupplier",
         method: "POST",
-        description: "Add a new supplier.",
+        description: tx("Add a new supplier."),
         input: `{
   name: string,
   contactEmail?: string,
@@ -1087,7 +1088,7 @@ const sections: Section[] = [
       {
         name: "inventory.updateSupplier",
         method: "POST",
-        description: "Update supplier contact details.",
+        description: tx("Update supplier contact details."),
         input: `{
   id: string,
   name?: string,
@@ -1102,14 +1103,14 @@ const sections: Section[] = [
   },
   {
     id: "reports",
-    title: "Reports",
-    description: "Run practice analytics over configurable date ranges.",
+    title: tx("Reports"),
+    description: tx("Run practice analytics over configurable date ranges."),
     endpoints: [
       {
         name: "reports.revenue",
         method: "GET",
         description:
-          "Revenue totals, previous-period comparison, and daily revenue for a selected range.",
+          tx("Revenue totals, previous-period comparison, and daily revenue for a selected range."),
         input: `{
   startDate?: "YYYY-MM-DD",
   endDate?: "YYYY-MM-DD"
@@ -1125,7 +1126,7 @@ const sections: Section[] = [
         name: "reports.appointments",
         method: "GET",
         description:
-          "Appointment KPIs and doctor breakdown for a selected range.",
+          tx("Appointment KPIs and doctor breakdown for a selected range."),
         input: `{
   startDate?: "YYYY-MM-DD",
   endDate?: "YYYY-MM-DD"
@@ -1144,7 +1145,7 @@ const sections: Section[] = [
         name: "reports.topServices",
         method: "GET",
         description:
-          "Top billed service items by count and revenue for a selected range.",
+          tx("Top billed service items by count and revenue for a selected range."),
         input: `{
   startDate?: "YYYY-MM-DD",
   endDate?: "YYYY-MM-DD"
@@ -1157,7 +1158,7 @@ const sections: Section[] = [
       {
         name: "reports.inventoryAlerts",
         method: "GET",
-        description: "Current low-stock, expired, and expiring-product alerts.",
+        description: tx("Current low-stock, expired, and expiring-product alerts."),
         response: `{
   lowStock: Product[],
   expired: Product[],
@@ -1168,13 +1169,13 @@ const sections: Section[] = [
   },
   {
     id: "settings",
-    title: "Settings",
-    description: "Admin-only practice configuration endpoints.",
+    title: tx("Settings"),
+    description: tx("Admin-only practice configuration endpoints."),
     endpoints: [
       {
         name: "settings.listLocations",
         method: "GET",
-        description: "List active practice locations.",
+        description: tx("List active practice locations."),
         response: `Array<{
   id: string,
   name: string,
@@ -1188,7 +1189,7 @@ const sections: Section[] = [
         name: "settings.createLocation",
         method: "POST",
         description:
-          "Create a practice location and sync hosted billing quantities.",
+          tx("Create a practice location and sync hosted billing quantities."),
         input: `{
   name: string,
   address?: string,
@@ -1201,7 +1202,7 @@ const sections: Section[] = [
       {
         name: "settings.updateLocation",
         method: "POST",
-        description: "Update a tenant-scoped location.",
+        description: tx("Update a tenant-scoped location."),
         input: `{
   id: string,
   name?: string,
@@ -1214,7 +1215,7 @@ const sections: Section[] = [
       {
         name: "settings.setPrimaryLocation",
         method: "POST",
-        description: "Make one active tenant location the primary location.",
+        description: tx("Make one active tenant location the primary location."),
         input: `{ id: string }`,
         response: `Location`,
         auth: "Admin only",
@@ -1223,7 +1224,7 @@ const sections: Section[] = [
         name: "settings.deleteLocation",
         method: "POST",
         description:
-          "Retire a location, disable its texting setup, preserve at least one active location, and sync hosted billing quantities.",
+          tx("Retire a location, disable its texting setup, preserve at least one active location, and sync hosted billing quantities."),
         input: `{ id: string }`,
         response: `{ success: true }`,
         auth: "Admin only",
@@ -1232,14 +1233,14 @@ const sections: Section[] = [
   },
   {
     id: "communications",
-    title: "Communications",
-    description: "Track client communications across channels.",
+    title: tx("Communications"),
+    description: tx("Track client communications across channels."),
     endpoints: [
       {
         name: "communications.list",
         method: "GET",
         description:
-          "List communications with optional filters. The sent inbox filter includes sent, delivered, and read outbound messages.",
+          tx("List communications with optional filters. The sent inbox filter includes sent, delivered, and read outbound messages."),
         input: `{
   clientId?: string,
   status?: string,
@@ -1260,7 +1261,7 @@ const sections: Section[] = [
         name: "communications.listConversations",
         method: "GET",
         description:
-          "List one latest message per shared-inbox conversation, with unread counts derived server-side. The sent inbox filter includes sent, delivered, and read outbound conversations.",
+          tx("List one latest message per shared-inbox conversation, with unread counts derived server-side. The sent inbox filter includes sent, delivered, and read outbound conversations."),
         input: `{
   inboxFilter?: "all" | "unread" | "sent",
   limit?: number,
@@ -1279,7 +1280,7 @@ const sections: Section[] = [
       {
         name: "communications.getByClient",
         method: "GET",
-        description: "Get all communications for a specific client.",
+        description: tx("Get all communications for a specific client."),
         input: `{ clientId: string }`,
         response: `Array<Communication & {
   readAt: Date | null,
@@ -1291,7 +1292,7 @@ const sections: Section[] = [
         name: "communications.markClientRead",
         method: "POST",
         description:
-          "Mark unread inbound messages for a client thread as read.",
+          tx("Mark unread inbound messages for a client thread as read."),
         input: `{ clientId: string }`,
         response: `{ ok: true, updated: number }`,
       },
@@ -1299,7 +1300,7 @@ const sections: Section[] = [
         name: "communications.assignClient",
         method: "POST",
         description:
-          "Assign or unassign a client conversation in the shared inbox.",
+          tx("Assign or unassign a client conversation in the shared inbox."),
         input: `{
   clientId: string,
   action: "assign_to_me" | "unassign",
@@ -1316,7 +1317,7 @@ const sections: Section[] = [
         name: "communications.linkCommunicationToClient",
         method: "POST",
         description:
-          "Link an unmatched inbound inbox message to a tenant client.",
+          tx("Link an unmatched inbound inbox message to a tenant client."),
         input: `{
   communicationId: string,
   clientId: string
@@ -1333,7 +1334,7 @@ const sections: Section[] = [
         name: "communications.create",
         method: "POST",
         description:
-          "Send outbound SMS/email from the inbox, or send/log internal portal communications visible in the client portal.",
+          tx("Send outbound SMS/email from the inbox, or send/log internal portal communications visible in the client portal."),
         input: `{
   clientId: string,
   channel: "phone" | "sms" | "email" | "portal",
@@ -1349,7 +1350,7 @@ const sections: Section[] = [
         name: "communications.updateStatus",
         method: "POST",
         description:
-          "Mark one unread inbound communication as read. Delivery lifecycle statuses are managed by send and provider webhook handlers.",
+          tx("Mark one unread inbound communication as read. Delivery lifecycle statuses are managed by send and provider webhook handlers."),
         input: `{
   id: string,
   status: "read"
@@ -1396,9 +1397,7 @@ function EndpointCard({ endpoint }: { endpoint: Endpoint }) {
         </p>
         {endpoint.input && (
           <div>
-            <p className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-500">
-              Input
-            </p>
+            <p className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-500">{tx("Input")}</p>
             <pre className="overflow-x-auto rounded bg-slate-50 p-3 text-xs text-slate-700 dark:bg-slate-900 dark:text-slate-300">
               {endpoint.input}
             </pre>
@@ -1406,9 +1405,7 @@ function EndpointCard({ endpoint }: { endpoint: Endpoint }) {
         )}
         {endpoint.response && (
           <div>
-            <p className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-500">
-              Response
-            </p>
+            <p className="mb-1 text-xs font-medium uppercase tracking-wide text-slate-500">{tx("Response")}</p>
             <pre className="overflow-x-auto rounded bg-slate-50 p-3 text-xs text-slate-700 dark:bg-slate-900 dark:text-slate-300">
               {endpoint.response}
             </pre>
@@ -1427,10 +1424,8 @@ export default function ApiDocsPage() {
       {/* Sidebar */}
       <nav className="sticky top-0 hidden h-screen w-64 shrink-0 overflow-y-auto border-r border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900 lg:block">
         <div className="mb-6">
-          <h2 className="text-lg font-bold text-teal-600 dark:text-teal-400">
-            OpenVPM API
-          </h2>
-          <p className="text-xs text-slate-500">v1.0 Reference</p>
+          <h2 className="text-lg font-bold text-teal-600 dark:text-teal-400">{tx("OpenVPM API")}</h2>
+          <p className="text-xs text-slate-500">{tx("v1.0 Reference")}</p>
         </div>
         <ul className="space-y-1">
           {sections.map((s) => (
@@ -1450,22 +1445,16 @@ export default function ApiDocsPage() {
             <a
               href="#webhook-events"
               className="block rounded px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
-            >
-              Webhook Events
-            </a>
+            >{tx("Webhook Events")}</a>
           </li>
         </ul>
 
         <div className="mt-8 border-t border-slate-200 pt-4 dark:border-slate-700">
-          <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500">
-            Base URL
-          </h3>
+          <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-500">{tx("Base URL")}</h3>
           <code className="block rounded bg-slate-50 p-2 text-xs text-slate-700 dark:bg-slate-800 dark:text-slate-300">
             /api/trpc/ + /api/v1/
           </code>
-          <p className="mt-3 text-xs text-slate-500">
-            Dashboard procedures use tRPC under <code>/api/trpc</code>. External
-            integrations use API-key REST endpoints under <code>/api/v1</code>.
+          <p className="mt-3 text-xs text-slate-500">{tx("Dashboard procedures use tRPC under")}{" "}<code>/api/trpc</code>{tx(". External integrations use API-key REST endpoints under")}{" "}<code>/api/v1</code>.
           </p>
         </div>
       </nav>
@@ -1475,44 +1464,23 @@ export default function ApiDocsPage() {
         <div className="mx-auto max-w-4xl">
           {/* Header */}
           <div className="mb-12">
-            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
-              OpenVPM API Reference
-            </h1>
-            <p className="mt-3 text-lg text-slate-600 dark:text-slate-400">
-              Complete API documentation for the OpenVPM veterinary practice
-              management system. The dashboard API uses tRPC, client portal
-              flows use portal tokens, and external integrations use API keys
-              with REST endpoints under <code>/api/v1</code>.
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white">{tx("OpenVPM API Reference")}</h1>
+            <p className="mt-3 text-lg text-slate-600 dark:text-slate-400">{tx("Complete API documentation for the OpenVPM veterinary practice management system. The dashboard API uses tRPC, client portal flows use portal tokens, and external integrations use API keys with REST endpoints under")}{" "}<code>/api/v1</code>.
             </p>
 
             {/* Quick info cards */}
             <div className="mt-6 grid gap-4 sm:grid-cols-3">
               <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
-                <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                  Authentication
-                </h3>
-                <p className="mt-1 text-xs text-slate-500">
-                  Dashboard calls use NextAuth session cookies, portal flows use
-                  client tokens, and REST integrations use API keys.
-                </p>
+                <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100">{tx("Authentication")}</h3>
+                <p className="mt-1 text-xs text-slate-500">{tx("Dashboard calls use NextAuth session cookies, portal flows use client tokens, and REST integrations use API keys.")}</p>
               </div>
               <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
-                <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                  Multi-tenancy
-                </h3>
-                <p className="mt-1 text-xs text-slate-500">
-                  All data is scoped to the authenticated user&apos;s practice.
-                  No cross-practice data access is possible.
-                </p>
+                <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100">{tx("Multi-tenancy")}</h3>
+                <p className="mt-1 text-xs text-slate-500">{tx("All data is scoped to the authenticated user's practice. No cross-practice data access is possible.")}</p>
               </div>
               <div className="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
-                <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                  Real-time Events
-                </h3>
-                <p className="mt-1 text-xs text-slate-500">
-                  Subscribe to the live webhook catalog. Events are HMAC signed
-                  with each subscription secret.
-                </p>
+                <h3 className="text-sm font-medium text-slate-900 dark:text-slate-100">{tx("Real-time Events")}</h3>
+                <p className="mt-1 text-xs text-slate-500">{tx("Subscribe to the live webhook catalog. Events are HMAC signed with each subscription secret.")}</p>
               </div>
             </div>
           </div>
@@ -1539,24 +1507,15 @@ export default function ApiDocsPage() {
           {/* Webhook Events Reference */}
           <section id="webhook-events" className="mb-12">
             <div className="mb-4 border-b border-slate-200 pb-2 dark:border-slate-700">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white">
-                Webhook Events
-              </h2>
-              <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-                Available event types for webhook subscriptions. Payloads are
-                signed with HMAC-SHA256 using the webhook secret.
-              </p>
+              <h2 className="text-xl font-bold text-slate-900 dark:text-white">{tx("Webhook Events")}</h2>
+              <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{tx("Available event types for webhook subscriptions. Payloads are signed with HMAC-SHA256 using the webhook secret.")}</p>
             </div>
             <div className="overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700">
               <table className="w-full">
                 <thead>
                   <tr className="bg-slate-50 dark:bg-slate-800">
-                    <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wide text-slate-500">
-                      Event
-                    </th>
-                    <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wide text-slate-500">
-                      Description
-                    </th>
+                    <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wide text-slate-500">{tx("Event")}</th>
+                    <th className="px-4 py-2 text-left text-xs font-medium uppercase tracking-wide text-slate-500">{tx("Description")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-700 dark:bg-slate-800/50">
@@ -1578,9 +1537,7 @@ export default function ApiDocsPage() {
 
             {/* Payload example */}
             <div className="mt-4 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
-              <h3 className="mb-2 text-sm font-medium text-slate-900 dark:text-slate-100">
-                Webhook Payload Format
-              </h3>
+              <h3 className="mb-2 text-sm font-medium text-slate-900 dark:text-slate-100">{tx("Webhook Payload Format")}</h3>
               <pre className="overflow-x-auto rounded bg-slate-50 p-3 text-xs text-slate-700 dark:bg-slate-900 dark:text-slate-300">
                 {`POST https://your-server.com/webhook
 Content-Type: application/json
@@ -1604,9 +1561,7 @@ X-Webhook-Signature: <hmac-sha256-hex>
 
             {/* Signature verification */}
             <div className="mt-4 rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-800">
-              <h3 className="mb-2 text-sm font-medium text-slate-900 dark:text-slate-100">
-                Verifying Signatures
-              </h3>
+              <h3 className="mb-2 text-sm font-medium text-slate-900 dark:text-slate-100">{tx("Verifying Signatures")}</h3>
               <pre className="overflow-x-auto rounded bg-slate-50 p-3 text-xs text-slate-700 dark:bg-slate-900 dark:text-slate-300">
                 {`import crypto from "crypto";
 
@@ -1630,17 +1585,12 @@ function verifySignature(
 
           {/* Footer */}
           <footer className="mt-16 border-t border-slate-200 pt-6 text-center text-sm text-slate-500 dark:border-slate-700">
-            <p>OpenVPM &mdash; Open-source veterinary practice management.</p>
-            <p className="mt-1">
-              API questions? Check the{" "}
+            <p>{tx("OpenVPM — Open-source veterinary practice management.")}</p>
+            <p className="mt-1">{tx("API questions? Check the")}{" "}
               <a
                 href="https://github.com/evangauer/openvpm"
                 className="text-teal-600 hover:underline dark:text-teal-400"
-              >
-                GitHub repository
-              </a>{" "}
-              or open an issue.
-            </p>
+              >{tx("GitHub repository")}</a>{" "}{tx("or open an issue.")}</p>
           </footer>
         </div>
       </main>

@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/lib/trpc";
+import { tx } from "@/lib/i18n";
 
 const EMPTY_UUID = "00000000-0000-4000-8000-000000000000";
 const QUEUE_LIMIT = 25;
@@ -581,14 +582,9 @@ export function SmsRecoveryConsole() {
         <div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <ShieldCheck className="h-4 w-4" />
-            <span className="text-sm">SMS evidence recovery</span>
+            <span className="text-sm">{tx("SMS evidence recovery")}</span>
           </div>
-          <p className="mt-2 max-w-3xl text-xs text-muted-foreground">
-            Bounded, oldest-first operational evidence only. Phone numbers,
-            message bodies, free-text provider payloads, and clinic PHI are
-            never rendered here. Every write requires exact history review and a
-            fresh UUID operation key.
-          </p>
+          <p className="mt-2 max-w-3xl text-xs text-muted-foreground">{tx("Bounded, oldest-first operational evidence only. Phone numbers, message bodies, free-text provider payloads, and clinic PHI are never rendered here. Every write requires exact history review and a fresh UUID operation key.")}</p>
         </div>
         <Button
           type="button"
@@ -601,42 +597,34 @@ export function SmsRecoveryConsole() {
           }
           onClick={refreshQueues}
         >
-          <RefreshCw className="mr-2 h-4 w-4" />
-          Refresh evidence
-        </Button>
+          <RefreshCw className="mr-2 h-4 w-4" />{tx("Refresh evidence")}</Button>
       </div>
 
       <ActionNotice message={actionMessage} error={actionError} />
 
       <div className="mt-5">
-        <h3 className="text-sm font-semibold">Provider-event projection</h3>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Redacted lifecycle state only. Message bodies, phone numbers, and raw
-          provider detail never leave the server boundary.
-        </p>
+        <h3 className="text-sm font-semibold">{tx("Provider-event projection")}</h3>
+        <p className="mt-1 text-xs text-muted-foreground">{tx("Redacted lifecycle state only. Message bodies, phone numbers, and raw provider detail never leave the server boundary.")}</p>
         {providerEventQueue.error ? (
-          <QueueError>
-            Could not load the provider-event projection queue.
-          </QueueError>
+          <QueueError>{tx("Could not load the provider-event projection queue.")}</QueueError>
         ) : providerEventQueue.data ? (
           <>
-            <p className="mt-2 text-xs text-muted-foreground">
-              Pending {providerEventQueue.data.counts.pending} · retry{" "}
-              {providerEventQueue.data.counts.retry} · recovery-blocked{" "}
-              {providerEventQueue.data.counts.blockedRecovery} · quarantined{" "}
-              {providerEventQueue.data.counts.quarantined} · identity conflicts{" "}
-              {providerEventQueue.data.counts.conflicts} · stale{" "}
+            <p className="mt-2 text-xs text-muted-foreground">{tx("Pending")}{" "}{providerEventQueue.data.counts.pending}{" "}{tx("· retry")}{" "}
+              {providerEventQueue.data.counts.retry}{" "}{tx("· recovery-blocked")}{" "}
+              {providerEventQueue.data.counts.blockedRecovery}{" "}{tx("· quarantined")}{" "}
+              {providerEventQueue.data.counts.quarantined}{" "}{tx("· identity conflicts")}{" "}
+              {providerEventQueue.data.counts.conflicts}{" "}{tx("· stale")}{" "}
               {providerEventQueue.data.counts.stale}
             </p>
             <div className="mt-3 overflow-x-auto rounded-md border border-border">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border bg-muted/30 text-left text-muted-foreground">
-                    <th className="px-3 py-2 font-medium">Received</th>
-                    <th className="px-3 py-2 font-medium">Clinic / location</th>
-                    <th className="px-3 py-2 font-medium">Kind / state</th>
-                    <th className="px-3 py-2 font-medium">Redacted evidence</th>
-                    <th className="px-3 py-2 font-medium">Action</th>
+                    <th className="px-3 py-2 font-medium">{tx("Received")}</th>
+                    <th className="px-3 py-2 font-medium">{tx("Clinic / location")}</th>
+                    <th className="px-3 py-2 font-medium">{tx("Kind / state")}</th>
+                    <th className="px-3 py-2 font-medium">{tx("Redacted evidence")}</th>
+                    <th className="px-3 py-2 font-medium">{tx("Action")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
@@ -647,34 +635,29 @@ export function SmsRecoveryConsole() {
                       <td className="px-3 py-2 align-top">
                         <p>{formatTimestamp(item.receivedAt)}</p>
                         {item.stale ? (
-                          <p className="text-xs font-medium text-amber-700">
-                            Stale
-                          </p>
+                          <p className="text-xs font-medium text-amber-700">{tx("Stale")}</p>
                         ) : null}
                       </td>
                       <td className="px-3 py-2 align-top">
                         <p>{item.practiceName}</p>
                         <p className="text-xs text-muted-foreground">
-                          {item.locationName ?? "Practice-wide / unresolved"}
+                          {item.locationName ?? tx("Practice-wide / unresolved")}
                         </p>
                       </td>
                       <td className="px-3 py-2 align-top capitalize">
                         {label(item.kind)} · {label(item.state)}
                         <p className="text-xs text-muted-foreground">
-                          {item.provider} · attempt {item.attemptCount}
+                          {item.provider}{" "}{tx("· attempt")}{" "}{item.attemptCount}
                         </p>
                       </td>
                       <td className="px-3 py-2 align-top">
-                        <p className="break-all font-mono text-xs">
-                          event {item.eventId}
+                        <p className="break-all font-mono text-xs">{tx("event")}{" "}{item.eventId}
                         </p>
                         {item.conflictId ? (
-                          <p className="mt-1 break-all font-mono text-xs">
-                            conflict {item.conflictId}
+                          <p className="mt-1 break-all font-mono text-xs">{tx("conflict")}{" "}{item.conflictId}
                           </p>
                         ) : null}
-                        <p className="mt-1 text-xs text-muted-foreground">
-                          reason {item.lastErrorCode ?? "—"}
+                        <p className="mt-1 text-xs text-muted-foreground">{tx("reason")}{" "}{item.lastErrorCode ?? "—"}
                         </p>
                       </td>
                       <td className="px-3 py-2 align-top">
@@ -704,14 +687,10 @@ export function SmsRecoveryConsole() {
                                 lastErrorCode: item.lastErrorCode,
                               })
                             }
-                          >
-                            Review incident
-                            <ChevronRight className="ml-1 h-4 w-4" />
+                          >{tx("Review incident")}<ChevronRight className="ml-1 h-4 w-4" />
                           </Button>
                         ) : (
-                          <span className="text-xs font-medium text-amber-700">
-                            Projection or attribution required
-                          </span>
+                          <span className="text-xs font-medium text-amber-700">{tx("Projection or attribution required")}</span>
                         )}
                       </td>
                     </tr>
@@ -721,24 +700,18 @@ export function SmsRecoveryConsole() {
                       <td
                         colSpan={5}
                         className="px-3 py-6 text-center text-muted-foreground"
-                      >
-                        No provider events need projection or operator review.
-                      </td>
+                      >{tx("No provider events need projection or operator review.")}</td>
                     </tr>
                   ) : null}
                 </tbody>
               </table>
             </div>
             {providerEventQueue.data.truncated ? (
-              <p className="mt-2 text-xs font-medium text-amber-700">
-                Queue is bounded. Resolve the oldest items, then refresh.
-              </p>
+              <p className="mt-2 text-xs font-medium text-amber-700">{tx("Queue is bounded. Resolve the oldest items, then refresh.")}</p>
             ) : null}
           </>
         ) : (
-          <p className="mt-3 text-sm text-muted-foreground">
-            Loading provider-event evidence…
-          </p>
+          <p className="mt-3 text-sm text-muted-foreground">{tx("Loading provider-event evidence…")}</p>
         )}
       </div>
 
@@ -746,15 +719,11 @@ export function SmsRecoveryConsole() {
         <div className="mt-6 rounded-md border border-amber-300 bg-amber-50 p-4">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h3 className="font-semibold text-amber-950">
-                Exact provider-event incident
-              </h3>
-              <p className="mt-1 break-all font-mono text-xs text-amber-900">
-                event {providerEventSelection.eventId}
+              <h3 className="font-semibold text-amber-950">{tx("Exact provider-event incident")}</h3>
+              <p className="mt-1 break-all font-mono text-xs text-amber-900">{tx("event")}{" "}{providerEventSelection.eventId}
               </p>
               {providerEventSelection.conflictId ? (
-                <p className="mt-1 break-all font-mono text-xs text-amber-900">
-                  conflict {providerEventSelection.conflictId}
+                <p className="mt-1 break-all font-mono text-xs text-amber-900">{tx("conflict")}{" "}{providerEventSelection.conflictId}
                 </p>
               ) : null}
             </div>
@@ -763,21 +732,14 @@ export function SmsRecoveryConsole() {
               size="sm"
               variant="ghost"
               onClick={() => setProviderEventSelection(null)}
-            >
-              Close
-            </Button>
+            >{tx("Close")}</Button>
           </div>
           <p className="mt-3 text-xs text-amber-950">
             {label(providerEventSelection.kind)} ·{" "}
             {providerEventSelection.provider} ·{" "}
-            {label(providerEventSelection.state)} · reason{" "}
-            {providerEventSelection.lastErrorCode ?? "—"}. Only modes permitted
-            for this exact incident are shown. The backend re-locks and
-            revalidates attribution and evidence before recording a resolution.
-          </p>
-          <label className="mt-4 block text-xs font-medium text-amber-950">
-            Audited resolution
-            <select
+            {label(providerEventSelection.state)}{" "}{tx("· reason")}{" "}
+            {providerEventSelection.lastErrorCode ?? "—"}{tx(". Only modes permitted for this exact incident are shown. The backend re-locks and revalidates attribution and evidence before recording a resolution.")}</p>
+          <label className="mt-4 block text-xs font-medium text-amber-950">{tx("Audited resolution")}<select
               className={`${selectClassName} mt-1 bg-background`}
               value={providerEventResolution}
               onChange={(event) => {
@@ -788,7 +750,7 @@ export function SmsRecoveryConsole() {
                 setProviderAttestationConfirmed(false);
               }}
             >
-              <option value="">Choose an allowed resolution</option>
+              <option value="">{tx("Choose an allowed resolution")}</option>
               {providerEventResolutionOptionsForSelection.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.text}
@@ -798,34 +760,25 @@ export function SmsRecoveryConsole() {
           </label>
 
           {providerEventResolution === "carrier_state_reconciled" ? (
-            <p className="mt-3 rounded-md border border-amber-300 bg-background px-3 py-2 text-xs text-amber-950">
-              This performs a current carrier readback while the exact clinic is
-              recovery-locked, appends registration evidence under this
-              operation UUID, and keeps the sender disabled until ordinary
-              readiness checks pass.
-            </p>
+            <p className="mt-3 rounded-md border border-amber-300 bg-background px-3 py-2 text-xs text-amber-950">{tx("This performs a current carrier readback while the exact clinic is recovery-locked, appends registration evidence under this operation UUID, and keeps the sender disabled until ordinary readiness checks pass.")}</p>
           ) : null}
 
           {providerEventResolution === "provider_attested_no_projection" ? (
             <div className="mt-3 grid gap-3 md:grid-cols-2">
-              <label className="text-xs font-medium text-amber-950">
-                Provider support ticket/reference
-                <Input
+              <label className="text-xs font-medium text-amber-950">{tx("Provider support ticket/reference")}<Input
                   className="mt-1 bg-background font-mono"
                   value={providerSupportReference}
                   maxLength={255}
                   autoComplete="off"
                   aria-invalid={providerSupportReferenceInvalid}
-                  placeholder="TICKET-12345"
+                  placeholder={tx("TICKET-12345")}
                   onChange={(event) => {
                     setProviderSupportReference(event.target.value);
                     setProviderAttestationConfirmed(false);
                   }}
                 />
               </label>
-              <label className="text-xs font-medium text-amber-950">
-                Provider-supported finding
-                <select
+              <label className="text-xs font-medium text-amber-950">{tx("Provider-supported finding")}<select
                   className={`${selectClassName} mt-1 bg-background`}
                   value={providerSupportReason}
                   onChange={(event) => {
@@ -835,19 +788,13 @@ export function SmsRecoveryConsole() {
                     setProviderAttestationConfirmed(false);
                   }}
                 >
-                  <option value="">Choose provider finding</option>
-                  <option value="provider_support_invalid_callback">
-                    Invalid callback; no tenant projection
-                  </option>
-                  <option value="provider_support_duplicate_callback">
-                    Duplicate callback; no new tenant projection
-                  </option>
+                  <option value="">{tx("Choose provider finding")}</option>
+                  <option value="provider_support_invalid_callback">{tx("Invalid callback; no tenant projection")}</option>
+                  <option value="provider_support_duplicate_callback">{tx("Duplicate callback; no new tenant projection")}</option>
                 </select>
               </label>
               {providerSupportReferenceInvalid ? (
-                <p className="text-xs font-medium text-destructive md:col-span-2">
-                  Phone-like values cannot be used as provider support evidence.
-                </p>
+                <p className="text-xs font-medium text-destructive md:col-span-2">{tx("Phone-like values cannot be used as provider support evidence.")}</p>
               ) : null}
               <label className="flex items-start gap-2 text-xs text-amber-950 md:col-span-2">
                 <Checkbox
@@ -856,12 +803,7 @@ export function SmsRecoveryConsole() {
                     setProviderAttestationConfirmed(event.target.checked)
                   }
                 />
-                <span>
-                  I explicitly attest that provider support verified this exact
-                  delivery callback requires no tenant projection, and the
-                  reference contains no phone number, message, client name, or
-                  PHI.
-                </span>
+                <span>{tx("I explicitly attest that provider support verified this exact delivery callback requires no tenant projection, and the reference contains no phone number, message, client name, or PHI.")}</span>
               </label>
             </div>
           ) : null}
@@ -873,16 +815,9 @@ export function SmsRecoveryConsole() {
                 setProviderEventReviewed(event.target.checked)
               }
             />
-            <span>
-              I selected this exact event
-              {providerEventSelection.conflictId ? " and conflict" : ""},
-              reviewed the redacted incident state, and understand this appends
-              immutable resolution evidence. Conflict review alone does not
-              clear the incident.
-            </span>
+            <span>{tx("I selected this exact event")}{providerEventSelection.conflictId ? tx(" and conflict") : ""}{tx(", reviewed the redacted incident state, and understand this appends immutable resolution evidence. Conflict review alone does not clear the incident.")}</span>
           </label>
-          <p className="mt-3 break-all font-mono text-[11px] text-amber-900">
-            Resolution UUID: {providerEventOperationId}
+          <p className="mt-3 break-all font-mono text-[11px] text-amber-900">{tx("Resolution UUID:")}{" "}{providerEventOperationId}
           </p>
           <Button
             type="button"
@@ -940,37 +875,25 @@ export function SmsRecoveryConsole() {
               });
             }}
           >
-            <ShieldCheck className="mr-2 h-4 w-4" />
-            Apply audited resolution
-          </Button>
+            <ShieldCheck className="mr-2 h-4 w-4" />{tx("Apply audited resolution")}</Button>
         </div>
       ) : null}
 
       <div className="mt-5">
-        <h3 className="text-sm font-semibold">
-          Provider-event resolution history
-        </h3>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Newest {QUEUE_LIMIT} immutable resolution records. This view contains
-          operational UUIDs and resolution classifications only; message,
-          sender, provider detail, and PHI fields are excluded server-side.
-        </p>
+        <h3 className="text-sm font-semibold">{tx("Provider-event resolution history")}</h3>
+        <p className="mt-1 text-xs text-muted-foreground">{tx("Newest")}{" "}{QUEUE_LIMIT}{" "}{tx("immutable resolution records. This view contains operational UUIDs and resolution classifications only; message, sender, provider detail, and PHI fields are excluded server-side.")}</p>
         {providerEventResolutionHistory.error ? (
-          <QueueError>
-            Could not load provider-event resolution history.
-          </QueueError>
+          <QueueError>{tx("Could not load provider-event resolution history.")}</QueueError>
         ) : providerEventResolutionHistory.data ? (
           <>
             <div className="mt-3 overflow-x-auto rounded-md border border-border">
               <table className="w-full text-xs">
                 <thead>
                   <tr className="border-b border-border bg-muted/30 text-left text-muted-foreground">
-                    <th className="px-3 py-2 font-medium">Resolved</th>
-                    <th className="px-3 py-2 font-medium">Incident</th>
-                    <th className="px-3 py-2 font-medium">
-                      Resolution / evidence
-                    </th>
-                    <th className="px-3 py-2 font-medium">Operator</th>
+                    <th className="px-3 py-2 font-medium">{tx("Resolved")}</th>
+                    <th className="px-3 py-2 font-medium">{tx("Incident")}</th>
+                    <th className="px-3 py-2 font-medium">{tx("Resolution / evidence")}</th>
+                    <th className="px-3 py-2 font-medium">{tx("Operator")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
@@ -980,11 +903,9 @@ export function SmsRecoveryConsole() {
                         {formatTimestamp(item.resolvedAt)}
                       </td>
                       <td className="px-3 py-2 align-top">
-                        <p className="break-all font-mono">
-                          event {item.eventId}
+                        <p className="break-all font-mono">{tx("event")}{" "}{item.eventId}
                         </p>
-                        <p className="mt-1 break-all font-mono text-muted-foreground">
-                          conflict {item.conflictId ?? "—"}
+                        <p className="mt-1 break-all font-mono text-muted-foreground">{tx("conflict")}{" "}{item.conflictId ?? "—"}
                         </p>
                       </td>
                       <td className="px-3 py-2 align-top capitalize">
@@ -993,8 +914,7 @@ export function SmsRecoveryConsole() {
                           {label(item.reasonCode)} · {label(item.evidenceType)}
                         </p>
                         {item.externalEvidenceReference ? (
-                          <p className="mt-1 break-all font-mono text-muted-foreground">
-                            reference{" "}
+                          <p className="mt-1 break-all font-mono text-muted-foreground">{tx("reference")}{" "}
                             {safeProviderEvidenceId(
                               item.externalEvidenceReference,
                             )}
@@ -1011,46 +931,36 @@ export function SmsRecoveryConsole() {
                       <td
                         colSpan={4}
                         className="px-3 py-5 text-center text-muted-foreground"
-                      >
-                        No provider-event resolutions are recorded.
-                      </td>
+                      >{tx("No provider-event resolutions are recorded.")}</td>
                     </tr>
                   ) : null}
                 </tbody>
               </table>
             </div>
             {providerEventResolutionHistory.data.truncated ? (
-              <p className="mt-2 text-xs font-medium text-amber-700">
-                Resolution history is bounded to the newest {QUEUE_LIMIT} rows.
+              <p className="mt-2 text-xs font-medium text-amber-700">{tx("Resolution history is bounded to the newest")}{" "}{QUEUE_LIMIT} rows.
               </p>
             ) : null}
           </>
         ) : (
-          <p className="mt-3 text-sm text-muted-foreground">
-            Loading provider-event resolution history…
-          </p>
+          <p className="mt-3 text-sm text-muted-foreground">{tx("Loading provider-event resolution history…")}</p>
         )}
       </div>
 
       <div className="mt-5 grid gap-5 xl:grid-cols-2">
         <div>
-          <h3 className="text-sm font-semibold">Send-attempt exceptions</h3>
-          <p className="mt-1 text-xs text-muted-foreground">
-            At most {QUEUE_LIMIT} rows. Orphan communication claims are visible
-            for investigation but have no unsafe repair shortcut.
-          </p>
+          <h3 className="text-sm font-semibold">{tx("Send-attempt exceptions")}</h3>
+          <p className="mt-1 text-xs text-muted-foreground">{tx("At most")}{" "}{QUEUE_LIMIT}{" "}{tx("rows. Orphan communication claims are visible for investigation but have no unsafe repair shortcut.")}</p>
           {attemptQueue.error ? (
-            <QueueError>
-              Could not load the send-attempt recovery queue.
-            </QueueError>
+            <QueueError>{tx("Could not load the send-attempt recovery queue.")}</QueueError>
           ) : attemptQueue.data ? (
             <div className="mt-3 overflow-x-auto rounded-md border border-border">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border bg-muted/30 text-left text-muted-foreground">
-                    <th className="px-3 py-2 font-medium">Age / provider</th>
-                    <th className="px-3 py-2 font-medium">Evidence</th>
-                    <th className="px-3 py-2 font-medium">Action</th>
+                    <th className="px-3 py-2 font-medium">{tx("Age / provider")}</th>
+                    <th className="px-3 py-2 font-medium">{tx("Evidence")}</th>
+                    <th className="px-3 py-2 font-medium">{tx("Action")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
@@ -1061,13 +971,12 @@ export function SmsRecoveryConsole() {
                       <td className="px-3 py-2 align-top">
                         <p>{formatTimestamp(item.createdAt)}</p>
                         <p className="text-xs capitalize text-muted-foreground">
-                          {item.provider ?? "No attempt"} ·{" "}
+                          {item.provider ?? tx("No attempt")} ·{" "}
                           {label(item.classification)}
                         </p>
                       </td>
                       <td className="px-3 py-2 align-top">
-                        <p className="break-all font-mono text-xs">
-                          practice {item.practiceId}
+                        <p className="break-all font-mono text-xs">{tx("practice")}{" "}{item.practiceId}
                         </p>
                         <p className="mt-1 break-all font-mono text-xs text-muted-foreground">
                           {item.attemptId
@@ -1089,14 +998,10 @@ export function SmsRecoveryConsole() {
                                   item.classification as AttemptSelection["classification"],
                               })
                             }
-                          >
-                            Inspect history
-                            <ChevronRight className="ml-1 h-4 w-4" />
+                          >{tx("Inspect history")}<ChevronRight className="ml-1 h-4 w-4" />
                           </Button>
                         ) : (
-                          <span className="text-xs font-medium text-amber-700">
-                            Manual investigation only
-                          </span>
+                          <span className="text-xs font-medium text-amber-700">{tx("Manual investigation only")}</span>
                         )}
                       </td>
                     </tr>
@@ -1106,41 +1011,30 @@ export function SmsRecoveryConsole() {
                       <td
                         colSpan={3}
                         className="px-3 py-6 text-center text-muted-foreground"
-                      >
-                        No stale send attempts need recovery.
-                      </td>
+                      >{tx("No stale send attempts need recovery.")}</td>
                     </tr>
                   ) : null}
                 </tbody>
               </table>
             </div>
           ) : (
-            <p className="mt-3 text-sm text-muted-foreground">
-              Loading send evidence…
-            </p>
+            <p className="mt-3 text-sm text-muted-foreground">{tx("Loading send evidence…")}</p>
           )}
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold">Delivery-event exceptions</h3>
-          <p className="mt-1 text-xs text-muted-foreground">
-            At most {QUEUE_LIMIT} actionable events. Stale accepted sends
-            without a final callback remain monitor-only.
-          </p>
+          <h3 className="text-sm font-semibold">{tx("Delivery-event exceptions")}</h3>
+          <p className="mt-1 text-xs text-muted-foreground">{tx("At most")}{" "}{QUEUE_LIMIT}{" "}{tx("actionable events. Stale accepted sends without a final callback remain monitor-only.")}</p>
           {deliveryQueue.error ? (
-            <QueueError>
-              Could not load the delivery-event recovery queue.
-            </QueueError>
+            <QueueError>{tx("Could not load the delivery-event recovery queue.")}</QueueError>
           ) : deliveryQueue.data ? (
             <div className="mt-3 overflow-x-auto rounded-md border border-border">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border bg-muted/30 text-left text-muted-foreground">
-                    <th className="px-3 py-2 font-medium">
-                      Received / provider
-                    </th>
-                    <th className="px-3 py-2 font-medium">Evidence</th>
-                    <th className="px-3 py-2 font-medium">Action</th>
+                    <th className="px-3 py-2 font-medium">{tx("Received / provider")}</th>
+                    <th className="px-3 py-2 font-medium">{tx("Evidence")}</th>
+                    <th className="px-3 py-2 font-medium">{tx("Action")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border">
@@ -1153,12 +1047,10 @@ export function SmsRecoveryConsole() {
                         </p>
                       </td>
                       <td className="px-3 py-2 align-top">
-                        <p className="break-all font-mono text-xs">
-                          event {item.eventId}
+                        <p className="break-all font-mono text-xs">{tx("event")}{" "}{item.eventId}
                         </p>
-                        <p className="mt-1 break-all font-mono text-xs text-muted-foreground">
-                          incident{" "}
-                          {item.pendingHistoryId ?? "derived status/projection"}
+                        <p className="mt-1 break-all font-mono text-xs text-muted-foreground">{tx("incident")}{" "}
+                          {item.pendingHistoryId ?? tx("derived status/projection")}
                         </p>
                       </td>
                       <td className="px-3 py-2 align-top">
@@ -1174,9 +1066,7 @@ export function SmsRecoveryConsole() {
                               pendingHistoryId: item.pendingHistoryId,
                             })
                           }
-                        >
-                          Inspect history
-                          <ChevronRight className="ml-1 h-4 w-4" />
+                        >{tx("Inspect history")}<ChevronRight className="ml-1 h-4 w-4" />
                         </Button>
                       </td>
                     </tr>
@@ -1186,26 +1076,18 @@ export function SmsRecoveryConsole() {
                       <td
                         colSpan={3}
                         className="px-3 py-6 text-center text-muted-foreground"
-                      >
-                        No delivery events need reconciliation.
-                      </td>
+                      >{tx("No delivery events need reconciliation.")}</td>
                     </tr>
                   ) : null}
                 </tbody>
               </table>
             </div>
           ) : (
-            <p className="mt-3 text-sm text-muted-foreground">
-              Loading delivery evidence…
-            </p>
+            <p className="mt-3 text-sm text-muted-foreground">{tx("Loading delivery evidence…")}</p>
           )}
           {deliveryQueue.data?.staleAcceptedWithoutFinalDelivery.length ? (
             <div className="mt-3 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900">
-              {deliveryQueue.data.staleAcceptedWithoutFinalDelivery.length}{" "}
-              accepted send(s) have no final callback. Monitor provider delivery
-              evidence; this console intentionally offers no resend or status
-              override.
-            </div>
+              {deliveryQueue.data.staleAcceptedWithoutFinalDelivery.length}{" "}{tx("accepted send(s) have no final callback. Monitor provider delivery evidence; this console intentionally offers no resend or status override.")}</div>
           ) : null}
         </div>
       </div>
@@ -1214,7 +1096,7 @@ export function SmsRecoveryConsole() {
         <div className="mt-6 rounded-md border border-border p-4">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h3 className="font-semibold">Exact send-attempt history</h3>
+              <h3 className="font-semibold">{tx("Exact send-attempt history")}</h3>
               <p className="mt-1 break-all font-mono text-xs text-muted-foreground">
                 {attemptSelection.practiceId}:{attemptSelection.attemptId}
               </p>
@@ -1224,48 +1106,40 @@ export function SmsRecoveryConsole() {
               size="sm"
               variant="ghost"
               onClick={() => setAttemptSelection(null)}
-            >
-              Close
-            </Button>
+            >{tx("Close")}</Button>
           </div>
           {attemptDetail.error ? (
-            <QueueError>
-              Could not load this exact send-attempt history.
-            </QueueError>
+            <QueueError>{tx("Could not load this exact send-attempt history.")}</QueueError>
           ) : attemptDetail.data ? (
             <>
               <dl className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <EvidenceId
-                  label="Attempt"
+                  label={tx("Attempt")}
                   value={attemptDetail.data.attempt.id}
                 />
                 <EvidenceId
-                  label="Practice"
+                  label={tx("Practice")}
                   value={attemptDetail.data.attempt.practiceId}
                 />
                 <EvidenceId
-                  label="Location"
+                  label={tx("Location")}
                   value={attemptDetail.data.attempt.locationId}
                 />
                 <EvidenceId
-                  label="Communication"
+                  label={tx("Communication")}
                   value={attemptDetail.data.attempt.communicationId}
                 />
               </dl>
-              <p className="mt-3 text-xs text-muted-foreground">
-                Created {formatTimestamp(attemptDetail.data.attempt.createdAt)}{" "}
-                · provider {attemptDetail.data.attempt.provider} · source{" "}
+              <p className="mt-3 text-xs text-muted-foreground">{tx("Created")}{" "}{formatTimestamp(attemptDetail.data.attempt.createdAt)}{" "}{tx("· provider")}{" "}{attemptDetail.data.attempt.provider}{" "}{tx("· source")}{" "}
                 {label(attemptDetail.data.attempt.source)}
               </p>
               <div className="mt-4 overflow-x-auto rounded-md border border-border">
                 <table className="w-full text-xs">
                   <thead>
                     <tr className="border-b border-border bg-muted/30 text-left text-muted-foreground">
-                      <th className="px-3 py-2 font-medium">Recorded</th>
-                      <th className="px-3 py-2 font-medium">Kind / outcome</th>
-                      <th className="px-3 py-2 font-medium">
-                        Immutable evidence IDs
-                      </th>
+                      <th className="px-3 py-2 font-medium">{tx("Recorded")}</th>
+                      <th className="px-3 py-2 font-medium">{tx("Kind / outcome")}</th>
+                      <th className="px-3 py-2 font-medium">{tx("Immutable evidence IDs")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
@@ -1278,15 +1152,12 @@ export function SmsRecoveryConsole() {
                           {label(event.kind)} · {label(event.outcome)}
                         </td>
                         <td className="px-3 py-2 align-top">
-                          <p className="break-all font-mono">
-                            event {event.id}
+                          <p className="break-all font-mono">{tx("event")}{" "}{event.id}
                           </p>
-                          <p className="mt-1 break-all font-mono text-muted-foreground">
-                            provider message{" "}
+                          <p className="mt-1 break-all font-mono text-muted-foreground">{tx("provider message")}{" "}
                             {safeProviderEvidenceId(event.providerMessageId)}
                           </p>
-                          <p className="mt-1 break-all font-mono text-muted-foreground">
-                            key {event.eventKey}
+                          <p className="mt-1 break-all font-mono text-muted-foreground">{tx("key")}{" "}{event.eventKey}
                           </p>
                         </td>
                       </tr>
@@ -1296,30 +1167,21 @@ export function SmsRecoveryConsole() {
                         <td
                           colSpan={3}
                           className="px-3 py-5 text-center text-muted-foreground"
-                        >
-                          No provider-result evidence has been recorded.
-                        </td>
+                        >{tx("No provider-result evidence has been recorded.")}</td>
                       </tr>
                     ) : null}
                   </tbody>
                 </table>
               </div>
-              <p className="mt-2 text-xs text-muted-foreground">
-                Free-text event detail and operator identity are omitted at the
-                server boundary because they can contain sensitive data.
-              </p>
+              <p className="mt-2 text-xs text-muted-foreground">{tx("Free-text event detail and operator identity are omitted at the server boundary because they can contain sensitive data.")}</p>
 
               {!effectiveAttemptEvent ||
               effectiveAttemptEvent.outcome === "outcome_unknown" ||
               terminalProjectionOutcome ? (
                 <div className="mt-5 rounded-md border border-amber-300 bg-amber-50 p-4">
-                  <h4 className="text-sm font-semibold text-amber-950">
-                    Reconcile reviewed provider outcome
-                  </h4>
+                  <h4 className="text-sm font-semibold text-amber-950">{tx("Reconcile reviewed provider outcome")}</h4>
                   <div className="mt-3 grid gap-3 md:grid-cols-2">
-                    <label className="text-xs font-medium">
-                      Reviewed outcome
-                      {terminalProjectionOutcome ? (
+                    <label className="text-xs font-medium">{tx("Reviewed outcome")}{terminalProjectionOutcome ? (
                         <Input
                           className="mt-1 capitalize"
                           value={label(terminalProjectionOutcome)}
@@ -1338,17 +1200,13 @@ export function SmsRecoveryConsole() {
                             setAttemptReviewed(false);
                           }}
                         >
-                          <option value="">Choose reviewed outcome</option>
-                          <option value="accepted">Accepted by provider</option>
-                          <option value="definite_failure">
-                            Definite failure
-                          </option>
+                          <option value="">{tx("Choose reviewed outcome")}</option>
+                          <option value="accepted">{tx("Accepted by provider")}</option>
+                          <option value="definite_failure">{tx("Definite failure")}</option>
                         </select>
                       )}
                     </label>
-                    <label className="text-xs font-medium">
-                      Evidence source
-                      <select
+                    <label className="text-xs font-medium">{tx("Evidence source")}<select
                         className={`${selectClassName} mt-1`}
                         value={attemptEvidence}
                         onChange={(event) => {
@@ -1356,30 +1214,22 @@ export function SmsRecoveryConsole() {
                           setAttemptReviewed(false);
                         }}
                       >
-                        <option value="">Choose evidence reviewed</option>
-                        <option value="provider_portal_status">
-                          Provider portal status
-                        </option>
-                        <option value="provider_support_confirmation">
-                          Provider support confirmation
-                        </option>
-                        <option value="durable_provider_audit">
-                          Durable provider audit record
-                        </option>
+                        <option value="">{tx("Choose evidence reviewed")}</option>
+                        <option value="provider_portal_status">{tx("Provider portal status")}</option>
+                        <option value="provider_support_confirmation">{tx("Provider support confirmation")}</option>
+                        <option value="durable_provider_audit">{tx("Durable provider audit record")}</option>
                       </select>
                     </label>
                   </div>
                   {reviewedAttemptOutcome === "accepted" &&
                   !terminalProjectionOutcome ? (
-                    <label className="mt-3 block text-xs font-medium">
-                      Exact provider message ID
-                      <Input
+                    <label className="mt-3 block text-xs font-medium">{tx("Exact provider message ID")}<Input
                         className="mt-1 font-mono"
                         value={providerMessageId}
                         maxLength={255}
                         autoComplete="off"
                         aria-invalid={providerIdLooksSensitive}
-                        placeholder="Provider evidence ID only"
+                        placeholder={tx("Provider evidence ID only")}
                         onChange={(event) => {
                           setProviderMessageId(event.target.value);
                           setAttemptReviewed(false);
@@ -1388,10 +1238,7 @@ export function SmsRecoveryConsole() {
                     </label>
                   ) : null}
                   {providerIdLooksSensitive ? (
-                    <p className="mt-2 text-xs font-medium text-destructive">
-                      This value is phone-like or was withheld by the server. It
-                      cannot be used as recovery evidence.
-                    </p>
+                    <p className="mt-2 text-xs font-medium text-destructive">{tx("This value is phone-like or was withheld by the server. It cannot be used as recovery evidence.")}</p>
                   ) : null}
                   <label className="mt-3 flex items-start gap-2 text-xs text-amber-950">
                     <Checkbox
@@ -1400,15 +1247,9 @@ export function SmsRecoveryConsole() {
                         setAttemptReviewed(event.target.checked)
                       }
                     />
-                    <span>
-                      I reviewed this exact attempt and its immutable event
-                      history, confirmed the selected outcome against the
-                      evidence source, and did not copy a phone number, message
-                      body, client name, or PHI.
-                    </span>
+                    <span>{tx("I reviewed this exact attempt and its immutable event history, confirmed the selected outcome against the evidence source, and did not copy a phone number, message body, client name, or PHI.")}</span>
                   </label>
-                  <p className="mt-3 break-all font-mono text-[11px] text-amber-900">
-                    Reconciliation UUID: {attemptReconciliationId}
+                  <p className="mt-3 break-all font-mono text-[11px] text-amber-900">{tx("Reconciliation UUID:")}{" "}{attemptReconciliationId}
                   </p>
                   <Button
                     type="button"
@@ -1446,27 +1287,18 @@ export function SmsRecoveryConsole() {
                       });
                     }}
                   >
-                    <CheckCircle2 className="mr-2 h-4 w-4" />
-                    Record reviewed outcome
-                  </Button>
+                    <CheckCircle2 className="mr-2 h-4 w-4" />{tx("Record reviewed outcome")}</Button>
                 </div>
               ) : (
-                <div className="mt-5 rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-900">
-                  Backend-confirmed terminal outcome:{" "}
+                <div className="mt-5 rounded-md border border-green-200 bg-green-50 px-3 py-2 text-sm text-green-900">{tx("Backend-confirmed terminal outcome:")}{" "}
                   {label(effectiveAttemptEvent.outcome)}.
                 </div>
               )}
 
               {backendConfirmedFailure ? (
                 <div className="mt-4 rounded-md border border-destructive/30 bg-destructive/5 p-4">
-                  <h4 className="text-sm font-semibold">
-                    Explicit resend after definite failure
-                  </h4>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    The backend ledger confirms a definite failure. The backend
-                    will still re-check the failed communication, provider
-                    window, clinic identity, and prior resend before sending.
-                  </p>
+                  <h4 className="text-sm font-semibold">{tx("Explicit resend after definite failure")}</h4>
+                  <p className="mt-1 text-xs text-muted-foreground">{tx("The backend ledger confirms a definite failure. The backend will still re-check the failed communication, provider window, clinic identity, and prior resend before sending.")}</p>
                   <label className="mt-3 flex items-start gap-2 text-xs">
                     <Checkbox
                       checked={resendReviewed}
@@ -1475,14 +1307,9 @@ export function SmsRecoveryConsole() {
                         setResendReviewed(event.target.checked)
                       }
                     />
-                    <span>
-                      I confirm this is the exact failed attempt and authorize
-                      one new provider send. I understand duplicate outreach is
-                      possible if external evidence was reviewed incorrectly.
-                    </span>
+                    <span>{tx("I confirm this is the exact failed attempt and authorize one new provider send. I understand duplicate outreach is possible if external evidence was reviewed incorrectly.")}</span>
                   </label>
-                  <p className="mt-3 break-all font-mono text-[11px] text-muted-foreground">
-                    Resend UUID: {resendId}
+                  <p className="mt-3 break-all font-mono text-[11px] text-muted-foreground">{tx("Resend UUID:")}{" "}{resendId}
                   </p>
                   <Button
                     type="button"
@@ -1514,16 +1341,14 @@ export function SmsRecoveryConsole() {
                   >
                     <RotateCcw className="mr-2 h-4 w-4" />
                     {resendCompleted
-                      ? "Resend already requested"
-                      : "Confirm one resend"}
+                      ? tx("Resend already requested")
+                      : tx("Confirm one resend")}
                   </Button>
                 </div>
               ) : null}
             </>
           ) : (
-            <p className="mt-3 text-sm text-muted-foreground">
-              Loading exact attempt history…
-            </p>
+            <p className="mt-3 text-sm text-muted-foreground">{tx("Loading exact attempt history…")}</p>
           )}
         </div>
       ) : null}
@@ -1532,7 +1357,7 @@ export function SmsRecoveryConsole() {
         <div className="mt-6 rounded-md border border-border p-4">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <h3 className="font-semibold">Exact delivery-event history</h3>
+              <h3 className="font-semibold">{tx("Exact delivery-event history")}</h3>
               <p className="mt-1 break-all font-mono text-xs text-muted-foreground">
                 {deliverySelection.eventId}
               </p>
@@ -1542,53 +1367,45 @@ export function SmsRecoveryConsole() {
               size="sm"
               variant="ghost"
               onClick={() => setDeliverySelection(null)}
-            >
-              Close
-            </Button>
+            >{tx("Close")}</Button>
           </div>
           {deliveryDetail.error ? (
-            <QueueError>
-              Could not load this exact delivery-event history.
-            </QueueError>
+            <QueueError>{tx("Could not load this exact delivery-event history.")}</QueueError>
           ) : deliveryDetail.data ? (
             <>
               <dl className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <EvidenceId
-                  label="Event"
+                  label={tx("Event")}
                   value={deliveryDetail.data.event.id}
                 />
                 <EvidenceId
-                  label="Provider event"
+                  label={tx("Provider event")}
                   value={deliveryDetail.data.event.providerEventId}
                 />
                 <EvidenceId
-                  label="Provider message"
+                  label={tx("Provider message")}
                   value={safeProviderEvidenceId(
                     deliveryDetail.data.event.providerMessageId,
                   )}
                 />
                 <EvidenceId
-                  label="Payload fingerprint"
+                  label={tx("Payload fingerprint")}
                   value={deliveryDetail.data.event.payloadFingerprintSha256}
                 />
               </dl>
-              <p className="mt-3 text-xs text-muted-foreground">
-                Received {formatTimestamp(deliveryDetail.data.event.receivedAt)}{" "}
-                · provider {deliveryDetail.data.event.provider} · event{" "}
-                {label(deliveryDetail.data.event.providerEventType)} · observed{" "}
-                {label(deliveryDetail.data.event.providerStatus)} · classified{" "}
-                {label(deliveryDetail.data.event.classification)} · error code{" "}
+              <p className="mt-3 text-xs text-muted-foreground">{tx("Received")}{" "}{formatTimestamp(deliveryDetail.data.event.receivedAt)}{" "}{tx("· provider")}{" "}{deliveryDetail.data.event.provider}{" "}{tx("· event")}{" "}
+                {label(deliveryDetail.data.event.providerEventType)}{" "}{tx("· observed")}{" "}
+                {label(deliveryDetail.data.event.providerStatus)}{" "}{tx("· classified")}{" "}
+                {label(deliveryDetail.data.event.classification)}{" "}{tx("· error code")}{" "}
                 {deliveryDetail.data.event.providerErrorCode ?? "—"}
               </p>
               <div className="mt-4 overflow-x-auto rounded-md border border-border">
                 <table className="w-full text-xs">
                   <thead>
                     <tr className="border-b border-border bg-muted/30 text-left text-muted-foreground">
-                      <th className="px-3 py-2 font-medium">Recorded</th>
-                      <th className="px-3 py-2 font-medium">Kind / result</th>
-                      <th className="px-3 py-2 font-medium">
-                        Exact evidence links
-                      </th>
+                      <th className="px-3 py-2 font-medium">{tx("Recorded")}</th>
+                      <th className="px-3 py-2 font-medium">{tx("Kind / result")}</th>
+                      <th className="px-3 py-2 font-medium">{tx("Exact evidence links")}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border">
@@ -1602,18 +1419,14 @@ export function SmsRecoveryConsole() {
                           {label(history.classification)}
                         </td>
                         <td className="px-3 py-2 align-top">
-                          <p className="break-all font-mono">
-                            history {history.id}
+                          <p className="break-all font-mono">{tx("history")}{" "}{history.id}
                           </p>
-                          <p className="mt-1 break-all font-mono text-muted-foreground">
-                            reviewed {history.reviewedHistoryId ?? "—"}
+                          <p className="mt-1 break-all font-mono text-muted-foreground">{tx("reviewed")}{" "}{history.reviewedHistoryId ?? "—"}
                           </p>
-                          <p className="mt-1 break-all font-mono text-muted-foreground">
-                            practice {history.practiceId ?? "—"} · attempt{" "}
+                          <p className="mt-1 break-all font-mono text-muted-foreground">{tx("practice")}{" "}{history.practiceId ?? "—"}{" "}{tx("· attempt")}{" "}
                             {history.attemptId ?? "—"}
                           </p>
-                          <p className="mt-1 break-all font-mono text-muted-foreground">
-                            key {history.eventKey}
+                          <p className="mt-1 break-all font-mono text-muted-foreground">{tx("key")}{" "}{history.eventKey}
                           </p>
                         </td>
                       </tr>
@@ -1621,22 +1434,13 @@ export function SmsRecoveryConsole() {
                   </tbody>
                 </table>
               </div>
-              <p className="mt-2 text-xs text-muted-foreground">
-                Free-text history detail and operator identity are omitted at
-                the server boundary. Candidate attribution is shown only as
-                tenant and attempt UUID pairs.
-              </p>
+              <p className="mt-2 text-xs text-muted-foreground">{tx("Free-text history detail and operator identity are omitted at the server boundary. Candidate attribution is shown only as tenant and attempt UUID pairs.")}</p>
               {deliveryDetail.data.truncated ? (
-                <p className="mt-2 text-xs font-medium text-destructive">
-                  This event has more history than the bounded view can show. Do
-                  not reconcile it from this console.
-                </p>
+                <p className="mt-2 text-xs font-medium text-destructive">{tx("This event has more history than the bounded view can show. Do not reconcile it from this console.")}</p>
               ) : null}
               {deliveryDetail.data.candidateAttempts.length ? (
                 <div className="mt-3 rounded-md border border-border p-3">
-                  <p className="text-xs font-semibold">
-                    Exact attribution candidates
-                  </p>
+                  <p className="text-xs font-semibold">{tx("Exact attribution candidates")}</p>
                   <ul className="mt-2 space-y-1 font-mono text-xs">
                     {deliveryDetail.data.candidateAttempts.map((candidate) => (
                       <li
@@ -1648,22 +1452,15 @@ export function SmsRecoveryConsole() {
                     ))}
                   </ul>
                   {deliveryDetail.data.candidateAttemptsTruncated ? (
-                    <p className="mt-2 text-xs font-medium text-amber-700">
-                      Candidate evidence is truncated; do not reconcile from
-                      this view.
-                    </p>
+                    <p className="mt-2 text-xs font-medium text-amber-700">{tx("Candidate evidence is truncated; do not reconcile from this view.")}</p>
                   ) : null}
                 </div>
               ) : null}
 
               <div className="mt-5 rounded-md border border-amber-300 bg-amber-50 p-4">
-                <h4 className="text-sm font-semibold text-amber-950">
-                  Reconcile reviewed delivery evidence
-                </h4>
+                <h4 className="text-sm font-semibold text-amber-950">{tx("Reconcile reviewed delivery evidence")}</h4>
                 <div className="mt-3 grid gap-3 md:grid-cols-2">
-                  <label className="text-xs font-medium">
-                    Reason
-                    <select
+                  <label className="text-xs font-medium">{tx("Reason")}<select
                       className={`${selectClassName} mt-1`}
                       value={deliveryReason}
                       onChange={(event) => {
@@ -1675,7 +1472,7 @@ export function SmsRecoveryConsole() {
                         setDeliveryReviewed(false);
                       }}
                     >
-                      <option value="">Choose exact recovery reason</option>
+                      <option value="">{tx("Choose exact recovery reason")}</option>
                       {deliveryReasonOptions.map((reason) => (
                         <option key={reason.value} value={reason.value}>
                           {reason.text}
@@ -1683,9 +1480,7 @@ export function SmsRecoveryConsole() {
                       ))}
                     </select>
                   </label>
-                  <label className="text-xs font-medium">
-                    Reviewed classification
-                    <select
+                  <label className="text-xs font-medium">{tx("Reviewed classification")}<select
                       className={`${selectClassName} mt-1`}
                       value={deliveryClassification}
                       disabled={
@@ -1700,26 +1495,22 @@ export function SmsRecoveryConsole() {
                     >
                       <option value="">
                         {deliveryReason === "provider_portal_status_review"
-                          ? "Choose provider-confirmed status"
-                          : "Derived from durable evidence"}
+                          ? tx("Choose provider-confirmed status")
+                          : tx("Derived from durable evidence")}
                       </option>
-                      <option value="sent">Sent</option>
-                      <option value="failed">Failed</option>
-                      <option value="delivered">Delivered</option>
+                      <option value="sent">{tx("Sent")}</option>
+                      <option value="failed">{tx("Failed")}</option>
+                      <option value="delivered">{tx("Delivered")}</option>
                     </select>
                   </label>
                 </div>
                 {quarantineReason ? (
-                  <p className="mt-3 break-all font-mono text-[11px] text-amber-900">
-                    Exact reviewed incident:{" "}
-                    {deliverySelection.pendingHistoryId ?? "missing"}
+                  <p className="mt-3 break-all font-mono text-[11px] text-amber-900">{tx("Exact reviewed incident:")}{" "}
+                    {deliverySelection.pendingHistoryId ?? tx("missing")}
                   </p>
                 ) : null}
                 {!exactQuarantineEvidence ? (
-                  <p className="mt-2 text-xs font-medium text-destructive">
-                    The exact unresolved history row is absent or no longer
-                    matches this incident. Refresh before acting.
-                  </p>
+                  <p className="mt-2 text-xs font-medium text-destructive">{tx("The exact unresolved history row is absent or no longer matches this incident. Refresh before acting.")}</p>
                 ) : null}
                 <label className="mt-3 flex items-start gap-2 text-xs text-amber-950">
                   <Checkbox
@@ -1728,14 +1519,9 @@ export function SmsRecoveryConsole() {
                       setDeliveryReviewed(event.target.checked)
                     }
                   />
-                  <span>
-                    I reviewed this exact event, the complete visible immutable
-                    history, and the selected recovery evidence. I did not copy
-                    a phone number, message body, client name, or PHI.
-                  </span>
+                  <span>{tx("I reviewed this exact event, the complete visible immutable history, and the selected recovery evidence. I did not copy a phone number, message body, client name, or PHI.")}</span>
                 </label>
-                <p className="mt-3 break-all font-mono text-[11px] text-amber-900">
-                  Reconciliation UUID: {deliveryReconciliationId}
+                <p className="mt-3 break-all font-mono text-[11px] text-amber-900">{tx("Reconciliation UUID:")}{" "}{deliveryReconciliationId}
                 </p>
                 <Button
                   type="button"
@@ -1775,15 +1561,11 @@ export function SmsRecoveryConsole() {
                     });
                   }}
                 >
-                  <CheckCircle2 className="mr-2 h-4 w-4" />
-                  Record reviewed delivery action
-                </Button>
+                  <CheckCircle2 className="mr-2 h-4 w-4" />{tx("Record reviewed delivery action")}</Button>
               </div>
             </>
           ) : (
-            <p className="mt-3 text-sm text-muted-foreground">
-              Loading exact delivery history…
-            </p>
+            <p className="mt-3 text-sm text-muted-foreground">{tx("Loading exact delivery history…")}</p>
           )}
         </div>
       ) : null}
@@ -1791,10 +1573,7 @@ export function SmsRecoveryConsole() {
       {attemptQueue.data?.items.length === QUEUE_LIMIT ||
       deliveryQueue.data?.items.length === QUEUE_LIMIT ? (
         <div className="mt-4 flex items-start gap-2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900">
-          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />A queue reached
-          its display bound. Resolve or narrow the oldest evidence, then refresh
-          before concluding the queue is clear.
-        </div>
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />{tx("A queue reached its display bound. Resolve or narrow the oldest evidence, then refresh before concluding the queue is clear.")}</div>
       ) : null}
     </section>
   );

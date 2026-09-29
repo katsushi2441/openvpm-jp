@@ -12,6 +12,7 @@ import {
   formatPortalDate,
   portalCalendarDayDifference,
 } from "@/lib/portal/date";
+import { tx } from "@/lib/i18n";
 
 const speciesEmoji: Record<string, string> = PATIENT_SPECIES_EMOJI;
 
@@ -69,15 +70,13 @@ export default function PetDetailPage() {
         <EmptyState
           className="py-12"
           icon={AlertCircle}
-          title="Unable to load pet information"
-          description="Please refresh this page or return to the portal home."
+          title={tx("Unable to load pet information")}
+          description={tx("Please refresh this page or return to the portal home.")}
         />
         <Link
           href="/portal"
           className="mt-4 inline-block text-sm font-medium text-primary hover:text-primary/80"
-        >
-          Back to portal
-        </Link>
+        >{tx("Back to portal")}</Link>
       </div>
     );
   }
@@ -150,27 +149,27 @@ export default function PetDetailPage() {
   }
 
   const tabs: { key: Tab; label: string; count: number }[] = [
-    { key: "vaccinations", label: "Vaccinations", count: data.vaccinations.length },
-    { key: "prescriptions", label: "Prescriptions", count: data.prescriptions.length },
-    { key: "weights", label: "Weight History", count: data.weights.length },
+    { key: "vaccinations", label: tx("Vaccinations"), count: data.vaccinations.length },
+    { key: "prescriptions", label: tx("Prescriptions"), count: data.prescriptions.length },
+    { key: "weights", label: tx("Weight History"), count: data.weights.length },
   ];
 
   function vaccinationStatus(nextDue: string | null): {
     label: string;
     className: string;
   } {
-    if (!nextDue) return { label: "No due date", className: "bg-gray-100 text-gray-600" };
+    if (!nextDue) return { label: tx("No due date"), className: "bg-gray-100 text-gray-600" };
     const daysUntil = portalCalendarDayDifference(
       nextDue,
       new Date(),
       practiceTimeZone
     );
     if (daysUntil === null) {
-      return { label: "No due date", className: "bg-gray-100 text-gray-600" };
+      return { label: tx("No due date"), className: "bg-gray-100 text-gray-600" };
     }
-    if (daysUntil < 0) return { label: "Overdue", className: "bg-red-100 text-red-700" };
-    if (daysUntil <= 30) return { label: "Due soon", className: "bg-amber-100 text-amber-700" };
-    return { label: "Up to date", className: "bg-green-100 text-green-700" };
+    if (daysUntil < 0) return { label: tx("Overdue"), className: "bg-red-100 text-red-700" };
+    if (daysUntil <= 30) return { label: tx("Due soon"), className: "bg-amber-100 text-amber-700" };
+    return { label: tx("Up to date"), className: "bg-green-100 text-green-700" };
   }
 
   return (
@@ -182,9 +181,7 @@ export default function PetDetailPage() {
       >
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-        </svg>
-        Back to all pets
-      </Link>
+        </svg>{tx("Back to all pets")}</Link>
 
       {/* Pet Header */}
       <div className="flex items-center gap-4 mb-6">
@@ -209,9 +206,7 @@ export default function PetDetailPage() {
           <h3 className="font-semibold text-red-800 mb-2 flex items-center gap-2">
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
-            </svg>
-            Allergy Alerts
-          </h3>
+            </svg>{tx("Allergy Alerts")}</h3>
           <ul className="space-y-1">
             {data.allergies.map((a) => (
               <li key={a.id} className="text-sm text-red-700">
@@ -273,18 +268,18 @@ export default function PetDetailPage() {
             <EmptyState
               className="py-10"
               icon={Shield}
-              title="No vaccination records yet"
+              title={tx("No vaccination records yet")}
             />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 text-left text-gray-500">
-                    <th className="pb-2 font-medium">Vaccine</th>
-                    <th className="pb-2 font-medium">Given</th>
-                    <th className="pb-2 font-medium">Next Due</th>
-                    <th className="pb-2 font-medium">Status</th>
-                    <th className="pb-2 font-medium">Certificate</th>
+                    <th className="pb-2 font-medium">{tx("Vaccine")}</th>
+                    <th className="pb-2 font-medium">{tx("Given")}</th>
+                    <th className="pb-2 font-medium">{tx("Next Due")}</th>
+                    <th className="pb-2 font-medium">{tx("Status")}</th>
+                    <th className="pb-2 font-medium">{tx("Certificate")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -313,8 +308,8 @@ export default function PetDetailPage() {
                           >
                             <Download className="h-3.5 w-3.5" aria-hidden="true" />
                             {certificatePendingId === v.id
-                              ? "Checking..."
-                              : "Download"}
+                              ? tx("Checking...")
+                              : tx("Download")}
                           </button>
                         </td>
                       </tr>
@@ -334,18 +329,18 @@ export default function PetDetailPage() {
             <EmptyState
               className="py-10"
               icon={Pill}
-              title="No active prescriptions"
+              title={tx("No active prescriptions")}
             />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-gray-200 text-left text-gray-500">
-                    <th className="pb-2 font-medium">Medication</th>
-                    <th className="pb-2 font-medium">Dosage</th>
-                    <th className="pb-2 font-medium">Frequency</th>
-                    <th className="pb-2 font-medium">Refills</th>
-                    <th className="pb-2 font-medium">End Date</th>
+                    <th className="pb-2 font-medium">{tx("Medication")}</th>
+                    <th className="pb-2 font-medium">{tx("Dosage")}</th>
+                    <th className="pb-2 font-medium">{tx("Frequency")}</th>
+                    <th className="pb-2 font-medium">{tx("Refills")}</th>
+                    <th className="pb-2 font-medium">{tx("End Date")}</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
@@ -386,7 +381,7 @@ export default function PetDetailPage() {
             <EmptyState
               className="py-10"
               icon={Activity}
-              title="No weight records yet"
+              title={tx("No weight records yet")}
             />
           ) : (
             <div className="space-y-3">
@@ -404,10 +399,8 @@ export default function PetDetailPage() {
                   >
                     <div>
                       <p className="font-medium text-gray-900">
-                        {currentWeight.toFixed(1)} kg
-                        <span className="ml-1 text-gray-400 text-sm">
-                          ({(currentWeight * 2.205).toFixed(1)} lbs)
-                        </span>
+                        {currentWeight.toFixed(1)}{" "}{tx("kg")}<span className="ml-1 text-gray-400 text-sm">
+                          ({(currentWeight * 2.205).toFixed(1)}{" "}{tx("lbs)")}</span>
                       </p>
                       <p className="text-xs text-gray-400">
                         {formatDate(w.recordedAt, practiceTimeZone)}
@@ -424,8 +417,7 @@ export default function PetDetailPage() {
                         }`}
                       >
                         {diff > 0 ? "+" : ""}
-                        {diff.toFixed(1)} kg
-                      </span>
+                        {diff.toFixed(1)}{" "}{tx("kg")}</span>
                     )}
                   </div>
                 );

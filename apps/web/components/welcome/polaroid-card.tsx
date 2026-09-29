@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import type { WelcomeCardId } from "@/lib/welcome/cards";
 import { WELCOME_CARD_COPY } from "./welcome-copy";
 import { ImageryBackdrop } from "./vignettes/imagery";
+import { tx } from "@/lib/i18n";
 
 export type WelcomeVariant = "vignette" | "imagery";
 
@@ -69,9 +70,7 @@ export function PolaroidCard({
         )}
         {done ? (
           <span className="absolute left-1.5 top-1.5 flex items-center gap-1 rounded-full bg-white/90 px-1.5 py-0.5 text-[10px] font-semibold text-primary shadow-sm">
-            <Check className="h-3 w-3" aria-hidden="true" />
-            Done
-          </span>
+            <Check className="h-3 w-3" aria-hidden="true" />{tx("Done")}</span>
         ) : null}
       </span>
       <span className="mt-2.5 block font-heading text-sm font-semibold leading-snug text-slate-900">

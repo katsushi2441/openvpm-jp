@@ -9,6 +9,7 @@ import {
   AUTH_PASSWORD_MAX_LENGTH,
   AUTH_PASSWORD_MIN_LENGTH,
 } from "@/lib/auth-password-policy";
+import { tx } from "@/lib/i18n";
 
 function AcceptInviteInner() {
   const params = useSearchParams();
@@ -30,26 +31,20 @@ function AcceptInviteInner() {
     <div className="flex min-h-screen items-center justify-center bg-surface">
       <div className="w-full max-w-sm rounded-lg border border-border bg-card p-8">
         <div className="mb-6 text-center">
-          <h1 className="font-heading text-2xl font-bold text-foreground">OpenVPM</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Accept your invite</p>
+          <h1 className="font-heading text-2xl font-bold text-foreground">{tx("OpenVPM")}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{tx("Accept your invite")}</p>
         </div>
 
         {done ? (
           <div className="text-center">
-            <p className="text-sm text-foreground">
-              Your account is ready. You can now sign in.
-            </p>
+            <p className="text-sm text-foreground">{tx("Your account is ready. You can now sign in.")}</p>
             <Link
               href="/login"
               className="mt-6 inline-block rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-            >
-              Sign in
-            </Link>
+            >{tx("Sign in")}</Link>
           </div>
         ) : !token ? (
-          <p className="text-center text-sm text-destructive">
-            This invite link is invalid. Ask your administrator to send a new one.
-          </p>
+          <p className="text-center text-sm text-destructive">{tx("This invite link is invalid. Ask your administrator to send a new one.")}</p>
         ) : (
           <form
             onSubmit={(e) => {
@@ -61,7 +56,7 @@ function AcceptInviteInner() {
                 return;
               }
               if (password !== confirm) {
-                toast.error("Passwords don't match");
+                toast.error(tx("Passwords don't match"));
                 return;
               }
               accept.mutate({ token, password });
@@ -69,9 +64,7 @@ function AcceptInviteInner() {
             className="space-y-4"
           >
             <div>
-              <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-foreground">
-                Create a password
-              </label>
+              <label htmlFor="password" className="mb-1.5 block text-sm font-medium text-foreground">{tx("Create a password")}</label>
               <input
                 id="password"
                 type="password"
@@ -85,9 +78,7 @@ function AcceptInviteInner() {
               />
             </div>
             <div>
-              <label htmlFor="confirm" className="mb-1.5 block text-sm font-medium text-foreground">
-                Confirm password
-              </label>
+              <label htmlFor="confirm" className="mb-1.5 block text-sm font-medium text-foreground">{tx("Confirm password")}</label>
               <input
                 id="confirm"
                 type="password"
@@ -97,7 +88,7 @@ function AcceptInviteInner() {
                 minLength={AUTH_PASSWORD_MIN_LENGTH}
                 maxLength={AUTH_PASSWORD_MAX_LENGTH}
                 className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-                placeholder="Re-enter your password"
+                placeholder={tx("Re-enter your password")}
               />
             </div>
             <button
@@ -105,7 +96,7 @@ function AcceptInviteInner() {
               disabled={!canSubmit || accept.isPending}
               className="w-full rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
             >
-              {accept.isPending ? "Activating…" : "Activate account"}
+              {accept.isPending ? tx("Activating…") : tx("Activate account")}
             </button>
           </form>
         )}

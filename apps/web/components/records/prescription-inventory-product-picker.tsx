@@ -19,6 +19,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { tx } from "@/lib/i18n";
 
 type RouterOutputs = inferRouterOutputs<AppRouter>;
 export type PrescriptionInventoryProduct =
@@ -132,7 +133,7 @@ export function PrescriptionInventoryProductPicker({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          aria-label="Inventory item"
+          aria-label={tx("Inventory item")}
           className="h-10 w-full justify-between px-3 font-normal"
         >
           <span
@@ -141,7 +142,7 @@ export function PrescriptionInventoryProductPicker({
               !selectedProduct && "text-muted-foreground",
             )}
           >
-            {selectedProduct?.name ?? "Not dispensed from inventory"}
+            {selectedProduct?.name ?? tx("Not dispensed from inventory")}
           </span>
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -161,7 +162,7 @@ export function PrescriptionInventoryProductPicker({
               value={search}
               onValueChange={changeSearch}
               autoFocus
-              placeholder="Search inventory by name or SKU..."
+              placeholder={tx("Search inventory by name or SKU...")}
               className="h-10 w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
             />
           </div>
@@ -188,29 +189,23 @@ export function PrescriptionInventoryProductPicker({
                   "mr-2 h-4 w-4",
                   value ? "opacity-0" : "opacity-100",
                 )}
-              />
-              Not dispensed from inventory
-            </Command.Item>
+              />{tx("Not dispensed from inventory")}</Command.Item>
             {products.error ? (
               <div className="px-2 py-4 text-center text-sm text-destructive">
-                <p>Inventory unavailable. Please retry.</p>
+                <p>{tx("Inventory unavailable. Please retry.")}</p>
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
                   onClick={() => void products.refetch()}
-                >
-                  Retry
-                </Button>
+                >{tx("Retry")}</Button>
               </div>
             ) : null}
             {!products.error &&
             searchSettled &&
             !products.isLoading &&
             visibleProducts.length === 0 ? (
-              <div className="px-2 py-4 text-center text-sm text-muted-foreground">
-                No inventory items found.
-              </div>
+              <div className="px-2 py-4 text-center text-sm text-muted-foreground">{tx("No inventory items found.")}</div>
             ) : null}
             {visibleProducts.map((product) => (
               <Command.Item
@@ -234,9 +229,8 @@ export function PrescriptionInventoryProductPicker({
                   <span className="block text-xs text-muted-foreground">
                     {product.inventoryTracked
                       ? `${product.stockQuantity} units on hand`
-                      : "Stock tracking not set up"}{" "}
-                    · {product.unitPrice} each
-                    {product.sku ? ` · SKU ${product.sku}` : ""}
+                      : tx("Stock tracking not set up")}{" "}
+                    · {product.unitPrice}{" "}{tx("each")}{product.sku ? ` · SKU ${product.sku}` : ""}
                   </span>
                 </span>
               </Command.Item>
@@ -244,27 +238,23 @@ export function PrescriptionInventoryProductPicker({
           </Command.List>
           <div className="sr-only" role="status" aria-live="polite">
             {catalogChanged
-              ? "Inventory changed while loading. Refresh inventory items."
+              ? tx("Inventory changed while loading. Refresh inventory items.")
               : products.error
-                ? "Inventory items could not be loaded."
+                ? tx("Inventory items could not be loaded.")
                 : products.isFetching || !searchSettled
-                  ? "Loading inventory items."
+                  ? tx("Loading inventory items.")
                   : `${visibleProducts.length} of ${total} inventory items loaded.`}
           </div>
           {catalogChanged ? (
             <div className="border-t border-border px-3 py-2 text-center">
-              <p className="text-xs text-muted-foreground">
-                Inventory changed while this list was loading.
-              </p>
+              <p className="text-xs text-muted-foreground">{tx("Inventory changed while this list was loading.")}</p>
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
                 className="mt-1 h-auto py-1 text-xs"
                 onClick={refreshProducts}
-              >
-                Refresh inventory items
-              </Button>
+              >{tx("Refresh inventory items")}</Button>
             </div>
           ) : null}
           {!products.error && hasMore ? (
@@ -279,13 +269,8 @@ export function PrescriptionInventoryProductPicker({
               >
                 {products.isFetching || !searchSettled ? (
                   <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
-                ) : null}
-                Load more inventory items
-              </Button>
-              <p className="mt-1 text-center text-xs text-muted-foreground">
-                Showing {visibleProducts.length} of {total}. Scroll for more or
-                use search to jump to an item.
-              </p>
+                ) : null}{tx("Load more inventory items")}</Button>
+              <p className="mt-1 text-center text-xs text-muted-foreground">{tx("Showing")}{" "}{visibleProducts.length}{" "}{tx("of")}{" "}{total}{tx(". Scroll for more or use search to jump to an item.")}</p>
             </div>
           ) : null}
         </Command>

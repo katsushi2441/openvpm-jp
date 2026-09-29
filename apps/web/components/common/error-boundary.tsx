@@ -4,6 +4,7 @@ import { Component, type ReactNode } from "react";
 import { AlertTriangle, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { reportClientError } from "@/components/common/report-client-error";
+import { tx } from "@/lib/i18n";
 
 interface Props {
   children: ReactNode;
@@ -39,20 +40,16 @@ export class ErrorBoundary extends Component<Props, State> {
             <AlertTriangle className="h-6 w-6 text-destructive" />
           </div>
           <div className="text-center">
-            <h3 className="font-heading text-lg font-semibold">
-              Something went wrong
-            </h3>
+            <h3 className="font-heading text-lg font-semibold">{tx("Something went wrong")}</h3>
             <p className="mt-1 max-w-md text-sm text-muted-foreground">
-              {this.state.error?.message || "An unexpected error occurred."}
+              {this.state.error?.message || tx("An unexpected error occurred.")}
             </p>
           </div>
           <Button
             variant="outline"
             onClick={() => this.setState({ hasError: false, error: null })}
           >
-            <RotateCcw className="mr-2 h-4 w-4" />
-            Try Again
-          </Button>
+            <RotateCcw className="mr-2 h-4 w-4" />{tx("Try Again")}</Button>
         </div>
       );
     }

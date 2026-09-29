@@ -13,6 +13,7 @@ import {
   isVaccinationOptionalTextInputValid,
   isVaccinationRequiredTextInputValid,
 } from "@/lib/records/vaccination-policy";
+import { tx } from "@/lib/i18n";
 
 export type VaccinationFormState = {
   vaccineName: string;
@@ -118,9 +119,7 @@ export function VaccinationFormFields({
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <div>
-        <label className="mb-1 block text-xs font-medium text-muted-foreground">
-          Vaccine *
-        </label>
+        <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("Vaccine *")}</label>
         <Input
           name="vaccineName"
           required
@@ -141,12 +140,11 @@ export function VaccinationFormFields({
                   : ""),
             }));
           }}
-          placeholder="e.g. Rabies"
+          placeholder={tx("e.g. Rabies")}
         />
       </div>
       <div>
-        <label className="mb-1 block text-xs font-medium text-muted-foreground">
-          Product name{rabies ? " *" : ""}
+        <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("Product name")}{rabies ? " *" : ""}
         </label>
         <Input
           name="productName"
@@ -154,12 +152,11 @@ export function VaccinationFormFields({
           value={form.productName}
           maxLength={VACCINATION_PRODUCT_NAME_MAX_LENGTH}
           onChange={(event) => update("productName", event.target.value)}
-          placeholder="e.g. Defensor 3"
+          placeholder={tx("e.g. Defensor 3")}
         />
       </div>
       <div>
-        <label className="mb-1 block text-xs font-medium text-muted-foreground">
-          Next due{rabies ? " *" : ""}
+        <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("Next due")}{rabies ? " *" : ""}
         </label>
         <Input
           name="nextDueDate"
@@ -171,8 +168,7 @@ export function VaccinationFormFields({
         />
       </div>
       <div>
-        <label className="mb-1 block text-xs font-medium text-muted-foreground">
-          Lot number{rabies ? " *" : ""}
+        <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("Lot number")}{rabies ? " *" : ""}
         </label>
         <Input
           name="lotNumber"
@@ -180,12 +176,11 @@ export function VaccinationFormFields({
           value={form.lotNumber}
           maxLength={VACCINATION_LOT_NUMBER_MAX_LENGTH}
           onChange={(event) => update("lotNumber", event.target.value)}
-          placeholder="e.g. RAB-2026-04"
+          placeholder={tx("e.g. RAB-2026-04")}
         />
       </div>
       <div>
-        <label className="mb-1 block text-xs font-medium text-muted-foreground">
-          Manufacturer{rabies ? " *" : ""}
+        <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("Manufacturer")}{rabies ? " *" : ""}
         </label>
         <Input
           name="manufacturer"
@@ -193,15 +188,13 @@ export function VaccinationFormFields({
           value={form.manufacturer}
           maxLength={VACCINATION_MANUFACTURER_MAX_LENGTH}
           onChange={(event) => update("manufacturer", event.target.value)}
-          placeholder="e.g. Zoetis"
+          placeholder={tx("e.g. Zoetis")}
         />
       </div>
       {rabies ? (
         <>
           <div>
-            <label className="mb-1 block text-xs font-medium text-muted-foreground">
-              Product expiration *
-            </label>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("Product expiration *")}</label>
             <Input
               name="productExpirationDate"
               type="date"
@@ -213,9 +206,7 @@ export function VaccinationFormFields({
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-muted-foreground">
-              Dose type *
-            </label>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("Dose type *")}</label>
             <select
               name="doseType"
               required
@@ -228,15 +219,13 @@ export function VaccinationFormFields({
               }
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
             >
-              <option value="">Choose dose type</option>
-              <option value="initial">Initial dose</option>
-              <option value="booster">Booster dose</option>
+              <option value="">{tx("Choose dose type")}</option>
+              <option value="initial">{tx("Initial dose")}</option>
+              <option value="booster">{tx("Booster dose")}</option>
             </select>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-muted-foreground">
-              Licensed duration *
-            </label>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("Licensed duration *")}</label>
             <select
               name="licensedDurationMonths"
               required
@@ -246,16 +235,14 @@ export function VaccinationFormFields({
               }
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
             >
-              <option value="">Choose duration</option>
-              <option value="12">1 year</option>
-              <option value="36">3 years</option>
-              <option value="48">4 years</option>
+              <option value="">{tx("Choose duration")}</option>
+              <option value="12">{tx("1 year")}</option>
+              <option value="36">{tx("3 years")}</option>
+              <option value="48">{tx("4 years")}</option>
             </select>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-muted-foreground">
-              Rabies tag number
-            </label>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("Rabies tag number")}</label>
             <Input
               name="rabiesTagNumber"
               value={form.rabiesTagNumber}
@@ -264,9 +251,7 @@ export function VaccinationFormFields({
             />
           </div>
           <div className="sm:col-span-2">
-            <label className="mb-1 block text-xs font-medium text-muted-foreground">
-              Supervising veterinarian *
-            </label>
+            <label className="mb-1 block text-xs font-medium text-muted-foreground">{tx("Supervising veterinarian *")}</label>
             <select
               name="supervisingVeterinarianId"
               required
@@ -276,20 +261,17 @@ export function VaccinationFormFields({
               }
               className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
             >
-              <option value="">Choose veterinarian</option>
+              <option value="">{tx("Choose veterinarian")}</option>
               {providers?.map((provider) => (
                 <option key={provider.id} value={provider.id}>
                   {provider.name}
                   {provider.licenseNumber
                     ? ` — License ${provider.licenseNumber}`
-                    : " — license missing"}
+                    : tx(" — license missing")}
                 </option>
               ))}
             </select>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Rabies certificates require the veterinarian&apos;s license number
-              in Staff settings.
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">{tx("Rabies certificates require the veterinarian's license number in Staff settings.")}</p>
           </div>
         </>
       ) : null}

@@ -32,6 +32,7 @@ import {
   type ClinicModel,
   type FirstGoal,
 } from "@/lib/onboarding/clinic-profile";
+import { tx } from "@/lib/i18n";
 
 const modelIcons = {
   companion: Dog,
@@ -115,9 +116,7 @@ export function ClinicIntentBuilder({
 
         {showClinicModel ? (
           <fieldset className={intro ? "mt-7" : undefined}>
-            <legend className="text-sm font-semibold text-slate-950 sm:text-base">
-              What kind of care do you provide?
-            </legend>
+            <legend className="text-sm font-semibold text-slate-950 sm:text-base">{tx("What kind of care do you provide?")}</legend>
             <div className="mt-3 grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3">
               {CLINIC_MODEL_OPTIONS.map((option) => {
                 const Icon = modelIcons[option.value];
@@ -236,12 +235,8 @@ export function ClinicIntentBuilder({
                 <Sparkles className="h-5 w-5" strokeWidth={1.8} />
               </span>
               <div>
-                <h3 className="font-heading text-lg font-semibold text-slate-950 sm:text-xl">
-                  Your first OpenVPM day
-                </h3>
-                <p className="mt-0.5 text-xs text-slate-500">
-                  Shaped for {selectedModel.shortLabel.toLowerCase()} care
-                </p>
+                <h3 className="font-heading text-lg font-semibold text-slate-950 sm:text-xl">{tx("Your first OpenVPM day")}</h3>
+                <p className="mt-0.5 text-xs text-slate-500">{tx("Shaped for")}{" "}{selectedModel.shortLabel.toLowerCase()}{" "}{tx("care")}</p>
               </div>
             </div>
 
@@ -270,7 +265,7 @@ export function ClinicIntentBuilder({
 
             <div className="mt-4 flex items-center gap-2 text-xs text-primary">
               <ShieldCheck className="h-4 w-4" strokeWidth={1.8} />
-              <span>Nothing moves until you review it.</span>
+              <span>{tx("Nothing moves until you review it.")}</span>
             </div>
           </div>
           <style>{`

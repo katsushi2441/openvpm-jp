@@ -11,6 +11,7 @@ import { trpc } from "@/lib/trpc";
 import { PATIENT_SPECIES_EMOJI } from "@/lib/patients/species";
 import { EmptyState } from "@/components/common/empty-state";
 import { calculatePortalAge } from "@/lib/portal/date";
+import { tx } from "@/lib/i18n";
 
 const speciesEmoji: Record<string, string> = PATIENT_SPECIES_EMOJI;
 
@@ -31,8 +32,8 @@ export default function PortalHomePage() {
         <EmptyState
           className="py-12"
           icon={AlertCircle}
-          title="Unable to load portal"
-          description="This portal link is invalid or has expired. Please contact your veterinary clinic for a new link."
+          title={tx("Unable to load portal")}
+          description={tx("This portal link is invalid or has expired. Please contact your veterinary clinic for a new link.")}
         />
       </div>
     );
@@ -41,23 +42,20 @@ export default function PortalHomePage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">
-          Welcome, {data.firstName}!
+        <h1 className="text-2xl font-bold text-gray-900">{tx("Welcome,")}{" "}{data.firstName}!
         </h1>
-        <p className="text-gray-500 mt-1">
-          Here is everything about your pets in one place.
-        </p>
+        <p className="text-gray-500 mt-1">{tx("Here is everything about your pets in one place.")}</p>
       </div>
 
       {/* Pet Cards */}
       <section className="mb-10">
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Your Pets</h2>
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">{tx("Your Pets")}</h2>
         {data.patients.length === 0 ? (
           <EmptyState
             className="py-10"
             icon={PawPrint}
-            title="No pets on file yet"
-            description="Your clinic will add pets here when they create patient records."
+            title={tx("No pets on file yet")}
+            description={tx("Your clinic will add pets here when they create patient records.")}
           />
         ) : (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -95,14 +93,12 @@ export default function PortalHomePage() {
           href="/portal/book"
           className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-primary/40 p-4 font-medium text-primary transition-all hover:border-primary/60 hover:bg-primary/5"
         >
-          <CalendarPlus className="h-5 w-5" aria-hidden="true" />
-          Request an Appointment
-        </Link>
+          <CalendarPlus className="h-5 w-5" aria-hidden="true" />{tx("Request an Appointment")}</Link>
       </section>
 
       {/* Quick Links */}
       <section>
-        <h2 className="text-lg font-semibold text-gray-800 mb-4">Quick Links</h2>
+        <h2 className="text-lg font-semibold text-gray-800 mb-4">{tx("Quick Links")}</h2>
         <div className="grid gap-3 sm:grid-cols-3">
           <Link
             href="/portal/messages"
@@ -112,8 +108,8 @@ export default function PortalHomePage() {
               <MessageSquare className="h-5 w-5" aria-hidden="true" />
             </div>
             <div>
-              <p className="font-medium text-gray-900">Messages</p>
-              <p className="text-sm text-gray-500">Read and reply to your clinic</p>
+              <p className="font-medium text-gray-900">{tx("Messages")}</p>
+              <p className="text-sm text-gray-500">{tx("Read and reply to your clinic")}</p>
             </div>
           </Link>
           <Link
@@ -126,8 +122,8 @@ export default function PortalHomePage() {
               </svg>
             </div>
             <div>
-              <p className="font-medium text-gray-900">Appointments</p>
-              <p className="text-sm text-gray-500">View upcoming and past visits</p>
+              <p className="font-medium text-gray-900">{tx("Appointments")}</p>
+              <p className="text-sm text-gray-500">{tx("View upcoming and past visits")}</p>
             </div>
           </Link>
           <Link
@@ -140,8 +136,8 @@ export default function PortalHomePage() {
               </svg>
             </div>
             <div>
-              <p className="font-medium text-gray-900">Invoices</p>
-              <p className="text-sm text-gray-500">View billing and payments</p>
+              <p className="font-medium text-gray-900">{tx("Invoices")}</p>
+              <p className="text-sm text-gray-500">{tx("View billing and payments")}</p>
             </div>
           </Link>
         </div>

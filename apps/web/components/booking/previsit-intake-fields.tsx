@@ -8,6 +8,7 @@ import {
   type PrevisitIntakeFieldKey,
 } from "@/lib/booking/previsit-intake";
 import { cn } from "@/lib/utils";
+import { tx } from "@/lib/i18n";
 
 export interface PrevisitIntakeFieldsProps {
   enabledFieldKeys: readonly PrevisitIntakeFieldKey[];
@@ -42,15 +43,9 @@ export function PrevisitIntakeFields({
         className,
       )}
     >
-      <summary className="cursor-pointer text-sm font-semibold text-gray-900">
-        Visit location and health details
-        <span className="ml-1 font-normal text-gray-500">(optional)</span>
+      <summary className="cursor-pointer text-sm font-semibold text-gray-900">{tx("Visit location and health details")}<span className="ml-1 font-normal text-gray-500">{tx("(optional)")}</span>
       </summary>
-      <p id={descriptionId} className="mt-2 text-xs leading-5 text-gray-500">
-        Share where the visit should happen and anything that would help the
-        clinic prepare. These are owner-reported details and remain unverified
-        until the care team reviews and confirms them.
-      </p>
+      <p id={descriptionId} className="mt-2 text-xs leading-5 text-gray-500">{tx("Share where the visit should happen and anything that would help the clinic prepare. These are owner-reported details and remain unverified until the care team reviews and confirms them.")}</p>
       <div className="mt-4 space-y-4">
         {fields.map((field) => {
           const fieldId = `${idPrefix}-intake-${field.key}`;

@@ -7,6 +7,7 @@ import { PawMark } from "@/components/brand/paw-mark";
 import { trpc } from "@/lib/trpc";
 import { hexToHslString, initials } from "@/lib/utils";
 import { DEFAULT_PORTAL_BRAND_COLOR } from "@/lib/portal/branding";
+import { tx } from "@/lib/i18n";
 
 type PortalThemeStyle = CSSProperties & {
   "--primary"?: string;
@@ -75,7 +76,7 @@ export function PortalShell({ children }: { children: ReactNode }) {
               <p className="truncate text-sm font-semibold text-gray-900">
                 {practiceName}
               </p>
-              <p className="text-sm font-medium text-primary">Pet Portal</p>
+              <p className="text-sm font-medium text-primary">{tx("Pet Portal")}</p>
             </div>
           </div>
           {client.data ? (
@@ -85,7 +86,7 @@ export function PortalShell({ children }: { children: ReactNode }) {
               disabled={signingOut}
               className="shrink-0 text-sm font-medium text-gray-500 hover:text-gray-800 disabled:opacity-60"
             >
-              {signingOut ? "Signing out…" : "Sign out"}
+              {signingOut ? tx("Signing out…") : tx("Sign out")}
             </button>
           ) : null}
         </div>
@@ -94,17 +95,13 @@ export function PortalShell({ children }: { children: ReactNode }) {
         {children}
       </main>
       <footer className="mt-12 border-t border-gray-100">
-        <div className="mx-auto max-w-4xl px-4 py-6 text-center text-sm text-gray-400">
-          Powered by OpenVPM
-          <span className="mx-2" aria-hidden="true">
+        <div className="mx-auto max-w-4xl px-4 py-6 text-center text-sm text-gray-400">{tx("Powered by OpenVPM")}<span className="mx-2" aria-hidden="true">
             ·
           </span>
           <a
             href="/legal/privacy"
             className="underline-offset-2 hover:text-gray-600 hover:underline"
-          >
-            Privacy
-          </a>
+          >{tx("Privacy")}</a>
         </div>
       </footer>
     </div>

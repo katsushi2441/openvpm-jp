@@ -10,6 +10,7 @@ import {
   ambulatoryWorkspaceSettings,
   type AmbulatoryWorkspaceSettings,
 } from "@/lib/ambulatory-workspace";
+import { tx } from "@/lib/i18n";
 
 export function AmbulatoryWorkspaceSettingsCard({
   settings,
@@ -26,7 +27,7 @@ export function AmbulatoryWorkspaceSettingsCard({
     onSuccess: async (saved) => {
       setDraft(saved);
       await utils.settings.getPractice.invalidate();
-      toast.success("Ambulatory workspace settings saved");
+      toast.success(tx("Ambulatory workspace settings saved"));
     },
     onError: (error) => toast.error(error.message),
   });
@@ -40,12 +41,8 @@ export function AmbulatoryWorkspaceSettingsCard({
           <Stethoscope className="h-5 w-5" />
         </div>
         <div>
-          <h3 className="text-sm font-semibold">Ambulatory workspace</h3>
-          <p className="mt-1 text-xs leading-5 text-muted-foreground">
-            A field-first patient workflow with direct visit start, one-page
-            clinical entry, large-animal measurements, and compact closeout.
-            Existing clinic workflows stay unchanged until this is enabled.
-          </p>
+          <h3 className="text-sm font-semibold">{tx("Ambulatory workspace")}</h3>
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">{tx("A field-first patient workflow with direct visit start, one-page clinical entry, large-animal measurements, and compact closeout. Existing clinic workflows stay unchanged until this is enabled.")}</p>
         </div>
       </div>
 
@@ -58,19 +55,14 @@ export function AmbulatoryWorkspaceSettingsCard({
           }
         />
         <span>
-          <span className="block text-sm font-medium">
-            Enable ambulatory workspace
-          </span>
-          <span className="mt-1 block text-xs text-muted-foreground">
-            Adds “Start field visit” to active patient charts. Scheduled clinic
-            workflows remain unchanged.
-          </span>
+          <span className="block text-sm font-medium">{tx("Enable ambulatory workspace")}</span>
+          <span className="mt-1 block text-xs text-muted-foreground">{tx("Adds “Start field visit” to active patient charts. Scheduled clinic workflows remain unchanged.")}</span>
         </span>
       </label>
 
       <div className="grid gap-4 sm:grid-cols-3">
         <label className="space-y-1.5">
-          <span className="text-sm font-medium">Measurements</span>
+          <span className="text-sm font-medium">{tx("Measurements")}</span>
           <select
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
             value={current.measurementSystem}
@@ -84,13 +76,13 @@ export function AmbulatoryWorkspaceSettingsCard({
               })
             }
           >
-            <option value="metric">Kilograms / Celsius</option>
-            <option value="us_customary">Pounds / Fahrenheit</option>
+            <option value="metric">{tx("Kilograms / Celsius")}</option>
+            <option value="us_customary">{tx("Pounds / Fahrenheit")}</option>
           </select>
         </label>
 
         <label className="space-y-1.5">
-          <span className="text-sm font-medium">Body condition scale</span>
+          <span className="text-sm font-medium">{tx("Body condition scale")}</span>
           <select
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
             value={current.bodyConditionScale}
@@ -118,7 +110,7 @@ export function AmbulatoryWorkspaceSettingsCard({
               })
             }
           />
-          <span className="text-sm font-medium">Compact closeout</span>
+          <span className="text-sm font-medium">{tx("Compact closeout")}</span>
         </label>
       </div>
 
@@ -132,9 +124,7 @@ export function AmbulatoryWorkspaceSettingsCard({
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             <Save className="mr-2 h-4 w-4" />
-          )}
-          Save ambulatory settings
-        </Button>
+          )}{tx("Save ambulatory settings")}</Button>
       </div>
     </section>
   );

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { tx } from "@/lib/i18n";
 
 const STORAGE_KEY = "openvpm:migration-review:v1";
 
@@ -102,17 +103,13 @@ export function MigrationReviewChecklist() {
           <div>
             <div className="flex items-center gap-2 text-primary">
               <ShieldCheck className="h-5 w-5" aria-hidden="true" />
-              <CardTitle>Data validation guide</CardTitle>
+              <CardTitle>{tx("Data validation guide")}</CardTitle>
             </div>
-            <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
-              Work through a small, representative sample before relying on the
-              imported history. Your checklist stays in this browser session
-              and is never written to clinic records.
-            </p>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">{tx("Work through a small, representative sample before relying on the imported history. Your checklist stays in this browser session and is never written to clinic records.")}</p>
           </div>
           <div className="min-w-40 rounded-lg border border-border bg-background p-3">
             <div className="flex items-center justify-between text-sm">
-              <span className="font-medium">Review progress</span>
+              <span className="font-medium">{tx("Review progress")}</span>
               <span className="tabular-nums text-muted-foreground">
                 {completed.length}/{reviewSteps.length}
               </span>
@@ -120,7 +117,7 @@ export function MigrationReviewChecklist() {
             <div
               className="mt-2 h-2 overflow-hidden rounded-full bg-muted"
               role="progressbar"
-              aria-label="Migration review progress"
+              aria-label={tx("Migration review progress")}
               aria-valuemin={0}
               aria-valuemax={100}
               aria-valuenow={progress}
@@ -134,15 +131,15 @@ export function MigrationReviewChecklist() {
         </div>
       </CardHeader>
       <CardContent className="space-y-5 p-4 sm:p-6">
-        <nav aria-label="Data validation shortcuts" className="flex flex-wrap gap-2">
+        <nav aria-label={tx("Data validation shortcuts")} className="flex flex-wrap gap-2">
           <Button asChild variant="outline">
-            <Link href="/clients">Find a familiar client</Link>
+            <Link href="/clients">{tx("Find a familiar client")}</Link>
           </Button>
           <Button asChild variant="outline">
-            <Link href="/patients">Find a familiar patient</Link>
+            <Link href="/patients">{tx("Find a familiar patient")}</Link>
           </Button>
           <Button asChild variant="ghost">
-            <Link href="#archive-records">Browse imported history</Link>
+            <Link href="#archive-records">{tx("Browse imported history")}</Link>
           </Button>
         </nav>
 
@@ -188,25 +185,18 @@ export function MigrationReviewChecklist() {
 
         <div className="flex flex-col gap-3 rounded-lg border border-dashed border-border p-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="font-medium">Found something that looks wrong?</p>
-            <p className="mt-1 text-sm leading-5 text-muted-foreground">
-              Copy a privacy-safe report outline. Use only the OpenVPM record
-              reference—never paste names, contact information, medical detail,
-              or old-system identifiers into email or chat.
-            </p>
-            <p className="mt-2 text-sm font-medium text-foreground">
-              Completing this checklist records no approval and never releases
-              protected review mode.
-            </p>
+            <p className="font-medium">{tx("Found something that looks wrong?")}</p>
+            <p className="mt-1 text-sm leading-5 text-muted-foreground">{tx("Copy a privacy-safe report outline. Use only the OpenVPM record reference—never paste names, contact information, medical detail, or old-system identifiers into email or chat.")}</p>
+            <p className="mt-2 text-sm font-medium text-foreground">{tx("Completing this checklist records no approval and never releases protected review mode.")}</p>
           </div>
           <div className="flex shrink-0 flex-wrap gap-2">
             <Button type="button" variant="outline" onClick={copyIssueTemplate}>
               <ClipboardCopy className="mr-2 h-4 w-4" aria-hidden="true" />
               {copyState === "copied"
-                ? "Template copied"
+                ? tx("Template copied")
                 : copyState === "failed"
-                  ? "Copy unavailable"
-                  : "Copy safe issue template"}
+                  ? tx("Copy unavailable")
+                  : tx("Copy safe issue template")}
             </Button>
             {completed.length ? (
               <Button
@@ -214,9 +204,7 @@ export function MigrationReviewChecklist() {
                 variant="ghost"
                 onClick={() => setCompleted([])}
               >
-                <RotateCcw className="mr-2 h-4 w-4" aria-hidden="true" />
-                Reset
-              </Button>
+                <RotateCcw className="mr-2 h-4 w-4" aria-hidden="true" />{tx("Reset")}</Button>
             ) : null}
           </div>
         </div>

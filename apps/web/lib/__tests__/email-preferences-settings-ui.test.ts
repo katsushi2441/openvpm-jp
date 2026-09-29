@@ -15,7 +15,7 @@ describe("OpenVPM email settings UI", () => {
     expect(source).toContain("Product guidance and feedback");
     expect(source).toContain("Account, security, and billing email");
     expect(source).toContain(
-      "not messages\n              your clinic sends to pet owners",
+      "not messages your clinic sends to pet owners",
     );
   });
 

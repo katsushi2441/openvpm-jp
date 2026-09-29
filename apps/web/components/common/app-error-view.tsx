@@ -5,6 +5,7 @@ import { AlertTriangle, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { reportClientError } from "@/components/common/report-client-error";
 import type { ClientErrorSource } from "@/lib/client-error-report";
+import { tx } from "@/lib/i18n";
 
 export function AppErrorView({
   error,
@@ -33,18 +34,11 @@ export function AppErrorView({
         <h1
           id="app-error-title"
           className="font-heading text-2xl font-semibold"
-        >
-          Something went wrong
-        </h1>
-        <p className="mt-2 max-w-md text-sm text-muted-foreground">
-          We logged the error. Try again, or return to the dashboard if it
-          keeps happening.
-        </p>
+        >{tx("Something went wrong")}</h1>
+        <p className="mt-2 max-w-md text-sm text-muted-foreground">{tx("We logged the error. Try again, or return to the dashboard if it keeps happening.")}</p>
       </div>
       <Button onClick={reset} className="mt-6 gap-2">
-        <RotateCcw className="h-4 w-4" />
-        Try Again
-      </Button>
+        <RotateCcw className="h-4 w-4" />{tx("Try Again")}</Button>
     </main>
   );
 }

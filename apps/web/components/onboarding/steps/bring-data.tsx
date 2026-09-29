@@ -42,6 +42,7 @@ import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 import type { StepProps } from "../journey-types";
 import { MigrationHelpRequest } from "../migration-help-request";
+import { tx } from "@/lib/i18n";
 
 type Choice = "import" | "api" | "keep";
 type CsvPreview = {
@@ -286,7 +287,7 @@ export function BringDataStep({ register, state, setState }: StepProps) {
       if (fileReadVersionRef.current[mode] !== readVersion) return;
       if (!text.trim()) {
         clearPickedFile();
-        toast.error("CSV file is empty.");
+        toast.error(tx("CSV file is empty."));
         return;
       }
       if (!isImportCsvSizeValid(text)) {
@@ -304,7 +305,7 @@ export function BringDataStep({ register, state, setState }: StepProps) {
     } catch {
       if (fileReadVersionRef.current[mode] !== readVersion) return;
       finishFileRead();
-      toast.error("Could not read that file. Try again.");
+      toast.error(tx("Could not read that file. Try again."));
     }
   }
 
@@ -592,15 +593,14 @@ export function BringDataStep({ register, state, setState }: StepProps) {
   return (
     <div className="space-y-4">
       <p className="text-sm leading-6 text-slate-600">
-        {pathwayIntro} You own your data and can export it any time.
-      </p>
+        {pathwayIntro}{" "}{tx("You own your data and can export it any time.")}</p>
 
       <div className="grid gap-3">
         <ChoiceCard
           active={choice === "import"}
           icon={<FileSpreadsheet className="h-5 w-5" />}
-          title="Import from a file"
-          subtitle="Bring clients, pets, vaccine history, and visit notes."
+          title={tx("Import from a file")}
+          subtitle={tx("Bring clients, pets, vaccine history, and visit notes.")}
           onClick={() => {
             if (
               importInputsBusy ||
@@ -620,35 +620,20 @@ export function BringDataStep({ register, state, setState }: StepProps) {
           <div className="space-y-4 rounded-lg border border-slate-200 bg-slate-50/70 p-4">
             <div className="space-y-1 text-xs text-slate-500">
               {knownCompletedModes.length > 0 ? (
-                <p className="rounded-md border border-emerald-200 bg-emerald-50 p-3 font-medium text-emerald-900">
-                  Already reviewed: {migrationModeLabels(knownCompletedModes)}.
-                  Reselect only the files you still need to finish.{" "}
+                <p className="rounded-md border border-emerald-200 bg-emerald-50 p-3 font-medium text-emerald-900">{tx("Already reviewed:")}{" "}{migrationModeLabels(knownCompletedModes)}{tx(". Reselect only the files you still need to finish.")}{" "}
                   {migrationSourceLocked
                     ? `This migration will keep using ${selectedMigrationSourceName} so saved owner and patient IDs stay linked.`
-                    : "No clinic records changed, so you can still choose a different source."}
+                    : tx("No clinic records changed, so you can still choose a different source.")}
                 </p>
               ) : state.hasImportedData ? (
-                <p className="rounded-md border border-emerald-200 bg-emerald-50 p-3 font-medium text-emerald-900">
-                  Earlier import changes are already saved. If you are unsure
-                  which file finished, reselecting it is safe because duplicate
-                  rows are skipped.
-                </p>
+                <p className="rounded-md border border-emerald-200 bg-emerald-50 p-3 font-medium text-emerald-900">{tx("Earlier import changes are already saved. If you are unsure which file finished, reselecting it is safe because duplicate rows are skipped.")}</p>
               ) : null}
-              <p>
-                Add any files you have. OpenVPM checks each one in order. No
-                records import until you review that file's plan.
-              </p>
-              <p>
-                Keep the same source for all four files so owner and patient IDs
-                stay linked. Rows with issues are shown before you confirm.
-              </p>
-              <p>
-                Completed stages stay saved. Unfinished files stay only in this
-                setup, so reselect them if you leave and return.
-              </p>
+              <p>{tx("Add any files you have. OpenVPM checks each one in order. No records import until you review that file's plan.")}</p>
+              <p>{tx("Keep the same source for all four files so owner and patient IDs stay linked. Rows with issues are shown before you confirm.")}</p>
+              <p>{tx("Completed stages stay saved. Unfinished files stay only in this setup, so reselect them if you leave and return.")}</p>
             </div>
             <label className="block space-y-1.5 text-sm font-medium text-slate-700">
-              <span>Which system are you moving from?</span>
+              <span>{tx("Which system are you moving from?")}</span>
               <select
                 value={migrationSource}
                 disabled={importInputsBusy || migrationSourceLocked}
@@ -714,21 +699,12 @@ export function BringDataStep({ register, state, setState }: StepProps) {
               onToggle={(event) => setHistoryExpanded(event.currentTarget.open)}
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-3 text-sm font-medium text-slate-800">
-                <span>
-                  Also bring vaccine and visit history
-                  <span className="ml-1 font-normal text-slate-500">
-                    (optional)
-                  </span>
+                <span>{tx("Also bring vaccine and visit history")}<span className="ml-1 font-normal text-slate-500">{tx("(optional)")}</span>
                 </span>
                 <ChevronDown className="h-4 w-4 text-slate-500 transition-transform group-open:rotate-180" />
               </summary>
               <div className="space-y-4 border-t border-slate-200 p-3">
-                <p className="text-xs text-slate-500">
-                  History attaches only to a safely matched real patient. Use
-                  the same patient ID from the pet file whenever possible.
-                  Existing OpenVPM pets can also match by owner email or client
-                  ID plus patient name.
-                </p>
+                <p className="text-xs text-slate-500">{tx("History attaches only to a safely matched real patient. Use the same patient ID from the pet file whenever possible. Existing OpenVPM pets can also match by owner email or client ID plus patient name.")}</p>
                 {MIGRATION_STEPS.slice(2).map((step, index) => (
                   <ImportFileFields
                     key={step.mode}
@@ -755,43 +731,22 @@ export function BringDataStep({ register, state, setState }: StepProps) {
             {activeMode && activePreview ? (
               <div className="space-y-3" aria-live="polite">
                 <div>
-                  <p className="text-sm font-medium text-slate-800">
-                    Dry-run preview
-                  </p>
-                  <p className="mt-1 text-xs text-slate-500">
-                    No data in this preview has been imported yet. Review the
-                    planned changes and every issue before you confirm.
-                  </p>
-                  <p className="mt-1 text-xs font-medium text-amber-800">
-                    Start with a small representative sample. A confirmed import
-                    has no one-click rollback.
-                  </p>
+                  <p className="text-sm font-medium text-slate-800">{tx("Dry-run preview")}</p>
+                  <p className="mt-1 text-xs text-slate-500">{tx("No data in this preview has been imported yet. Review the planned changes and every issue before you confirm.")}</p>
+                  <p className="mt-1 text-xs font-medium text-amber-800">{tx("Start with a small representative sample. A confirmed import has no one-click rollback.")}</p>
                 </div>
                 <CsvPreviewCard mode={activeMode} preview={activePreview} />
                 {previewChangeCount > 0 && activePreview.errors.length > 0 ? (
                   <p className="rounded-md border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
-                    {previewChangeCount.toLocaleString()} valid changes can
-                    import. Review{" "}
+                    {previewChangeCount.toLocaleString()}{" "}{tx("valid changes can import. Review")}{" "}
                     {activePreview.errors.length.toLocaleString()}{" "}
-                    {activePreview.errors.length === 1 ? "issue" : "issues"}.
-                    Some affected rows may be skipped or imported without an
-                    optional field. Edit the file above to fix them, or import
-                    the valid changes now.
-                  </p>
+                    {activePreview.errors.length === 1 ? tx("issue") : tx("issues")}{tx(". Some affected rows may be skipped or imported without an optional field. Edit the file above to fix them, or import the valid changes now.")}</p>
                 ) : null}
                 {previewChangeCount === 0 && activePreview.total === 0 ? (
-                  <p className="rounded-md border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
-                    Nothing in this file can be imported yet. Edit the file to
-                    fix the listed issues, or use Skip file to continue without
-                    it.
-                  </p>
+                  <p className="rounded-md border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">{tx("Nothing in this file can be imported yet. Edit the file to fix the listed issues, or use Skip file to continue without it.")}</p>
                 ) : null}
                 {previewChangeCount === 0 && activePreview.total > 0 ? (
-                  <p className="rounded-md border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">
-                    These rows are already present or cannot be matched. Confirm
-                    the reviewed no-change plan to continue, or edit the file
-                    above.
-                  </p>
+                  <p className="rounded-md border border-slate-200 bg-slate-50 p-3 text-xs text-slate-700">{tx("These rows are already present or cannot be matched. Confirm the reviewed no-change plan to continue, or edit the file above.")}</p>
                 ) : null}
               </div>
             ) : null}
@@ -801,16 +756,14 @@ export function BringDataStep({ register, state, setState }: StepProps) {
                 className="flex items-center gap-2 text-xs text-slate-500"
                 role="status"
               >
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                Reading the selected file
-              </p>
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />{tx("Reading the selected file")}</p>
             ) : importing ? (
               <p
                 className="flex items-center gap-2 text-xs text-slate-500"
                 role="status"
               >
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                {previewReady ? "Importing your data" : "Checking your data"}
+                {previewReady ? tx("Importing your data") : tx("Checking your data")}
               </p>
             ) : null}
 
@@ -844,8 +797,8 @@ export function BringDataStep({ register, state, setState }: StepProps) {
         <ChoiceCard
           active={choice === "api"}
           icon={<PlugZap className="h-5 w-5" />}
-          title="Connect later by API"
-          subtitle="Move data in from another system whenever you want."
+          title={tx("Connect later by API")}
+          subtitle={tx("Move data in from another system whenever you want.")}
           onClick={() => {
             if (importInputsBusy || lastCommittedIndex >= 0 || result) return;
             invalidatePendingFileReads();
@@ -858,16 +811,11 @@ export function BringDataStep({ register, state, setState }: StepProps) {
         />
         {choice === "api" ? (
           <div className="rounded-lg border border-slate-200 bg-slate-50/70 p-4 text-sm text-slate-600">
-            <p>
-              Your data stays yours, and you can connect by API on your own
-              schedule. Find your keys and import tools in settings.
-            </p>
+            <p>{tx("Your data stays yours, and you can connect by API on your own schedule. Find your keys and import tools in settings.")}</p>
             <Link
               href="/settings?tab=data"
               className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-emerald-700 hover:underline"
-            >
-              Open settings
-              <ArrowRight className="h-3.5 w-3.5" />
+            >{tx("Open settings")}<ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
         ) : null}
@@ -875,11 +823,11 @@ export function BringDataStep({ register, state, setState }: StepProps) {
         <ChoiceCard
           active={choice === "keep"}
           icon={<Sparkles className="h-5 w-5" />}
-          title="Keep the sample data for now"
+          title={tx("Keep the sample data for now")}
           subtitle={
             state.hasImportedData
-              ? "Real data is saved, so sample records will be removed when setup finishes."
-              : "Explore with the example pets we set up for you."
+              ? tx("Real data is saved, so sample records will be removed when setup finishes.")
+              : tx("Explore with the example pets we set up for you.")
           }
           onClick={() => {
             if (
@@ -939,7 +887,7 @@ function ImportFileFields({
         </span>
         <span className="text-[11px] text-slate-400">CSV</span>
       </div>
-      <p className="text-xs text-slate-500">Columns: {step.columnHint}</p>
+      <p className="text-xs text-slate-500">{tx("Columns:")}{" "}{step.columnHint}</p>
       <input
         type="file"
         disabled={locked}
@@ -949,7 +897,7 @@ function ImportFileFields({
         aria-label={`Choose a ${step.label.toLowerCase()} CSV file`}
       />
       {fileName ? (
-        <p className="text-xs text-emerald-700">Loaded {fileName}</p>
+        <p className="text-xs text-emerald-700">{tx("Loaded")}{" "}{fileName}</p>
       ) : null}
       {!locked ? (
         <button
@@ -959,10 +907,10 @@ function ImportFileFields({
           aria-expanded={showPasteEditor}
         >
           {showPasteEditor
-            ? "Hide CSV text"
+            ? tx("Hide CSV text")
             : fileName
-              ? "Review or edit file text"
-              : "Paste CSV text instead"}
+              ? tx("Review or edit file text")
+              : tx("Paste CSV text instead")}
         </button>
       ) : null}
       {showPasteEditor ? (
@@ -982,8 +930,7 @@ function ImportFileFields({
       ) : null}
       {tooLarge ? (
         <p id={errorId} className="text-xs text-red-700">
-          {step.label} CSV must be 5 MB or less.
-        </p>
+          {step.label}{" "}{tx("CSV must be 5 MB or less.")}</p>
       ) : null}
     </div>
   );
@@ -1021,31 +968,31 @@ function CsvPreviewCard({
           )}
         >
           {needsAttention
-            ? "Ready with issues to review"
+            ? tx("Ready with issues to review")
             : preview.willInsert + (preview.willReconcile ?? 0) > 0
-              ? "Ready"
-              : "No changes needed"}
+              ? tx("Ready")
+              : tx("No changes needed")}
         </span>
       </div>
       <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
-        <ImportStat label="Valid rows parsed" value={preview.total} />
-        <ImportStat label="Will import" value={preview.willInsert} />
+        <ImportStat label={tx("Valid rows parsed")} value={preview.total} />
+        <ImportStat label={tx("Will import")} value={preview.willInsert} />
         {(preview.willReconcile ?? 0) > 0 ? (
           <ImportStat
-            label="IDs to connect"
+            label={tx("IDs to connect")}
             value={preview.willReconcile ?? 0}
           />
         ) : null}
         {typeof preview.duplicates === "number" ? (
-          <ImportStat label="Duplicates" value={preview.duplicates} />
+          <ImportStat label={tx("Duplicates")} value={preview.duplicates} />
         ) : null}
         {typeof unmatched === "number" ? (
           <ImportStat
-            label={step.unmatchedLabel ?? "Unmatched"}
+            label={step.unmatchedLabel ?? tx("Unmatched")}
             value={unmatched}
           />
         ) : null}
-        <ImportStat label="Issues" value={preview.errors.length} />
+        <ImportStat label={tx("Issues")} value={preview.errors.length} />
       </div>
       {preview.errors.length > 0 ? (
         <ImportIssues
@@ -1071,10 +1018,10 @@ function ImportResultCard({ result }: { result: OnboardingImportSummary }) {
       aria-live="polite"
     >
       <p className="font-medium">
-        {hasIssues ? "Review completed with issues. " : ""}
+        {hasIssues ? tx("Review completed with issues. ") : ""}
         {changeCount > 0
           ? `Added ${result.imported.clients} clients, ${result.imported.patients} pets, ${result.imported.vaccinations} vaccine records, and ${result.imported.soapNotes} visit notes.`
-          : "Review complete. No new records were needed."}
+          : tx("Review complete. No new records were needed.")}
         {result.reconciled > 0
           ? ` Connected ${result.reconciled} existing record IDs.`
           : ""}
@@ -1090,13 +1037,11 @@ function ImportResultCard({ result }: { result: OnboardingImportSummary }) {
             target="_blank"
             rel="noreferrer"
             className="mt-3 inline-flex items-center gap-1 font-medium text-amber-950 underline underline-offset-2"
-          >
-            Fix skipped records in Settings, then Data
-            <ArrowRight className="h-3.5 w-3.5" />
+          >{tx("Fix skipped records in Settings, then Data")}<ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </>
       ) : null}
-      <p className="mt-2">Press Continue when you are ready.</p>
+      <p className="mt-2">{tx("Press Continue when you are ready.")}</p>
     </div>
   );
 }
@@ -1121,9 +1066,8 @@ function ImportIssues({
           type="button"
           className="mt-2 font-medium text-amber-900 underline underline-offset-2"
           onClick={() => downloadIssueReport(errors, fileName)}
-        >
-          Download{" "}
-          {errors.length === 1 ? "issue report" : `all ${errors.length} issues`}
+        >{tx("Download")}{" "}
+          {errors.length === 1 ? tx("issue report") : `all ${errors.length} issues`}
         </button>
       ) : null}
     </div>

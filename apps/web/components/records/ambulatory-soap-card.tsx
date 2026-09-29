@@ -19,6 +19,7 @@ import {
 } from "@/lib/records/soap-content";
 import { useOnlineStatus } from "@/lib/use-online-status";
 import { useUnsavedChangesGuard } from "@/lib/use-unsaved-changes-guard";
+import { tx } from "@/lib/i18n";
 
 type SoapSections = {
   subjective: string;
@@ -41,23 +42,23 @@ const SECTION_FIELDS: ReadonlyArray<{
 }> = [
   {
     name: "subjective",
-    label: "Subjective",
-    placeholder: "History, presenting concern, owner observations",
+    label: tx("Subjective"),
+    placeholder: tx("History, presenting concern, owner observations"),
   },
   {
     name: "objective",
-    label: "Objective",
-    placeholder: "Exam findings and field observations",
+    label: tx("Objective"),
+    placeholder: tx("Exam findings and field observations"),
   },
   {
     name: "assessment",
-    label: "Assessment",
-    placeholder: "Problems, differentials, diagnosis",
+    label: tx("Assessment"),
+    placeholder: tx("Problems, differentials, diagnosis"),
   },
   {
     name: "plan",
-    label: "Plan",
-    placeholder: "Treatment, prescriptions, monitoring, follow-up",
+    label: tx("Plan"),
+    placeholder: tx("Treatment, prescriptions, monitoring, follow-up"),
   },
 ];
 
@@ -140,14 +141,14 @@ export function AmbulatorySoapCard({
           saved.draft,
         );
         setDirty(false);
-        toast.success("SOAP draft saved");
+        toast.success(tx("SOAP draft saved"));
       } else if (saved.outcome === "conflict") {
         toast.error(
-          "SOAP changed in another session. Refresh before saving again.",
+          tx("SOAP changed in another session. Refresh before saving again."),
         );
       } else {
         setDirty(false);
-        toast.info("SOAP was already finalized in another session.");
+        toast.info(tx("SOAP was already finalized in another session."));
       }
       await Promise.all([
         utils.records.getSoapDraft.invalidate({ patientId, appointmentId }),
@@ -164,7 +165,7 @@ export function AmbulatorySoapCard({
         utils.records.listSoapNotes.invalidate({ patientId }),
         utils.encounters.getCloseout.invalidate({ appointmentId }),
       ]);
-      toast.success("SOAP note finalized");
+      toast.success(tx("SOAP note finalized"));
     },
     onError: (error) => toast.error(error.message),
   });
@@ -221,39 +222,25 @@ export function AmbulatorySoapCard({
         <div className="flex items-start gap-3">
           <FileText className="mt-0.5 h-5 w-5 text-primary" />
           <div>
-            <CardTitle>SOAP note</CardTitle>
-            <CardDescription>
-              Document the visit here without leaving the field workspace.
-            </CardDescription>
+            <CardTitle>{tx("SOAP note")}</CardTitle>
+            <CardDescription>{tx("Document the visit here without leaving the field workspace.")}</CardDescription>
           </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
         {linkedSoapCount > 0 ? (
-          <div className="rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm">
-            Finalized SOAP documentation is linked to this visit.
-          </div>
+          <div className="rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm">{tx("Finalized SOAP documentation is linked to this visit.")}</div>
         ) : !canWrite ? (
-          <div className="rounded-md border border-border bg-muted/20 px-3 py-2 text-sm text-muted-foreground">
-            Only an administrator or veterinarian can author the SOAP note.
-          </div>
+          <div className="rounded-md border border-border bg-muted/20 px-3 py-2 text-sm text-muted-foreground">{tx("Only an administrator or veterinarian can author the SOAP note.")}</div>
         ) : draftQuery.error ? (
-          <div className="rounded-md border border-destructive bg-destructive/10 px-3 py-2 text-sm text-destructive">
-            SOAP draft state could not be verified. Entry is locked to avoid
-            overwriting another clinician’s work.
-          </div>
+          <div className="rounded-md border border-destructive bg-destructive/10 px-3 py-2 text-sm text-destructive">{tx("SOAP draft state could not be verified. Entry is locked to avoid overwriting another clinician’s work.")}</div>
         ) : draftQuery.isLoading ? (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" />
-            Loading SOAP draft...
-          </div>
+            <Loader2 className="h-4 w-4 animate-spin" />{tx("Loading SOAP draft...")}</div>
         ) : (
           <>
             {!isOnline ? (
-              <div className="rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm">
-                Offline — keep this page open. These values are not saved until
-                the server confirms them.
-              </div>
+              <div className="rounded-md border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm">{tx("Offline — keep this page open. These values are not saved until the server confirms them.")}</div>
             ) : null}
             <div className="grid gap-4 lg:grid-cols-2">
               {SECTION_FIELDS.map((field) => (
@@ -290,9 +277,7 @@ export function AmbulatorySoapCard({
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
                   <Save className="mr-2 h-4 w-4" />
-                )}
-                Save draft
-              </Button>
+                )}{tx("Save draft")}</Button>
               <Button
                 type="button"
                 disabled={
@@ -307,9 +292,7 @@ export function AmbulatorySoapCard({
               >
                 {finalize.isPending ? (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : null}
-                Finalize SOAP note
-              </Button>
+                ) : null}{tx("Finalize SOAP note")}</Button>
             </div>
           </>
         )}

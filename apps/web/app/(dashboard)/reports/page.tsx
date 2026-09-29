@@ -30,6 +30,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/common/empty-state";
 import { useCurrencyFormatter } from "@/lib/locale/useCurrency";
+import { tx } from "@/lib/i18n";
 
 function ReportChartChunkLoading() {
   return (
@@ -64,10 +65,10 @@ type DateRange = { startDate: string; endDate: string };
 type ReportPdfCell = string | number | null | undefined;
 
 const tabs: { key: Tab; label: string; icon: React.ElementType }[] = [
-  { key: "revenue", label: "Revenue", icon: DollarSign },
-  { key: "appointments", label: "Appointments", icon: CalendarCheck },
-  { key: "services", label: "Services", icon: BarChart3 },
-  { key: "inventory", label: "Inventory", icon: Package },
+  { key: "revenue", label: tx("Revenue"), icon: DollarSign },
+  { key: "appointments", label: tx("Appointments"), icon: CalendarCheck },
+  { key: "services", label: tx("Services"), icon: BarChart3 },
+  { key: "inventory", label: tx("Inventory"), icon: Package },
 ];
 
 function canViewReportsRole(role?: string | null): boolean {
@@ -198,13 +199,9 @@ function ReportExportButtons({
   return (
     <div className="flex flex-wrap justify-end gap-2">
       <Button variant="outline" size="sm" onClick={onCsv} className="gap-2">
-        <Download className="h-4 w-4" />
-        Export CSV
-      </Button>
+        <Download className="h-4 w-4" />{tx("Export CSV")}</Button>
       <Button variant="outline" size="sm" onClick={onPdf} className="gap-2">
-        <Download className="h-4 w-4" />
-        Export PDF
-      </Button>
+        <Download className="h-4 w-4" />{tx("Export PDF")}</Button>
     </div>
   );
 }
@@ -219,11 +216,9 @@ function ReportError({
   return (
     <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-8 text-center">
       <AlertTriangle className="mx-auto h-8 w-8 text-destructive" />
-      <p className="mt-3 font-medium">Could not load report</p>
+      <p className="mt-3 font-medium">{tx("Could not load report")}</p>
       <p className="mt-1 text-sm text-muted-foreground">{message}</p>
-      <Button variant="outline" size="sm" onClick={onRetry} className="mt-4">
-        Retry
-      </Button>
+      <Button variant="outline" size="sm" onClick={onRetry} className="mt-4">{tx("Retry")}</Button>
     </div>
   );
 }
@@ -232,9 +227,9 @@ function ReportMissingData({ onRetry }: { onRetry: () => void }) {
   return (
     <EmptyState
       icon={AlertTriangle}
-      title="Could not load report data"
-      description="The report request finished without returning data. Try loading it again."
-      action={{ label: "Retry", onClick: onRetry }}
+      title={tx("Could not load report data")}
+      description={tx("The report request finished without returning data. Try loading it again.")}
+      action={{ label: tx("Retry"), onClick: onRetry }}
       className="border-destructive/30 bg-destructive/5"
     />
   );
@@ -260,9 +255,7 @@ function DateRangeControls({
     <div className="mt-4 rounded-lg border border-border bg-card p-3">
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div className="grid gap-3 sm:grid-cols-2">
-          <label className="text-xs font-medium text-muted-foreground">
-            Start
-            <Input
+          <label className="text-xs font-medium text-muted-foreground">{tx("Start")}<Input
               type="date"
               value={value.startDate}
               aria-invalid={Boolean(validationMessage) || undefined}
@@ -273,9 +266,7 @@ function DateRangeControls({
               className="mt-1"
             />
           </label>
-          <label className="text-xs font-medium text-muted-foreground">
-            End
-            <Input
+          <label className="text-xs font-medium text-muted-foreground">{tx("End")}<Input
               type="date"
               value={value.endDate}
               aria-invalid={Boolean(validationMessage) || undefined}
@@ -292,26 +283,18 @@ function DateRangeControls({
             variant="outline"
             size="sm"
             onClick={() => setPreset("last30")}
-          >
-            Last 30 Days
-          </Button>
+          >{tx("Last 30 Days")}</Button>
           <Button
             variant="outline"
             size="sm"
             onClick={() => setPreset("month")}
-          >
-            Month to Date
-          </Button>
+          >{tx("Month to Date")}</Button>
           <Button
             variant="outline"
             size="sm"
             onClick={() => setPreset("lastMonth")}
-          >
-            Last Month
-          </Button>
-          <Button variant="outline" size="sm" onClick={() => setPreset("year")}>
-            Year to Date
-          </Button>
+          >{tx("Last Month")}</Button>
+          <Button variant="outline" size="sm" onClick={() => setPreset("year")}>{tx("Year to Date")}</Button>
         </div>
       </div>
       {validationMessage ? (
@@ -330,7 +313,7 @@ function ReportDateRangeInvalid({ message }: { message: string }) {
   return (
     <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-8 text-center">
       <AlertTriangle className="mx-auto h-8 w-8 text-destructive" />
-      <p className="mt-3 font-medium">Choose a valid report date range</p>
+      <p className="mt-3 font-medium">{tx("Choose a valid report date range")}</p>
       <p className="mt-1 text-sm text-muted-foreground">{message}</p>
     </div>
   );
@@ -382,7 +365,7 @@ function RevenueTab({ dateRange }: { dateRange: DateRange }) {
   const exportRevenuePdf = () =>
     void downloadReportPdf({
       filename: reportFilename("revenue", data.range, "pdf"),
-      title: "Revenue Report",
+      title: tx("Revenue Report"),
       subtitle: `${data.range.startDate} to ${data.range.endDate}`,
       columns: ["Metric", "Period", "Amount"],
       rows: revenueRows.map(([metric, period, amount]) => [
@@ -390,20 +373,20 @@ function RevenueTab({ dateRange }: { dateRange: DateRange }) {
         period,
         formatCurrency(Number(amount)),
       ]),
-      emptyMessage: "No revenue data for this period.",
+      emptyMessage: tx("No revenue data for this period."),
     });
 
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2">
         <KpiCard
-          title="Selected Range"
+          title={tx("Selected Range")}
           value={formatCurrency(data.total)}
           subtitle={rangeSubtitle}
           icon={DollarSign}
         />
         <KpiCard
-          title="Previous Period"
+          title={tx("Previous Period")}
           value={formatCurrency(data.previousTotal)}
           icon={TrendingUp}
         />
@@ -411,9 +394,7 @@ function RevenueTab({ dateRange }: { dateRange: DateRange }) {
 
       <div className="rounded-lg border border-border bg-card p-5">
         <div className="mb-4 flex items-center justify-between gap-3">
-          <h3 className="text-sm font-medium text-muted-foreground">
-            Daily Revenue
-          </h3>
+          <h3 className="text-sm font-medium text-muted-foreground">{tx("Daily Revenue")}</h3>
           <ReportExportButtons
             onCsv={exportRevenue}
             onPdf={exportRevenuePdf}
@@ -428,8 +409,8 @@ function RevenueTab({ dateRange }: { dateRange: DateRange }) {
           <EmptyState
             className="border-0 bg-transparent py-12"
             icon={DollarSign}
-            title="No revenue data for this period"
-            description="Paid invoices will appear here once they fall inside the selected date range."
+            title={tx("No revenue data for this period")}
+            description={tx("Paid invoices will appear here once they fall inside the selected date range.")}
           />
         )}
       </div>
@@ -475,7 +456,7 @@ function AppointmentsTab({ dateRange }: { dateRange: DateRange }) {
   const exportAppointmentsPdf = () =>
     void downloadReportPdf({
       filename: reportFilename("appointments", data.range, "pdf"),
-      title: "Appointments Report",
+      title: tx("Appointments Report"),
       subtitle: `${data.range.startDate} to ${data.range.endDate}`,
       columns: [
         "Section",
@@ -495,7 +476,7 @@ function AppointmentsTab({ dateRange }: { dateRange: DateRange }) {
         row[5],
         `${row[6]}%`,
       ]),
-      emptyMessage: "No appointment data for this period.",
+      emptyMessage: tx("No appointment data for this period."),
     });
 
   return (
@@ -505,15 +486,15 @@ function AppointmentsTab({ dateRange }: { dateRange: DateRange }) {
         onPdf={exportAppointmentsPdf}
       />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <KpiCard title="Total" value={String(data.total)} icon={CalendarCheck} />
+        <KpiCard title={tx("Total")} value={String(data.total)} icon={CalendarCheck} />
         <KpiCard
-          title="Completed"
+          title={tx("Completed")}
           value={String(data.completed)}
           icon={CheckCircle}
         />
-        <KpiCard title="No-Shows" value={String(data.noShows)} icon={UserX} />
+        <KpiCard title={tx("No-Shows")} value={String(data.noShows)} icon={UserX} />
         <KpiCard
-          title="Cancellations"
+          title={tx("Cancellations")}
           value={String(data.cancelled)}
           icon={XCircle}
         />
@@ -522,9 +503,7 @@ function AppointmentsTab({ dateRange }: { dateRange: DateRange }) {
       {/* Fill rate */}
       <div className="rounded-lg border border-border bg-card p-5">
         <div className="mb-2 flex items-center justify-between">
-          <h3 className="text-sm font-medium text-muted-foreground">
-            Fill Rate
-          </h3>
+          <h3 className="text-sm font-medium text-muted-foreground">{tx("Fill Rate")}</h3>
           <span className="text-lg font-semibold">{data.fillRate}%</span>
         </div>
         <div className="h-3 w-full overflow-hidden rounded-full bg-muted">
@@ -538,17 +517,15 @@ function AppointmentsTab({ dateRange }: { dateRange: DateRange }) {
       {/* Doctor breakdown */}
       {data.byDoctor.length > 0 ? (
         <div className="rounded-lg border border-border bg-card p-5">
-          <h3 className="mb-4 text-sm font-medium text-muted-foreground">
-            Doctor Breakdown
-          </h3>
+          <h3 className="mb-4 text-sm font-medium text-muted-foreground">{tx("Doctor Breakdown")}</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border text-left text-muted-foreground">
-                  <th className="pb-2 font-medium">Doctor</th>
-                  <th className="pb-2 font-medium text-right">Total</th>
-                  <th className="pb-2 font-medium text-right">Completed</th>
-                  <th className="pb-2 font-medium text-right">Completion Rate</th>
+                  <th className="pb-2 font-medium">{tx("Doctor")}</th>
+                  <th className="pb-2 font-medium text-right">{tx("Total")}</th>
+                  <th className="pb-2 font-medium text-right">{tx("Completed")}</th>
+                  <th className="pb-2 font-medium text-right">{tx("Completion Rate")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -572,8 +549,8 @@ function AppointmentsTab({ dateRange }: { dateRange: DateRange }) {
       ) : (
         <EmptyState
           icon={CalendarCheck}
-          title="No doctor breakdown available"
-          description="Appointments will be grouped by assigned doctor for the selected date range."
+          title={tx("No doctor breakdown available")}
+          description={tx("Appointments will be grouped by assigned doctor for the selected date range.")}
         />
       )}
     </div>
@@ -604,7 +581,7 @@ function ServicesTab({ dateRange }: { dateRange: DateRange }) {
   const exportServicesPdf = () =>
     void downloadReportPdf({
       filename: reportFilename("services", data.range, "pdf"),
-      title: "Services Report",
+      title: tx("Services Report"),
       subtitle: `${data.range.startDate} to ${data.range.endDate}`,
       columns: ["Service", "Count", "Revenue"],
       rows: serviceRows.map(([name, count, revenue]) => [
@@ -612,7 +589,7 @@ function ServicesTab({ dateRange }: { dateRange: DateRange }) {
         count,
         formatCurrency(Number(revenue)),
       ]),
-      emptyMessage: "No billed service items were found for the selected range.",
+      emptyMessage: tx("No billed service items were found for the selected range."),
     });
 
   if (data.items.length === 0) {
@@ -624,8 +601,8 @@ function ServicesTab({ dateRange }: { dateRange: DateRange }) {
         />
         <EmptyState
           icon={BarChart3}
-          title="No service data available"
-          description="No billed service items were found for the selected range."
+          title={tx("No service data available")}
+          description={tx("No billed service items were found for the selected range.")}
         />
       </div>
     );
@@ -635,9 +612,7 @@ function ServicesTab({ dateRange }: { dateRange: DateRange }) {
     <div className="space-y-6">
       <div className="rounded-lg border border-border bg-card p-5">
         <div className="mb-4 flex items-center justify-between gap-3">
-          <h3 className="text-sm font-medium text-muted-foreground">
-            Top 10 Services by Count
-          </h3>
+          <h3 className="text-sm font-medium text-muted-foreground">{tx("Top 10 Services by Count")}</h3>
           <ReportExportButtons
             onCsv={exportServices}
             onPdf={exportServicesPdf}
@@ -647,16 +622,14 @@ function ServicesTab({ dateRange }: { dateRange: DateRange }) {
       </div>
 
       <div className="rounded-lg border border-border bg-card p-5">
-        <h3 className="mb-4 text-sm font-medium text-muted-foreground">
-          Service Details
-        </h3>
+        <h3 className="mb-4 text-sm font-medium text-muted-foreground">{tx("Service Details")}</h3>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border text-left text-muted-foreground">
-                <th className="pb-2 font-medium">Service</th>
-                <th className="pb-2 font-medium text-right">Count</th>
-                <th className="pb-2 font-medium text-right">Total Revenue</th>
+                <th className="pb-2 font-medium">{tx("Service")}</th>
+                <th className="pb-2 font-medium text-right">{tx("Count")}</th>
+                <th className="pb-2 font-medium text-right">{tx("Total Revenue")}</th>
               </tr>
             </thead>
             <tbody>
@@ -723,7 +696,7 @@ function InventoryTab() {
   const exportInventoryPdf = () =>
     void downloadReportPdf({
       filename: reportFilename("inventory", undefined, "pdf"),
-      title: "Inventory Alerts Report",
+      title: tx("Inventory Alerts Report"),
       columns: [
         "Section",
         "Product",
@@ -733,7 +706,7 @@ function InventoryTab() {
         "Expiration",
       ],
       rows: inventoryRows,
-      emptyMessage: "No low stock, expired, or expiring products detected.",
+      emptyMessage: tx("No low stock, expired, or expiring products detected."),
     });
 
   if (!hasAlerts) {
@@ -745,8 +718,8 @@ function InventoryTab() {
         />
         <EmptyState
           icon={CheckCircle}
-          title="All stock levels OK"
-          description="No low stock, expired, or expiring products detected."
+          title={tx("All stock levels OK")}
+          description={tx("No low stock, expired, or expiring products detected.")}
         />
       </div>
     );
@@ -763,18 +736,17 @@ function InventoryTab() {
         <div className="rounded-lg border border-amber-200 bg-amber-50/50 p-5 dark:border-amber-900 dark:bg-amber-950/20">
           <div className="mb-4 flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-            <h3 className="text-sm font-medium text-amber-800 dark:text-amber-300">
-              Low Stock Alerts ({data.lowStock.length})
+            <h3 className="text-sm font-medium text-amber-800 dark:text-amber-300">{tx("Low Stock Alerts (")}{data.lowStock.length})
             </h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-amber-200 text-left text-amber-700 dark:border-amber-800 dark:text-amber-400">
-                  <th className="pb-2 font-medium">Product</th>
+                  <th className="pb-2 font-medium">{tx("Product")}</th>
                   <th className="pb-2 font-medium">SKU</th>
-                  <th className="pb-2 font-medium text-right">Stock</th>
-                  <th className="pb-2 font-medium text-right">Reorder Point</th>
+                  <th className="pb-2 font-medium text-right">{tx("Stock")}</th>
+                  <th className="pb-2 font-medium text-right">{tx("Reorder Point")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -800,18 +772,17 @@ function InventoryTab() {
         <div className="rounded-lg border border-red-200 bg-red-50/50 p-5 dark:border-red-900 dark:bg-red-950/20">
           <div className="mb-4 flex items-center gap-2">
             <XCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
-            <h3 className="text-sm font-medium text-red-800 dark:text-red-300">
-              Expired Products ({data.expired.length})
+            <h3 className="text-sm font-medium text-red-800 dark:text-red-300">{tx("Expired Products (")}{data.expired.length})
             </h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-red-200 text-left text-red-700 dark:border-red-800 dark:text-red-400">
-                  <th className="pb-2 font-medium">Product</th>
+                  <th className="pb-2 font-medium">{tx("Product")}</th>
                   <th className="pb-2 font-medium">SKU</th>
-                  <th className="pb-2 font-medium text-right">Stock</th>
-                  <th className="pb-2 font-medium text-right">Expiration Date</th>
+                  <th className="pb-2 font-medium text-right">{tx("Stock")}</th>
+                  <th className="pb-2 font-medium text-right">{tx("Expiration Date")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -837,18 +808,17 @@ function InventoryTab() {
         <div className="rounded-lg border border-orange-200 bg-orange-50/50 p-5 dark:border-orange-900 dark:bg-orange-950/20">
           <div className="mb-4 flex items-center gap-2">
             <Activity className="h-5 w-5 text-orange-600 dark:text-orange-400" />
-            <h3 className="text-sm font-medium text-orange-800 dark:text-orange-300">
-              Expiring Soon ({data.expiringSoon.length})
+            <h3 className="text-sm font-medium text-orange-800 dark:text-orange-300">{tx("Expiring Soon (")}{data.expiringSoon.length})
             </h3>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-orange-200 text-left text-orange-700 dark:border-orange-800 dark:text-orange-400">
-                  <th className="pb-2 font-medium">Product</th>
+                  <th className="pb-2 font-medium">{tx("Product")}</th>
                   <th className="pb-2 font-medium">SKU</th>
-                  <th className="pb-2 font-medium text-right">Stock</th>
-                  <th className="pb-2 font-medium text-right">Expiration Date</th>
+                  <th className="pb-2 font-medium text-right">{tx("Stock")}</th>
+                  <th className="pb-2 font-medium text-right">{tx("Expiration Date")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -880,9 +850,7 @@ export default function ReportsPage() {
     return (
       <div className="rounded-lg border border-border bg-card p-4 text-sm text-muted-foreground">
         <div className="flex items-center gap-2">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          Checking report access...
-        </div>
+          <Loader2 className="h-4 w-4 animate-spin" />{tx("Checking report access...")}</div>
       </div>
     );
   }
@@ -891,10 +859,10 @@ export default function ReportsPage() {
     return (
       <EmptyState
         icon={BarChart3}
-        title="Reports are restricted"
-        description="Only administrators and veterinarians can view practice reports."
+        title={tx("Reports are restricted")}
+        description={tx("Only administrators and veterinarians can view practice reports.")}
         action={{
-          label: "Back to dashboard",
+          label: tx("Back to dashboard"),
           onClick: () => router.push("/"),
         }}
       />
@@ -940,10 +908,8 @@ function ReportsDashboard() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-heading text-xl font-semibold">Reports</h2>
-          <p className="text-sm text-muted-foreground">
-            Practice analytics and insights
-          </p>
+          <h2 className="font-heading text-xl font-semibold">{tx("Reports")}</h2>
+          <p className="text-sm text-muted-foreground">{tx("Practice analytics and insights")}</p>
         </div>
       </div>
 

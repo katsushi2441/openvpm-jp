@@ -18,13 +18,12 @@ import {
   isRequiredPatientTextValid,
 } from "@/lib/patients/policy";
 import { PATIENT_SPECIES_OPTIONS } from "@/lib/patients/species";
+import { tx } from "@/lib/i18n";
 
 function EditPatientLoadingPanel() {
   return (
     <div className="flex items-center justify-center gap-2 rounded-lg border border-border bg-card p-8 text-sm text-muted-foreground">
-      <Loader2 className="h-4 w-4 animate-spin" />
-      Loading patient...
-    </div>
+      <Loader2 className="h-4 w-4 animate-spin" />{tx("Loading patient...")}</div>
   );
 }
 
@@ -51,9 +50,7 @@ export default function EditPatientPage() {
   if (status === "loading") {
     return (
       <div className="flex items-center justify-center gap-2 rounded-lg border border-border bg-card p-8 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" />
-        Checking patient access...
-      </div>
+        <Loader2 className="h-4 w-4 animate-spin" />{tx("Checking patient access...")}</div>
     );
   }
 
@@ -66,15 +63,13 @@ export default function EditPatientPage() {
           onClick={() => router.push(`/patients/${params.id}`)}
           className="mb-4"
         >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Patient
-        </Button>
+          <ArrowLeft className="mr-2 h-4 w-4" />{tx("Back to Patient")}</Button>
         <EmptyState
           icon={AlertCircle}
-          title="Patient actions are read-only"
-          description="Only staff roles with patient write access can edit patients."
+          title={tx("Patient actions are read-only")}
+          description={tx("Only staff roles with patient write access can edit patients.")}
           action={{
-            label: "Back to Patient",
+            label: tx("Back to Patient"),
             onClick: () => router.push(`/patients/${params.id}`),
           }}
         />
@@ -141,7 +136,7 @@ function EditPatientForm() {
           ? { ...currentPatient, ...updatedPatient }
           : currentPatient,
       );
-      toast.success("Patient updated");
+      toast.success(tx("Patient updated"));
       router.push(`/patients/${params.id}`);
     },
     onError: (err) => {
@@ -205,13 +200,13 @@ function EditPatientForm() {
     return (
       <EmptyState
         icon={AlertCircle}
-        title="Unable to load patient"
+        title={tx("Unable to load patient")}
         description={
           loadError?.message ??
-          "Choose a patient from the Patients list before editing."
+          tx("Choose a patient from the Patients list before editing.")
         }
         action={{
-          label: "Back to Patients",
+          label: tx("Back to Patients"),
           onClick: () => router.push("/patients"),
           icon: ArrowLeft,
         }}
@@ -227,14 +222,10 @@ function EditPatientForm() {
         onClick={() => router.push(`/patients/${params.id}`)}
         className="mb-4"
       >
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Patient
-      </Button>
+        <ArrowLeft className="mr-2 h-4 w-4" />{tx("Back to Patient")}</Button>
 
-      <h2 className="font-heading text-xl font-semibold">Edit Patient</h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Update patient information
-      </p>
+      <h2 className="font-heading text-xl font-semibold">{tx("Edit Patient")}</h2>
+      <p className="mt-1 text-sm text-muted-foreground">{tx("Update patient information")}</p>
 
       {error && (
         <div className="mt-4 rounded-lg border border-destructive bg-destructive/10 p-3 text-sm text-destructive">
@@ -244,14 +235,12 @@ function EditPatientForm() {
 
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         <div>
-          <label className="text-sm font-medium" htmlFor="name">
-            Patient Name *
-          </label>
+          <label className="text-sm font-medium" htmlFor="name">{tx("Patient Name *")}</label>
           <Input
             id="name"
             value={form.name}
             onChange={(e) => updateField("name", e.target.value)}
-            placeholder="Patient name"
+            placeholder={tx("Patient name")}
             className="mt-1"
             maxLength={PATIENT_NAME_MAX_LENGTH}
             required
@@ -260,9 +249,7 @@ function EditPatientForm() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="text-sm font-medium" htmlFor="species">
-              Species *
-            </label>
+            <label className="text-sm font-medium" htmlFor="species">{tx("Species *")}</label>
             <select
               id="species"
               value={form.species}
@@ -277,14 +264,12 @@ function EditPatientForm() {
             </select>
           </div>
           <div>
-            <label className="text-sm font-medium" htmlFor="breed">
-              Breed
-            </label>
+            <label className="text-sm font-medium" htmlFor="breed">{tx("Breed")}</label>
             <Input
               id="breed"
               value={form.breed}
               onChange={(e) => updateField("breed", e.target.value)}
-              placeholder="Breed"
+              placeholder={tx("Breed")}
               className="mt-1"
               maxLength={PATIENT_BREED_MAX_LENGTH}
             />
@@ -293,16 +278,14 @@ function EditPatientForm() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="text-sm font-medium" htmlFor="sex">
-              Sex
-            </label>
+            <label className="text-sm font-medium" htmlFor="sex">{tx("Sex")}</label>
             <select
               id="sex"
               value={form.sex}
               onChange={(e) => updateField("sex", e.target.value)}
               className="mt-1 flex h-10 w-full rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <option value="">Select sex...</option>
+              <option value="">{tx("Select sex...")}</option>
               {sexOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}
@@ -311,9 +294,7 @@ function EditPatientForm() {
             </select>
           </div>
           <div>
-            <label className="text-sm font-medium" htmlFor="dob">
-              Date of Birth
-            </label>
+            <label className="text-sm font-medium" htmlFor="dob">{tx("Date of Birth")}</label>
             <Input
               id="dob"
               name="dob"
@@ -327,27 +308,23 @@ function EditPatientForm() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="text-sm font-medium" htmlFor="color">
-              Color/Markings
-            </label>
+            <label className="text-sm font-medium" htmlFor="color">{tx("Color/Markings")}</label>
             <Input
               id="color"
               value={form.color}
               onChange={(e) => updateField("color", e.target.value)}
-              placeholder="e.g., Black and white"
+              placeholder={tx("e.g., Black and white")}
               className="mt-1"
               maxLength={PATIENT_COLOR_MAX_LENGTH}
             />
           </div>
           <div>
-            <label className="text-sm font-medium" htmlFor="microchipNumber">
-              Microchip Number
-            </label>
+            <label className="text-sm font-medium" htmlFor="microchipNumber">{tx("Microchip Number")}</label>
             <Input
               id="microchipNumber"
               value={form.microchipNumber}
               onChange={(e) => updateField("microchipNumber", e.target.value)}
-              placeholder="Microchip ID"
+              placeholder={tx("Microchip ID")}
               className="mt-1"
               maxLength={PATIENT_MICROCHIP_NUMBER_MAX_LENGTH}
             />
@@ -355,9 +332,7 @@ function EditPatientForm() {
         </div>
 
         <div>
-          <label className="text-sm font-medium" htmlFor="status">
-            Status
-          </label>
+          <label className="text-sm font-medium" htmlFor="status">{tx("Status")}</label>
           <select
             id="status"
             value={form.status}
@@ -377,15 +352,13 @@ function EditPatientForm() {
             type="submit"
             disabled={!canSubmit || updatePatient.isPending}
           >
-            {updatePatient.isPending ? "Saving..." : "Save Changes"}
+            {updatePatient.isPending ? tx("Saving...") : tx("Save Changes")}
           </Button>
           <Button
             type="button"
             variant="outline"
             onClick={() => router.push(`/patients/${params.id}`)}
-          >
-            Cancel
-          </Button>
+          >{tx("Cancel")}</Button>
         </div>
       </form>
     </div>

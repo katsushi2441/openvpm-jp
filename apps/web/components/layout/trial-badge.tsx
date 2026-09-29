@@ -6,6 +6,7 @@ import { AlertTriangle, Clock, CreditCard, Loader2 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 import { trialCalendarDaysLeft } from "@/lib/billing/trial-days";
+import { tx } from "@/lib/i18n";
 
 /**
  * Trial countdown / read-only indicator in the TopBar. Admin-only and hidden on
@@ -29,12 +30,10 @@ export function TrialBadge() {
   if (isLoading) {
     return (
       <span
-        aria-label="Checking billing status"
+        aria-label={tx("Checking billing status")}
         className="inline-flex items-center gap-1.5 rounded-full border border-border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground"
       >
-        <Loader2 className="h-3.5 w-3.5 animate-spin" />
-        Billing
-      </span>
+        <Loader2 className="h-3.5 w-3.5 animate-spin" />{tx("Billing")}</span>
     );
   }
 
@@ -44,9 +43,7 @@ export function TrialBadge() {
         href="/settings?tab=billing"
         className="inline-flex items-center gap-1.5 rounded-full border border-destructive/30 bg-destructive/10 px-3 py-1 text-xs font-medium text-destructive transition-colors hover:bg-destructive/20"
       >
-        <AlertTriangle className="h-3.5 w-3.5" />
-        Billing status unavailable
-      </Link>
+        <AlertTriangle className="h-3.5 w-3.5" />{tx("Billing status unavailable")}</Link>
     );
   }
 
@@ -60,9 +57,7 @@ export function TrialBadge() {
         href="/settings?tab=billing"
         className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-medium text-amber-800 transition-colors hover:bg-amber-100"
       >
-        <CreditCard className="h-3.5 w-3.5" />
-        Payment retrying · Review billing
-      </Link>
+        <CreditCard className="h-3.5 w-3.5" />{tx("Payment retrying · Review billing")}</Link>
     );
   }
 
@@ -72,9 +67,7 @@ export function TrialBadge() {
         href="/settings?tab=billing"
         className="inline-flex items-center gap-1.5 rounded-full border border-destructive/30 bg-destructive/10 px-3 py-1 text-xs font-medium text-destructive transition-colors hover:bg-destructive/20"
       >
-        <CreditCard className="h-3.5 w-3.5" />
-        Payment unpaid · Read only
-      </Link>
+        <CreditCard className="h-3.5 w-3.5" />{tx("Payment unpaid · Read only")}</Link>
     );
   }
 
@@ -87,9 +80,7 @@ export function TrialBadge() {
         href="/settings?tab=billing"
         className="inline-flex items-center gap-1.5 rounded-full border border-teal-200 bg-teal-50 px-3 py-1 text-xs font-medium text-teal-800 transition-colors hover:bg-teal-100"
       >
-        <CreditCard className="h-3.5 w-3.5" />
-        Billing connected · Manage billing
-      </Link>
+        <CreditCard className="h-3.5 w-3.5" />{tx("Billing connected · Manage billing")}</Link>
     );
   }
 
@@ -100,7 +91,7 @@ export function TrialBadge() {
     return (
       <Link
         href="/settings?tab=billing"
-        aria-label="Activate account"
+        aria-label={tx("Activate account")}
         className={cn(
           "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors",
           urgent
@@ -110,9 +101,9 @@ export function TrialBadge() {
       >
         <Clock className="h-3.5 w-3.5" />
         {days === 0
-          ? "Trial ends today"
-          : `${days} day${days === 1 ? "" : "s"} left in trial`}
-        <span className="font-semibold">· Activate account</span>
+          ? tx("Trial ends today")
+          : `${days} day${days === 1 ? "" : tx("s")} left in trial`}
+        <span className="font-semibold">{tx("· Activate account")}</span>
       </Link>
     );
   }
@@ -124,9 +115,7 @@ export function TrialBadge() {
         href="/settings?tab=billing"
         className="inline-flex items-center gap-1.5 rounded-full border border-destructive/30 bg-destructive/10 px-3 py-1 text-xs font-medium text-destructive transition-colors hover:bg-destructive/20"
       >
-        <Clock className="h-3.5 w-3.5" />
-        Trial ended, read only · Turn it back on
-      </Link>
+        <Clock className="h-3.5 w-3.5" />{tx("Trial ended, read only · Turn it back on")}</Link>
     );
   }
 

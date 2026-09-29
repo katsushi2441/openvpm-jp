@@ -1,4 +1,5 @@
 import { WEBHOOK_EVENT_DEFINITIONS } from "@/lib/webhook-events";
+import { tx } from "@/lib/i18n";
 
 export default function AIIntegrationDocs() {
   return (
@@ -6,50 +7,21 @@ export default function AIIntegrationDocs() {
       <div className="mx-auto max-w-4xl px-6 py-16">
         {/* Header */}
         <div className="mb-12">
-          <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-teal-600">
-            Developer Documentation
-          </p>
-          <h1 className="mb-4 text-4xl font-bold text-gray-900">
-            AI Integration Guide
-          </h1>
-          <p className="text-lg text-gray-600">
-            Connect AI tools to OpenVPM for automated clinical workflows,
-            intelligent queries, and real-time event processing.
-          </p>
+          <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-teal-600">{tx("Developer Documentation")}</p>
+          <h1 className="mb-4 text-4xl font-bold text-gray-900">{tx("AI Integration Guide")}</h1>
+          <p className="text-lg text-gray-600">{tx("Connect AI tools to OpenVPM for automated clinical workflows, intelligent queries, and real-time event processing.")}</p>
         </div>
 
         {/* Overview */}
-        <Section id="overview" title="Overview">
-          <p className="mb-4 text-gray-700">
-            OpenVPM is designed to be <strong>AI-first</strong>. Every clinical
-            action &mdash; creating SOAP notes, querying patient records,
-            tracking vaccinations &mdash; is available via a structured API. This
-            means AI scribes, voice agents, and dashboard assistants can
-            integrate directly with your practice management system.
-          </p>
-          <p className="text-gray-700">
-            Dashboard workflows use <strong>tRPC</strong> over HTTP with the
-            signed-in user&apos;s session. External integrations can use API keys
-            for <strong>/api/v1</strong> endpoints, including the agent endpoint
-            with the <strong>agent:run</strong> scope. Write-enabled agent runs
-            also require <strong>agent:write</strong> plus each write
-            tool&apos;s underlying resource scope. All requests are scoped to the
-            authenticated practice; clinical record writes such as SOAP note
-            creation require <strong>records:write</strong>.
+        <Section id="overview" title={tx("Overview")}>
+          <p className="mb-4 text-gray-700">{tx("OpenVPM is designed to be")}{" "}<strong>{tx("AI-first")}</strong>{tx(". Every clinical action — creating SOAP notes, querying patient records, tracking vaccinations — is available via a structured API. This means AI scribes, voice agents, and dashboard assistants can integrate directly with your practice management system.")}</p>
+          <p className="text-gray-700">{tx("Dashboard workflows use")}{" "}<strong>tRPC</strong>{" "}{tx("over HTTP with the signed-in user's session. External integrations can use API keys for")}{" "}<strong>/api/v1</strong>{" "}{tx("endpoints, including the agent endpoint with the")}{" "}<strong>{tx("agent:run")}</strong>{" "}{tx("scope. Write-enabled agent runs also require")}{" "}<strong>{tx("agent:write")}</strong>{" "}{tx("plus each write tool's underlying resource scope. All requests are scoped to the authenticated practice; clinical record writes such as SOAP note creation require")}{" "}<strong>{tx("records:write")}</strong>.
           </p>
         </Section>
 
         {/* API Key Agent Endpoint */}
-        <Section id="api-key-agent" title="API Key Agent Endpoint">
-          <p className="mb-4 text-gray-700">
-            For server-to-server automations, create an API key in Settings with
-            the <strong>agent:run</strong> scope and call the REST agent
-            endpoint. Use <code>allow_writes: false</code> for read-only
-            summaries. To set <code>allow_writes: true</code>, grant
-            <strong>agent:write</strong> as well as the resource scopes the
-            trusted workflow may mutate, such as
-            <strong>appointments:write</strong> or
-            <strong>records:write</strong>.
+        <Section id="api-key-agent" title={tx("API Key Agent Endpoint")}>
+          <p className="mb-4 text-gray-700">{tx("For server-to-server automations, create an API key in Settings with the")}{" "}<strong>{tx("agent:run")}</strong>{" "}{tx("scope and call the REST agent endpoint. Use")}{" "}<code>allow_writes: false</code>{" "}{tx("for read-only summaries. To set")}{" "}<code>allow_writes: true</code>{tx(", grant")}<strong>{tx("agent:write")}</strong>{" "}{tx("as well as the resource scopes the trusted workflow may mutate, such as")}<strong>{tx("appointments:write")}</strong>{" "}{tx("or")}<strong>{tx("records:write")}</strong>.
           </p>
 
           <CodeBlock>
@@ -64,19 +36,11 @@ export default function AIIntegrationDocs() {
         </Section>
 
         {/* SOAP Note Integration */}
-        <Section id="soap-notes" title="SOAP Note Integration">
-          <p className="mb-4 text-gray-700">
-            Connect an AI scribe &mdash; such as <strong>Scribenote</strong>,{" "}
-            <strong>VetRec</strong>, or <strong>HappyDoc</strong> &mdash; to
-            automatically populate SOAP notes during an active visit. This
-            endpoint creates an immediately finalized, immutable clinical
-            record; use it only after the clinician has reviewed the generated
-            content.
-          </p>
+        <Section id="soap-notes" title={tx("SOAP Note Integration")}>
+          <p className="mb-4 text-gray-700">{tx("Connect an AI scribe — such as")}{" "}<strong>{tx("Scribenote")}</strong>,{" "}
+            <strong>{tx("VetRec")}</strong>{tx(", or")}{" "}<strong>{tx("HappyDoc")}</strong>{" "}{tx("— to automatically populate SOAP notes during an active visit. This endpoint creates an immediately finalized, immutable clinical record; use it only after the clinician has reviewed the generated content.")}</p>
 
-          <h3 className="mb-2 mt-6 text-sm font-semibold uppercase tracking-wider text-gray-500">
-            Endpoint
-          </h3>
+          <h3 className="mb-2 mt-6 text-sm font-semibold uppercase tracking-wider text-gray-500">{tx("Endpoint")}</h3>
           <CodeBlock>
             {`POST /api/v1/soap-notes
 
@@ -84,9 +48,7 @@ Authorization: Bearer ovpm_<key>
 Content-Type: application/json`}
           </CodeBlock>
 
-          <h3 className="mb-2 mt-6 text-sm font-semibold uppercase tracking-wider text-gray-500">
-            Input Schema
-          </h3>
+          <h3 className="mb-2 mt-6 text-sm font-semibold uppercase tracking-wider text-gray-500">{tx("Input Schema")}</h3>
           <CodeBlock>
             {`{
   "patient_id": "uuid",          // Required - the patient record
@@ -99,17 +61,9 @@ Content-Type: application/json`}
   "source": "string"             // Required - e.g. "scribenote", "vetrec"
 }`}
           </CodeBlock>
-          <p className="mt-3 text-sm text-gray-500">
-            Create the key with the <strong>records:write</strong> scope.
-            OpenVPM validates the patient, active in-exam appointment, and
-            author against the authenticated practice. A saved draft or
-            effective finalized SOAP note for the encounter returns a conflict
-            so an integration cannot silently replace clinical documentation.
-          </p>
+          <p className="mt-3 text-sm text-gray-500">{tx("Create the key with the")}{" "}<strong>{tx("records:write")}</strong>{" "}{tx("scope. OpenVPM validates the patient, active in-exam appointment, and author against the authenticated practice. A saved draft or effective finalized SOAP note for the encounter returns a conflict so an integration cannot silently replace clinical documentation.")}</p>
 
-          <h3 className="mb-2 mt-6 text-sm font-semibold uppercase tracking-wider text-gray-500">
-            Example (cURL)
-          </h3>
+          <h3 className="mb-2 mt-6 text-sm font-semibold uppercase tracking-wider text-gray-500">{tx("Example (cURL)")}</h3>
           <CodeBlock>
             {`curl -X POST https://your-practice.openvpm.com/api/v1/soap-notes \\
   -H "Authorization: Bearer ovpm_<key>" \\
@@ -127,18 +81,13 @@ Content-Type: application/json`}
         </Section>
 
         {/* Dashboard Query Helpers */}
-        <Section id="dashboard-query-helpers" title="Dashboard Query Helpers">
-          <p className="mb-6 text-gray-700">
-            Signed-in dashboard experiences can use these tRPC procedures for
-            actionable clinical insights. They require a session cookie and are
-            not API-key REST endpoints; server-to-server integrations should use
-            the <strong>/api/v1</strong> REST surface and signed webhooks.
-          </p>
+        <Section id="dashboard-query-helpers" title={tx("Dashboard Query Helpers")}>
+          <p className="mb-6 text-gray-700">{tx("Signed-in dashboard experiences can use these tRPC procedures for actionable clinical insights. They require a session cookie and are not API-key REST endpoints; server-to-server integrations should use the")}{" "}<strong>/api/v1</strong>{" "}{tx("REST surface and signed webhooks.")}</p>
 
           <QueryCard
             name="Overdue Vaccinations"
             endpoint="tRPC: ai.patientsOverdueVaccinations (session cookie)"
-            description="Returns patients whose vaccinations are past due. Useful for automated reminder campaigns or AI-powered outreach."
+            description={tx("Returns patients whose vaccinations are past due. Useful for automated reminder campaigns or AI-powered outreach.")}
             response={`[
   {
     "patientId": "uuid",
@@ -155,7 +104,7 @@ Content-Type: application/json`}
           <QueryCard
             name="Patients Needing Follow-Up"
             endpoint="tRPC: ai.patientsNeedingFollowUp (session cookie)"
-            description="Identifies patients seen in the last 7 days (checked out) who do not have a future appointment scheduled. Ideal for proactive care workflows."
+            description={tx("Identifies patients seen in the last 7 days (checked out) who do not have a future appointment scheduled. Ideal for proactive care workflows.")}
             response={`[
   {
     "appointmentId": "uuid",
@@ -171,7 +120,7 @@ Content-Type: application/json`}
           <QueryCard
             name="Daily Practice Summary"
             endpoint="tRPC: ai.dailySummary (session cookie)"
-            description="Returns an aggregate view of today's practice activity. Perfect for AI dashboard widgets, morning briefings, or end-of-day reports."
+            description={tx("Returns an aggregate view of today's practice activity. Perfect for AI dashboard widgets, morning briefings, or end-of-day reports.")}
             response={`{
   "date": "2026-03-17",
   "appointments": {
@@ -193,17 +142,11 @@ Content-Type: application/json`}
         </Section>
 
         {/* Webhook Events */}
-        <Section id="webhooks" title="Webhook Events">
-          <p className="mb-4 text-gray-700">
-            Subscribe to real-time events for reactive AI workflows. When
-            something happens in OpenVPM, your AI system gets notified
-            instantly.
-          </p>
+        <Section id="webhooks" title={tx("Webhook Events")}>
+          <p className="mb-4 text-gray-700">{tx("Subscribe to real-time events for reactive AI workflows. When something happens in OpenVPM, your AI system gets notified instantly.")}</p>
 
           <div className="mb-6 rounded-lg border border-gray-200 bg-white p-6">
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-500">
-              Available Events
-            </h3>
+            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-500">{tx("Available Events")}</h3>
             <div className="space-y-3">
               {WEBHOOK_EVENT_DEFINITIONS.map((definition) => (
                 <EventRow
@@ -230,19 +173,12 @@ Content-Type: application/json`}
 }`}
           </CodeBlock>
 
-          <p className="mt-4 text-sm text-gray-500">
-            Admins can create webhook subscriptions in Settings or through the
-            <code>webhooks.create</code> API. The signing secret is returned once
-            at creation time.
-          </p>
+          <p className="mt-4 text-sm text-gray-500">{tx("Admins can create webhook subscriptions in Settings or through the")}<code>webhooks.create</code>{" "}{tx("API. The signing secret is returned once at creation time.")}</p>
         </Section>
 
         {/* Footer */}
         <div className="mt-16 border-t border-gray-200 pt-8 text-center text-sm text-gray-500">
-          <p>
-            OpenVPM AI Integration API &mdash; Built for the next generation of
-            veterinary care.
-          </p>
+          <p>{tx("OpenVPM AI Integration API — Built for the next generation of veterinary care.")}</p>
         </div>
       </div>
     </div>
@@ -294,9 +230,7 @@ function QueryCard({
       <h3 className="mb-1 text-lg font-semibold text-gray-900">{name}</h3>
       <code className="mb-3 block text-sm text-teal-600">{endpoint}</code>
       <p className="mb-4 text-sm text-gray-600">{description}</p>
-      <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400">
-        Response
-      </p>
+      <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-gray-400">{tx("Response")}</p>
       <CodeBlock>{response}</CodeBlock>
     </div>
   );

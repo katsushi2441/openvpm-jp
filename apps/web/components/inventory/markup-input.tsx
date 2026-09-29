@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { priceWithMarkup } from "@/lib/inventory/markup";
+import { tx } from "@/lib/i18n";
 
 export function MarkupInput({
   cost,
@@ -15,9 +16,7 @@ export function MarkupInput({
   const price = priceWithMarkup(cost, markup);
   return (
     <div className="mt-2 space-y-1">
-      <label className="block text-xs text-muted-foreground">
-        Markup on cost (%)
-        <Input
+      <label className="block text-xs text-muted-foreground">{tx("Markup on cost (%)")}<Input
           type="number"
           min="0"
           step="0.01"
@@ -34,12 +33,10 @@ export function MarkupInput({
         onClick={() => {
           if (price !== null) onApply(price);
         }}
-      >
-        Apply markup
-      </Button>
+      >{tx("Apply markup")}</Button>
       <p className="text-xs text-muted-foreground">
         {price === null
-          ? "Enter cost per unit and a markup percentage."
+          ? tx("Enter cost per unit and a markup percentage.")
           : `Selling price per unit: ${price}. Save the product to keep this price.`}
       </p>
     </div>

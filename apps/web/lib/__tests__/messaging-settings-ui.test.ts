@@ -81,10 +81,10 @@ describe("messaging settings UI", () => {
     expect(tabSource).toContain("data.launch.setupAvailable");
     expect(tabSource).toContain("Texting is a controlled clinic pilot");
     expect(tabSource).toContain(
-      "OpenVPM will not\n            search for or purchase a number",
+      "OpenVPM will not search for or purchase a number",
     );
     expect(tabSource).toContain(
-      "Email appointment reminders remain\n            available",
+      "Email appointment reminders remain available",
     );
     expect(tabSource).toContain(
       "{data.launch.setupAvailable ? (\n        <MessagingWizard",

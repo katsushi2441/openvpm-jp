@@ -26,6 +26,7 @@ import {
 } from "@/lib/billing/policy";
 import { useCurrencyFormatter } from "@/lib/locale/useCurrency";
 import { trpc } from "@/lib/trpc";
+import { tx } from "@/lib/i18n";
 
 type ServiceForm = {
   name: string;
@@ -125,7 +126,7 @@ export function ServicesTab() {
       void refreshCatalog();
       setCreateForm(EMPTY_FORM);
       setShowCreate(false);
-      toast.success("Service created");
+      toast.success(tx("Service created"));
     },
     onError: handleMutationError,
   });
@@ -133,7 +134,7 @@ export function ServicesTab() {
     onSuccess: () => {
       void refreshCatalog();
       resetEditState();
-      toast.success("Service updated");
+      toast.success(tx("Service updated"));
     },
     onError: (error) => {
       if (error.data?.code === "CONFLICT") {
@@ -146,14 +147,14 @@ export function ServicesTab() {
     onSuccess: () => {
       void refreshCatalog();
       resetEditState();
-      toast.success("Service archived");
+      toast.success(tx("Service archived"));
     },
     onError: handleMutationError,
   });
   const restoreMutation = trpc.billing.restoreService.useMutation({
     onSuccess: () => {
       void refreshCatalog();
-      toast.success("Service restored");
+      toast.success(tx("Service restored"));
     },
     onError: handleMutationError,
   });
@@ -196,10 +197,10 @@ export function ServicesTab() {
         <div className="flex items-start gap-2">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
           <div>
-            <p className="font-medium">Unable to load services</p>
+            <p className="font-medium">{tx("Unable to load services")}</p>
             <p className="mt-1">
               {loadError?.message ??
-                "The service catalog request finished without returning data."}
+                tx("The service catalog request finished without returning data.")}
             </p>
             <Button
               className="mt-3"
@@ -209,9 +210,7 @@ export function ServicesTab() {
                 void activeQuery.refetch();
                 void archivedQuery.refetch();
               }}
-            >
-              Retry
-            </Button>
+            >{tx("Retry")}</Button>
           </div>
         </div>
       </div>
@@ -223,27 +222,20 @@ export function ServicesTab() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h2 className="flex items-center gap-2 text-lg font-semibold">
-            <ReceiptText className="h-5 w-5" /> Services &amp; Pricing
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Manage the services available in encounter and invoice charge
-            pickers. Mark each service taxable according to your local rules;
-            invoices preserve that choice as a historical snapshot.
-          </p>
+            <ReceiptText className="h-5 w-5" />{" "}{tx("Services & Pricing")}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">{tx("Manage the services available in encounter and invoice charge pickers. Mark each service taxable according to your local rules; invoices preserve that choice as a historical snapshot.")}</p>
         </div>
         <Button
           size="sm"
           disabled={mutationPending}
           onClick={() => setShowCreate((visible) => !visible)}
         >
-          <Plus className="mr-2 h-4 w-4" />
-          Add service
-        </Button>
+          <Plus className="mr-2 h-4 w-4" />{tx("Add service")}</Button>
       </div>
 
       {showCreate && (
         <div className="space-y-3 rounded-lg border border-border bg-card p-4">
-          <h3 className="text-sm font-semibold">New service</h3>
+          <h3 className="text-sm font-semibold">{tx("New service")}</h3>
           <ServiceFields form={createForm} onChange={setCreateForm} />
           <div className="flex gap-2">
             <Button
@@ -253,9 +245,7 @@ export function ServicesTab() {
             >
               {createMutation.isPending && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Create service
-            </Button>
+              )}{tx("Create service")}</Button>
             <Button
               size="sm"
               variant="ghost"
@@ -264,9 +254,7 @@ export function ServicesTab() {
                 setCreateForm(EMPTY_FORM);
                 setShowCreate(false);
               }}
-            >
-              Cancel
-            </Button>
+            >{tx("Cancel")}</Button>
           </div>
         </div>
       )}
@@ -274,9 +262,9 @@ export function ServicesTab() {
       <div className="relative max-w-md">
         <Search className="pointer-events-none absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
-          aria-label="Search services"
+          aria-label={tx("Search services")}
           className="pl-9"
-          placeholder="Search name, code, or category"
+          placeholder={tx("Search name, code, or category")}
           value={search}
           onChange={(event) => setSearch(event.target.value)}
         />
@@ -286,12 +274,12 @@ export function ServicesTab() {
         <table className="w-full min-w-[760px] text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/50">
-              <th className="px-4 py-3 text-left font-medium">Service</th>
-              <th className="px-4 py-3 text-left font-medium">Code</th>
-              <th className="px-4 py-3 text-left font-medium">Category</th>
-              <th className="px-4 py-3 text-right font-medium">Price</th>
-              <th className="px-4 py-3 text-left font-medium">Tax</th>
-              <th className="px-4 py-3 text-right font-medium">Actions</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Service")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Code")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Category")}</th>
+              <th className="px-4 py-3 text-right font-medium">{tx("Price")}</th>
+              <th className="px-4 py-3 text-left font-medium">{tx("Tax")}</th>
+              <th className="px-4 py-3 text-right font-medium">{tx("Actions")}</th>
             </tr>
           </thead>
           <tbody>
@@ -326,17 +314,14 @@ export function ServicesTab() {
                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                           ) : (
                             <Save className="mr-2 h-4 w-4" />
-                          )}
-                          Save
-                        </Button>
+                          )}{tx("Save")}</Button>
                         <Button
                           size="sm"
                           variant="ghost"
                           disabled={mutationPending}
                           onClick={resetEditState}
                         >
-                          <X className="mr-2 h-4 w-4" /> Cancel
-                        </Button>
+                          <X className="mr-2 h-4 w-4" />{" "}{tx("Cancel")}</Button>
                       </div>
                     </td>
                   </tr>
@@ -359,7 +344,7 @@ export function ServicesTab() {
                     {formatCurrency(service.defaultPrice)}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
-                    {service.taxable ? "Taxable" : "Not taxable"}
+                    {service.taxable ? tx("Taxable") : tx("Not taxable")}
                   </td>
                   <td className="px-4 py-3">
                     <div className="flex justify-end gap-1">
@@ -405,8 +390,8 @@ export function ServicesTab() {
                   <EmptyState
                     className="border-0 bg-transparent p-8"
                     icon={ReceiptText}
-                    title="No services configured"
-                    description="Add your first service so the clinic can capture charges during encounters and invoicing."
+                    title={tx("No services configured")}
+                    description={tx("Add your first service so the clinic can capture charges during encounters and invoicing.")}
                   />
                 </td>
               </tr>
@@ -416,9 +401,7 @@ export function ServicesTab() {
                 <td
                   colSpan={6}
                   className="px-4 py-8 text-center text-muted-foreground"
-                >
-                  No services match your search.
-                </td>
+                >{tx("No services match your search.")}</td>
               </tr>
             )}
           </tbody>
@@ -426,14 +409,11 @@ export function ServicesTab() {
       </div>
 
       <details className="rounded-lg border border-border bg-card">
-        <summary className="cursor-pointer px-4 py-3 text-sm font-medium">
-          Archived services ({availableArchivedServices.length})
+        <summary className="cursor-pointer px-4 py-3 text-sm font-medium">{tx("Archived services (")}{availableArchivedServices.length})
         </summary>
         <div className="border-t border-border">
           {availableArchivedServices.length === 0 ? (
-            <p className="px-4 py-5 text-sm text-muted-foreground">
-              No archived services.
-            </p>
+            <p className="px-4 py-5 text-sm text-muted-foreground">{tx("No archived services.")}</p>
           ) : (
             <div className="divide-y divide-border">
               {availableArchivedServices.map((service) => (
@@ -446,7 +426,7 @@ export function ServicesTab() {
                     <p className="text-xs text-muted-foreground">
                       {[service.code, service.category]
                         .filter(Boolean)
-                        .join(" · ") || "No code or category"}
+                        .join(" · ") || tx("No code or category")}
                     </p>
                   </div>
                   <Button
@@ -464,9 +444,7 @@ export function ServicesTab() {
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : (
                       <ArchiveRestore className="mr-2 h-4 w-4" />
-                    )}
-                    Restore
-                  </Button>
+                    )}{tx("Restore")}</Button>
                 </div>
               ))}
             </div>
@@ -487,35 +465,35 @@ function ServiceFields({
   return (
     <div className="grid gap-3 md:grid-cols-[minmax(12rem,2fr)_minmax(8rem,1fr)_minmax(10rem,1fr)_9rem_auto] md:items-center">
       <Input
-        aria-label="Service name"
+        aria-label={tx("Service name")}
         maxLength={BILLING_SERVICE_NAME_MAX_LENGTH}
-        placeholder="Service name"
+        placeholder={tx("Service name")}
         value={form.name}
         onChange={(event) => onChange({ ...form, name: event.target.value })}
       />
       <Input
-        aria-label="Service code"
+        aria-label={tx("Service code")}
         maxLength={BILLING_SERVICE_CODE_MAX_LENGTH}
-        placeholder="Code (optional)"
+        placeholder={tx("Code (optional)")}
         value={form.code}
         onChange={(event) => onChange({ ...form, code: event.target.value })}
       />
       <Input
-        aria-label="Service category"
+        aria-label={tx("Service category")}
         maxLength={BILLING_SERVICE_CATEGORY_MAX_LENGTH}
-        placeholder="Category (optional)"
+        placeholder={tx("Category (optional)")}
         value={form.category}
         onChange={(event) =>
           onChange({ ...form, category: event.target.value })
         }
       />
       <Input
-        aria-label="Default price"
+        aria-label={tx("Default price")}
         type="number"
         min={0}
         max={BILLING_UNIT_PRICE_MAX}
         step="0.01"
-        placeholder="Price"
+        placeholder={tx("Price")}
         value={form.defaultPrice}
         onChange={(event) =>
           onChange({ ...form, defaultPrice: event.target.value })
@@ -528,9 +506,7 @@ function ServiceFields({
           onChange={(event) =>
             onChange({ ...form, taxable: event.target.checked })
           }
-        />
-        Taxable
-      </label>
+        />{tx("Taxable")}</label>
     </div>
   );
 }

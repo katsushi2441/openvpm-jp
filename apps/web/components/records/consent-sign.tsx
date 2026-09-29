@@ -10,6 +10,7 @@ import {
   CONSENT_BODY_MAX_LENGTH,
   CONSENT_TITLE_MAX_LENGTH,
 } from "@/lib/consult/consent-template";
+import { tx } from "@/lib/i18n";
 
 const CONSENT_POLL_INTERVAL_MS = 5_000;
 
@@ -106,34 +107,30 @@ export function ConsentSign({
   return (
     <>
       <Button variant="outline" size="sm" onClick={() => setOpen(true)}>
-        <FileSignature className="mr-2 h-4 w-4" />
-        Get signature
-      </Button>
+        <FileSignature className="mr-2 h-4 w-4" />{tx("Get signature")}</Button>
 
       {open && (
         <div
           className="fixed inset-0 z-[90] overflow-y-auto bg-black/50 p-4"
           role="dialog"
           aria-modal="true"
-          aria-label="Get signature"
+          aria-label={tx("Get signature")}
         >
           <div className="flex min-h-full items-center justify-center">
             <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-xl">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h3 className="font-heading text-base font-semibold">
-                    Get signature
-                  </h3>
+                  <h3 className="font-heading text-base font-semibold">{tx("Get signature")}</h3>
                   <p className="mt-1 text-sm text-muted-foreground">
                     {request
-                      ? "Scan with any phone. The code works for 60 minutes."
-                      : "Check the consent text, then make the code."}
+                      ? tx("Scan with any phone. The code works for 60 minutes.")
+                      : tx("Check the consent text, then make the code.")}
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={handleClose}
-                  aria-label="Close"
+                  aria-label={tx("Close")}
                   className="rounded-md p-1 text-muted-foreground transition-colors hover:text-foreground"
                 >
                   <X className="h-5 w-5" />
@@ -146,14 +143,10 @@ export function ConsentSign({
                     <label
                       htmlFor="consent-form"
                       className="mb-1 block text-sm font-medium"
-                    >
-                      Form
-                    </label>
+                    >{tx("Form")}</label>
                     {forms.isLoading || !forms.data ? (
                       <div className="flex h-9 items-center gap-2 rounded-md border border-border bg-background px-3 text-sm text-muted-foreground">
-                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                        Loading forms...
-                      </div>
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />{tx("Loading forms...")}</div>
                     ) : (
                       <select
                         id="consent-form"
@@ -168,18 +161,13 @@ export function ConsentSign({
                         ))}
                       </select>
                     )}
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      Starter templates. Have your attorney look them over,
-                      and fill in any blanks before you send.
-                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">{tx("Starter templates. Have your attorney look them over, and fill in any blanks before you send.")}</p>
                   </div>
                   <div>
                     <label
                       htmlFor="consent-title"
                       className="mb-1 block text-sm font-medium"
-                    >
-                      Title
-                    </label>
+                    >{tx("Title")}</label>
                     <input
                       id="consent-title"
                       type="text"
@@ -193,9 +181,7 @@ export function ConsentSign({
                     <label
                       htmlFor="consent-body"
                       className="mb-1 block text-sm font-medium"
-                    >
-                      Consent text
-                    </label>
+                    >{tx("Consent text")}</label>
                     <textarea
                       id="consent-body"
                       rows={8}
@@ -228,9 +214,7 @@ export function ConsentSign({
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       ) : (
                         <FileSignature className="mr-2 h-4 w-4" />
-                      )}
-                      Make the code
-                    </Button>
+                      )}{tx("Make the code")}</Button>
                   </div>
                   {createRequest.isError && (
                     <div className="flex justify-end">
@@ -248,9 +232,7 @@ export function ConsentSign({
                           })
                         }
                       >
-                        <RefreshCw className="mr-2 h-4 w-4" />
-                        Try again
-                      </Button>
+                        <RefreshCw className="mr-2 h-4 w-4" />{tx("Try again")}</Button>
                     </div>
                   )}
                 </div>
@@ -259,8 +241,7 @@ export function ConsentSign({
                   {isSigned ? (
                     <div className="flex w-full flex-col items-center gap-3 rounded-lg border border-border bg-muted/30 p-6 text-center">
                       <CheckCircle2 className="h-10 w-10 text-primary" />
-                      <p className="text-sm font-medium">
-                        Signed by {activeConsent?.signerName}
+                      <p className="text-sm font-medium">{tx("Signed by")}{" "}{activeConsent?.signerName}
                       </p>
                       {activeConsent?.fileUrl && (
                         <a
@@ -268,13 +249,9 @@ export function ConsentSign({
                           target="_blank"
                           rel="noreferrer"
                           className="text-sm font-medium text-primary underline underline-offset-4"
-                        >
-                          Open the signed PDF
-                        </a>
+                        >{tx("Open the signed PDF")}</a>
                       )}
-                      <p className="text-xs text-muted-foreground">
-                        Saved on this patient under Documents.
-                      </p>
+                      <p className="text-xs text-muted-foreground">{tx("Saved on this patient under Documents.")}</p>
                     </div>
                   ) : (
                     <>
@@ -282,7 +259,7 @@ export function ConsentSign({
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={qrDataUrl}
-                          alt="QR code for the consent signing link"
+                          alt={tx("QR code for the consent signing link")}
                           className="h-60 w-60 rounded-lg border border-border bg-white p-2"
                         />
                       ) : (
@@ -293,18 +270,14 @@ export function ConsentSign({
                       <p className="w-full break-all text-center text-xs text-muted-foreground">
                         {request.url}
                       </p>
-                      <p className="text-sm text-muted-foreground">
-                        Waiting for a signature…
-                      </p>
+                      <p className="text-sm text-muted-foreground">{tx("Waiting for a signature…")}</p>
                     </>
                   )}
                 </div>
               )}
 
               <div className="mt-5 flex justify-end">
-                <Button variant="outline" size="sm" onClick={handleClose}>
-                  Done
-                </Button>
+                <Button variant="outline" size="sm" onClick={handleClose}>{tx("Done")}</Button>
               </div>
             </div>
           </div>

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { PawMark } from "@/components/brand/paw-mark";
+import { tx } from "@/lib/i18n";
 
 export const metadata: Metadata = {
-  title: "Treatment Plan - OpenVPM",
-  description: "Review a veterinary treatment plan",
+  title: tx("Treatment Plan - OpenVPM"),
+  description: tx("Review a veterinary treatment plan"),
   referrer: "no-referrer",
   robots: { index: false, follow: false, nocache: true },
 };
@@ -20,8 +21,7 @@ export default function TreatmentPlanLayout({
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-600">
             <PawMark className="h-4 w-4 text-white" />
           </div>
-          <div className="text-sm font-semibold text-gray-900">
-            OpenVPM <span className="text-teal-600">Treatment Plan</span>
+          <div className="text-sm font-semibold text-gray-900">{tx("OpenVPM")}{" "}<span className="text-teal-600">{tx("Treatment Plan")}</span>
           </div>
         </div>
       </header>

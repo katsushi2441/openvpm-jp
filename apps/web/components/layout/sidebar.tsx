@@ -29,6 +29,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { PawMark } from "@/components/brand/paw-mark";
+import { tx } from "@/lib/i18n";
 
 type UserRole =
   | "admin"
@@ -55,63 +56,63 @@ const navItems: {
   icon: React.ElementType;
   roles: UserRole[];
 }[] = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard, roles: allRoles },
-  { href: "/patients", label: "Patients", icon: PawPrint, roles: allRoles },
-  { href: "/clients", label: "Clients", icon: Users, roles: allRoles },
-  { href: "/schedule", label: "Schedule", icon: Calendar, roles: allRoles },
-  { href: "/records", label: "Records", icon: FileText, roles: allRoles },
+  { href: "/", label: tx("Dashboard"), icon: LayoutDashboard, roles: allRoles },
+  { href: "/patients", label: tx("Patients"), icon: PawPrint, roles: allRoles },
+  { href: "/clients", label: tx("Clients"), icon: Users, roles: allRoles },
+  { href: "/schedule", label: tx("Schedule"), icon: Calendar, roles: allRoles },
+  { href: "/records", label: tx("Records"), icon: FileText, roles: allRoles },
   {
     href: "/lab-results",
-    label: "Lab Inbox",
+    label: tx("Lab Inbox"),
     icon: FlaskConical,
     roles: ["admin", "veterinarian", "technician", "front_desk", "viewer"],
   },
-  { href: "/billing", label: "Billing", icon: Receipt, roles: allRoles },
-  { href: "/inventory", label: "Inventory", icon: Package, roles: allRoles },
-  { href: "/inbox", label: "Inbox", icon: MessageSquare, roles: allRoles },
+  { href: "/billing", label: tx("Billing"), icon: Receipt, roles: allRoles },
+  { href: "/inventory", label: tx("Inventory"), icon: Package, roles: allRoles },
+  { href: "/inbox", label: tx("Inbox"), icon: MessageSquare, roles: allRoles },
   {
     href: "/recalls",
-    label: "Recalls",
+    label: tx("Recalls"),
     icon: Syringe,
     roles: ["admin", "veterinarian", "front_desk"],
   },
   {
     href: "/care-reminders",
-    label: "Care Reminders",
+    label: tx("Care Reminders"),
     icon: BellRing,
     roles: allRoles,
   },
   {
     href: "/migration-archive",
-    label: "Imported History",
+    label: tx("Imported History"),
     icon: Archive,
     roles: allRoles,
   },
   {
     href: "/whiteboard",
-    label: "Whiteboard",
+    label: tx("Whiteboard"),
     icon: ClipboardList,
     roles: allRoles,
   },
   {
     href: "/agent",
-    label: "Agent",
+    label: tx("Agent"),
     icon: Bot,
     roles: ["admin", "veterinarian"],
   },
   {
     href: "/controlled-substances",
-    label: "Controlled Substances",
+    label: tx("Controlled Substances"),
     icon: ShieldAlert,
     roles: ["admin", "veterinarian"],
   },
   {
     href: "/reports",
-    label: "Reports",
+    label: tx("Reports"),
     icon: BarChart3,
     roles: ["admin", "veterinarian"],
   },
-  { href: "/settings", label: "Settings", icon: Settings, roles: ["admin"] },
+  { href: "/settings", label: tx("Settings"), icon: Settings, roles: ["admin"] },
 ];
 
 type SidebarProps = {
@@ -164,7 +165,7 @@ export function Sidebar({
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={branding.logoUrl}
-              alt={branding.name ?? "Practice logo"}
+              alt={branding.name ?? tx("Practice logo")}
               className="h-8 w-8 rounded-lg object-cover"
             />
           ) : (
@@ -173,7 +174,7 @@ export function Sidebar({
             </div>
           )}
           {!isCollapsed && (
-            <span className="font-heading text-lg font-semibold">OpenVPM</span>
+            <span className="font-heading text-lg font-semibold">{tx("OpenVPM")}</span>
           )}
         </Link>
       </div>
@@ -182,7 +183,7 @@ export function Sidebar({
       <nav
         className="flex-1 overflow-y-auto px-2 py-2"
         role="navigation"
-        aria-label="Main navigation"
+        aria-label={tx("Main navigation")}
       >
         <ul className="space-y-0.5">
           {visibleNavItems.map((item) => {
@@ -257,7 +258,7 @@ export function Sidebar({
             </div>
             <button
               onClick={() => signOut({ callbackUrl: "/login" })}
-              aria-label="Sign out"
+              aria-label={tx("Sign out")}
               className="rounded-md p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
             >
               <LogOut className="h-4 w-4" />
@@ -267,7 +268,7 @@ export function Sidebar({
         {collapsible && (
           <button
             onClick={() => setCollapsed(!collapsed)}
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-label={collapsed ? tx("Expand sidebar") : tx("Collapse sidebar")}
             className="flex w-full items-center justify-center rounded-md p-2 text-muted-foreground hover:bg-accent hover:text-foreground"
           >
             {collapsed ? (

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { AlertCircle, LockKeyhole } from "lucide-react";
 import { fetchWithClientTimeout } from "@/lib/client-fetch";
+import { tx } from "@/lib/i18n";
 
 export default function PortalAccessPage() {
   const { token } = useParams<{ token: string }>();
@@ -43,21 +44,15 @@ export default function PortalAccessPage() {
       <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-primary">
         <LockKeyhole className="h-6 w-6" aria-hidden="true" />
       </span>
-      <h1 className="mt-4 text-xl font-semibold text-gray-900">
-        Open your secure pet portal
-      </h1>
-      <p className="mt-2 text-sm leading-6 text-gray-600">
-        This private link can be used once and expires shortly. Continuing
-        creates a secure session on this device and removes the link from your
-        address bar.
-      </p>
+      <h1 className="mt-4 text-xl font-semibold text-gray-900">{tx("Open your secure pet portal")}</h1>
+      <p className="mt-2 text-sm leading-6 text-gray-600">{tx("This private link can be used once and expires shortly. Continuing creates a secure session on this device and removes the link from your address bar.")}</p>
       <button
         type="button"
         onClick={continueToPortal}
         disabled={loading}
         className="mt-6 inline-flex min-h-12 w-full items-center justify-center rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {loading ? "Opening portal…" : "Continue securely"}
+        {loading ? tx("Opening portal…") : tx("Continue securely")}
       </button>
       {error ? (
         <div

@@ -8,6 +8,7 @@ import { trpc } from "@/lib/trpc";
 import { EmptyState } from "@/components/common/empty-state";
 import { formatPortalDateTime } from "@/lib/portal/date";
 import { COMMUNICATION_CONTENT_MAX_LENGTH } from "@/lib/communications/policy";
+import { tx } from "@/lib/i18n";
 
 export default function PortalMessagesPage() {
   const [content, setContent] = useState("");
@@ -20,7 +21,7 @@ export default function PortalMessagesPage() {
   const sendMessage = trpc.portal.createMessage.useMutation({
     onSuccess: () => {
       setContent("");
-      toast.success("Message sent");
+      toast.success(tx("Message sent"));
       utils.portal.getMessages.invalidate({});
     },
     onError: (err) => {
@@ -88,8 +89,8 @@ export default function PortalMessagesPage() {
         <EmptyState
           className="py-12"
           icon={AlertCircle}
-          title="Unable to load messages"
-          description="Please refresh this page or contact your clinic if the portal link has expired."
+          title={tx("Unable to load messages")}
+          description={tx("Please refresh this page or contact your clinic if the portal link has expired.")}
         />
       </div>
     );
@@ -101,15 +102,11 @@ export default function PortalMessagesPage() {
         href="/portal"
         className="mb-6 inline-flex items-center gap-1 text-sm text-primary hover:text-primary/80"
       >
-        <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-        Back to portal
-      </Link>
+        <ArrowLeft className="h-4 w-4" aria-hidden="true" />{tx("Back to portal")}</Link>
 
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Messages</h1>
-        <p className="mt-1 text-gray-500">
-          Send questions and follow-ups directly to your clinic.
-        </p>
+        <h1 className="text-2xl font-bold text-gray-900">{tx("Messages")}</h1>
+        <p className="mt-1 text-gray-500">{tx("Send questions and follow-ups directly to your clinic.")}</p>
       </div>
 
       <div className="rounded-xl border border-gray-200 bg-white">
@@ -118,8 +115,8 @@ export default function PortalMessagesPage() {
             <EmptyState
               className="border-0 py-10"
               icon={MessageSquare}
-              title="No portal messages yet"
-              description="Messages from your clinic and your replies will appear here."
+              title={tx("No portal messages yet")}
+              description={tx("Messages from your clinic and your replies will appear here.")}
             />
           ) : (
             messages.map((message) => {
@@ -151,7 +148,7 @@ export default function PortalMessagesPage() {
                           : "text-gray-500"
                       }`}
                     >
-                      {isClientMessage ? "You" : "Clinic"} -{" "}
+                      {isClientMessage ? tx("You") : tx("Clinic")} -{" "}
                       {formatPortalDateTime(
                         message.createdAt,
                         undefined,
@@ -166,16 +163,14 @@ export default function PortalMessagesPage() {
         </div>
 
         <div className="border-t border-gray-200 p-4">
-          <label className="sr-only" htmlFor="portal-message-content">
-            Message
-          </label>
+          <label className="sr-only" htmlFor="portal-message-content">{tx("Message")}</label>
           <textarea
             id="portal-message-content"
             value={content}
             onChange={(event) => setContent(event.target.value)}
             maxLength={COMMUNICATION_CONTENT_MAX_LENGTH}
             rows={3}
-            placeholder="Type your message..."
+            placeholder={tx("Type your message...")}
             className="w-full resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none transition-colors placeholder:text-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20"
           />
           <div className="mt-3 flex items-center justify-between gap-3">
@@ -189,7 +184,7 @@ export default function PortalMessagesPage() {
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Send className="h-4 w-4" aria-hidden="true" />
-              {sendMessage.isPending ? "Sending..." : "Send"}
+              {sendMessage.isPending ? tx("Sending...") : tx("Send")}
             </button>
           </div>
         </div>

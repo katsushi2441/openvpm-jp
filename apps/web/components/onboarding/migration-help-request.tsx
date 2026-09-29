@@ -3,6 +3,7 @@
 import { Check, Loader2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { tx } from "@/lib/i18n";
 
 /**
  * Requests a hands-on migration review without asking a clinic to email PHI or
@@ -27,7 +28,7 @@ export function MigrationHelpRequest({ source }: { source: string }) {
           : previous,
       );
       await utils.settings.getOnboardingState.invalidate();
-      toast.success("Migration review requested");
+      toast.success(tx("Migration review requested"));
     },
     onError: (error) => toast.error(error.message),
   });
@@ -41,19 +42,17 @@ export function MigrationHelpRequest({ source }: { source: string }) {
         <div className="min-w-0">
           <p className="text-xs font-semibold text-emerald-900">
             {requestedAt
-              ? "Migration review requested"
-              : "Want us to review the export first?"}
+              ? tx("Migration review requested")
+              : tx("Want us to review the export first?")}
           </p>
           <p className="mt-1 text-xs leading-5 text-slate-600">
             {requestedAt
-              ? "We will contact your clinic admin with a private transfer and review plan. Keep the files where they are until then."
-              : "Request a hands-on review before importing. Do not email patient files or use an Anyone-with-the-link folder. We will contact your clinic admin with a private transfer plan."}
+              ? tx("We will contact your clinic admin with a private transfer and review plan. Keep the files where they are until then.")
+              : tx("Request a hands-on review before importing. Do not email patient files or use an Anyone-with-the-link folder. We will contact your clinic admin with a private transfer plan.")}
           </p>
           {requestedAt ? (
             <span className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-emerald-800">
-              <Check className="h-3.5 w-3.5" />
-              Request saved
-            </span>
+              <Check className="h-3.5 w-3.5" />{tx("Request saved")}</span>
           ) : (
             <button
               type="button"
@@ -63,9 +62,7 @@ export function MigrationHelpRequest({ source }: { source: string }) {
             >
               {request.isPending ? (
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : null}
-              Request a private migration review
-            </button>
+              ) : null}{tx("Request a private migration review")}</button>
           )}
         </div>
       </div>

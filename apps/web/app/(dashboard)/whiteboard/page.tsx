@@ -19,6 +19,7 @@ import { PATIENT_SPECIES_EMOJI } from "@/lib/patients/species";
 import { EmptyState } from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { tx, uiLocale } from "@/lib/i18n";
 
 // --- Types ---
 
@@ -167,9 +168,9 @@ function formatCurrentTime(date: Date, timeZone?: string | null): string {
     timeZone: timeZone ?? undefined,
   };
   try {
-    return date.toLocaleTimeString("en-US", options);
+    return date.toLocaleTimeString(uiLocale(), options);
   } catch {
-    return date.toLocaleTimeString("en-US", {
+    return date.toLocaleTimeString(uiLocale(), {
       ...options,
       timeZone: undefined,
     });
@@ -185,9 +186,9 @@ function formatCurrentDate(date: Date, timeZone?: string | null): string {
     timeZone: timeZone ?? undefined,
   };
   try {
-    return date.toLocaleDateString("en-US", options);
+    return date.toLocaleDateString(uiLocale(), options);
   } catch {
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString(uiLocale(), {
       ...options,
       timeZone: undefined,
     });
@@ -202,9 +203,9 @@ function formatAppointmentTime(date: Date, timeZone?: string | null): string {
     timeZone: timeZone ?? undefined,
   };
   try {
-    return date.toLocaleTimeString("en-US", options);
+    return date.toLocaleTimeString(uiLocale(), options);
   } catch {
-    return date.toLocaleTimeString("en-US", {
+    return date.toLocaleTimeString(uiLocale(), {
       ...options,
       timeZone: undefined,
     });
@@ -219,9 +220,7 @@ function LiveIndicator() {
       <span className="relative flex h-2 w-2">
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
         <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-      </span>
-      Live
-    </span>
+      </span>{tx("Live")}</span>
   );
 }
 
@@ -257,7 +256,7 @@ function WhiteboardCard({
           {getSpeciesEmoji(appointment.patientSpecies)}
         </span>
         <span className="font-medium text-sm truncate">
-          {appointment.patientName || "Unknown Patient"}
+          {appointment.patientName || tx("Unknown Patient")}
         </span>
         <StatusDot status={appointment.status} />
       </div>
@@ -273,8 +272,7 @@ function WhiteboardCard({
       <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
         {appointment.doctorName && (
           <span className="inline-flex items-center gap-1">
-            <User className="h-3 w-3" />
-            Dr. {appointment.doctorName}
+            <User className="h-3 w-3" />{tx("Dr.")}{" "}{appointment.doctorName}
           </span>
         )}
         {(appointment.locationName || appointment.roomName) && (
@@ -419,11 +417,11 @@ function AppointmentDetailModal({
   }[] = [];
 
   if (current === "confirmed") {
-    statusActions.push({ label: "Check In", status: "checked_in", variant: "default" });
-    statusActions.push({ label: "No Show", status: "no_show", variant: "outline" });
-    statusActions.push({ label: "Cancel", status: "cancelled", variant: "destructive" });
+    statusActions.push({ label: tx("Check In"), status: "checked_in", variant: "default" });
+    statusActions.push({ label: tx("No Show"), status: "no_show", variant: "outline" });
+    statusActions.push({ label: tx("Cancel"), status: "cancelled", variant: "destructive" });
   } else if (current === "checked_in") {
-    statusActions.push({ label: "Start Exam", status: "in_exam", variant: "default" });
+    statusActions.push({ label: tx("Start Exam"), status: "in_exam", variant: "default" });
   }
   const visibleStatusActions = canUpdateStatus ? statusActions : [];
 
@@ -447,7 +445,7 @@ function AppointmentDetailModal({
           </div>
           <button
             type="button"
-            aria-label="Close appointment details"
+            aria-label={tx("Close appointment details")}
             onClick={onClose}
             className="rounded-md p-1 hover:bg-muted transition-colors"
           >
@@ -463,7 +461,7 @@ function AppointmentDetailModal({
             </span>
             <div>
               <h3 id={dialogTitleId} className="font-semibold text-base">
-                {appointment.patientName || "Unknown Patient"}
+                {appointment.patientName || tx("Unknown Patient")}
               </h3>
               {appointment.patientSpecies && (
                 <p className="text-xs text-muted-foreground capitalize">
@@ -476,7 +474,7 @@ function AppointmentDetailModal({
           <div className="space-y-2 text-sm">
             <div className="flex items-center gap-2 text-muted-foreground">
               <User className="h-3.5 w-3.5" />
-              <span>Client: {clientName}</span>
+              <span>{tx("Client:")}{" "}{clientName}</span>
             </div>
             <div className="flex items-center gap-2 text-muted-foreground">
               <Clock className="h-3.5 w-3.5" />
@@ -488,7 +486,7 @@ function AppointmentDetailModal({
             {appointment.doctorName && (
               <div className="flex items-center gap-2 text-muted-foreground">
                 <User className="h-3.5 w-3.5" />
-                <span>Dr. {appointment.doctorName}</span>
+                <span>{tx("Dr.")}{" "}{appointment.doctorName}</span>
               </div>
             )}
             {appointment.typeName && (
@@ -538,8 +536,8 @@ function AppointmentDetailModal({
                 }}
               >
                  {current === "in_exam"
-                   ? "Review closeout"
-                   : "Open visit"}
+                   ? tx("Review closeout")
+                   : tx("Open visit")}
               </Link>
             </Button>
             {visibleStatusActions.map((action) => (
@@ -553,7 +551,7 @@ function AppointmentDetailModal({
                 }
                 title={
                   action.status === "in_exam" && missingClinicalTarget
-                    ? "Open the visit and attach an active patient before starting the exam."
+                    ? tx("Open the visit and attach an active patient before starting the exam.")
                     : undefined
                 }
                 onClick={() => onStatusChange(appointment.id, action.status)}
@@ -624,7 +622,7 @@ export default function WhiteboardPage() {
   const utils = trpc.useUtils();
   const updateStatus = trpc.whiteboard.updateStatus.useMutation({
     onSuccess: () => {
-      toast.success("Status updated");
+      toast.success(tx("Status updated"));
       setSelectedAppointment(null);
       utils.whiteboard.getActive.invalidate();
     },
@@ -676,14 +674,10 @@ export default function WhiteboardPage() {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <h2 className="font-heading text-xl font-semibold">
-              Practice Whiteboard
-            </h2>
+            <h2 className="font-heading text-xl font-semibold">{tx("Practice Whiteboard")}</h2>
             <LiveIndicator />
           </div>
-          <p className="text-sm text-muted-foreground">
-            Live patient status board
-          </p>
+          <p className="text-sm text-muted-foreground">{tx("Live patient status board")}</p>
         </div>
         <div className="text-right">
           <p className="text-sm font-medium">
@@ -703,13 +697,11 @@ export default function WhiteboardPage() {
       <div data-tour="whiteboard-board">
       {pageError || pageMissing ? (
         <div className="mt-4 rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
-          {pageError?.message ?? "Unable to load whiteboard. Please retry."}
+          {pageError?.message ?? tx("Unable to load whiteboard. Please retry.")}
         </div>
       ) : isPageLoading ? (
         <div className="mt-12 flex items-center justify-center gap-2 text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          Loading whiteboard...
-        </div>
+          <Loader2 className="h-4 w-4 animate-spin" />{tx("Loading whiteboard...")}</div>
       ) : hasWhiteboardPatients ? (
         /* Kanban columns */
         <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
@@ -753,7 +745,7 @@ export default function WhiteboardPage() {
               <div className="space-y-3 p-3" style={{ minHeight: 120 }}>
                 {col.items.length === 0 ? (
                   <div className="flex h-20 items-center justify-center">
-                    <p className="text-xs text-muted-foreground">No patients</p>
+                    <p className="text-xs text-muted-foreground">{tx("No patients")}</p>
                   </div>
                 ) : (
                   col.items.map((appt) => (
@@ -772,10 +764,10 @@ export default function WhiteboardPage() {
         <EmptyState
           className="mt-6"
           icon={ClipboardList}
-          title="No patients on the whiteboard"
-          description="Checked-in and in-progress appointments will appear here as the day moves."
+          title={tx("No patients on the whiteboard")}
+          description={tx("Checked-in and in-progress appointments will appear here as the day moves.")}
           action={{
-            label: "Open schedule",
+            label: tx("Open schedule"),
             onClick: () => router.push("/schedule"),
             icon: CalendarPlus,
           }}

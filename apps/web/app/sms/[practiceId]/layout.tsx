@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PawMark } from "@/components/brand/paw-mark";
+import { tx } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Clinic text messaging information - OpenVPM",
+  title: tx("Clinic text messaging information - OpenVPM"),
   description:
-    "Program information, consent disclosure, privacy policy, and terms for clinic text messages powered by OpenVPM.",
+    tx("Program information, consent disclosure, privacy policy, and terms for clinic text messages powered by OpenVPM."),
   robots: { index: false, follow: false },
 };
 
@@ -29,21 +30,15 @@ export default async function SmsProgramLayout({
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
               <PawMark className="h-4 w-4 text-primary-foreground" />
             </span>
-            <span className="font-heading text-lg font-semibold">OpenVPM</span>
+            <span className="font-heading text-lg font-semibold">{tx("OpenVPM")}</span>
           </Link>
           <nav
-            aria-label="Text messaging policies"
+            aria-label={tx("Text messaging policies")}
             className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted-foreground"
           >
-            <Link href={root + "/opt-in"} className="hover:text-foreground">
-              Consent
-            </Link>
-            <Link href={root + "/privacy"} className="hover:text-foreground">
-              Privacy
-            </Link>
-            <Link href={root + "/terms"} className="hover:text-foreground">
-              Terms
-            </Link>
+            <Link href={root + "/opt-in"} className="hover:text-foreground">{tx("Consent")}</Link>
+            <Link href={root + "/privacy"} className="hover:text-foreground">{tx("Privacy")}</Link>
+            <Link href={root + "/terms"} className="hover:text-foreground">{tx("Terms")}</Link>
           </nav>
         </div>
       </header>
@@ -53,9 +48,7 @@ export default async function SmsProgramLayout({
         </article>
       </main>
       <footer className="border-t border-border bg-card">
-        <div className="mx-auto max-w-3xl px-4 py-6 text-center text-xs text-muted-foreground">
-          Text messaging powered by OpenVPM
-        </div>
+        <div className="mx-auto max-w-3xl px-4 py-6 text-center text-xs text-muted-foreground">{tx("Text messaging powered by OpenVPM")}</div>
       </footer>
     </div>
   );

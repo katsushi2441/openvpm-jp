@@ -7,6 +7,7 @@ import {
   isImageUploadFileValid,
 } from "@/lib/upload-policy";
 import { isRetryableUploadStatus } from "@/lib/managed-upload-attempt";
+import { tx } from "@/lib/i18n";
 
 const EXPIRED_MESSAGE =
   "This link has expired. Ask the front desk for a new code.";
@@ -150,13 +151,8 @@ export function CaptureClient({ token }: { token: string }) {
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h1 className="text-lg font-semibold text-gray-900">
-          Add photos to the visit record
-        </h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Take a photo or pick one from your phone. It goes straight to the
-          clinic.
-        </p>
+        <h1 className="text-lg font-semibold text-gray-900">{tx("Add photos to the visit record")}</h1>
+        <p className="mt-1 text-sm text-gray-500">{tx("Take a photo or pick one from your phone. It goes straight to the clinic.")}</p>
       </div>
 
       {linkExpired ? (
@@ -182,7 +178,7 @@ export function CaptureClient({ token }: { token: string }) {
           >
             <Camera className="h-8 w-8" />
             <span className="text-sm font-medium">
-              {items.length > 0 ? "Add more photos" : "Take or choose photos"}
+              {items.length > 0 ? tx("Add more photos") : tx("Take or choose photos")}
             </span>
           </button>
         </>
@@ -230,9 +226,7 @@ export function CaptureClient({ token }: { token: string }) {
                       type="button"
                       onClick={() => void performUpload(item)}
                       className="shrink-0 text-xs font-medium text-teal-700 hover:text-teal-800"
-                    >
-                      Try again
-                    </button>
+                    >{tx("Try again")}</button>
                   )}
                 </div>
               )}
@@ -245,13 +239,11 @@ export function CaptureClient({ token }: { token: string }) {
         <div className="flex items-start gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-4">
           <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
           <div>
-            <p className="text-sm font-medium text-emerald-800">All set.</p>
+            <p className="text-sm font-medium text-emerald-800">{tx("All set.")}</p>
             <p className="text-sm text-emerald-700">
               {doneCount === 1
-                ? "Your photo was added to the visit record."
-                : `Your ${doneCount} photos were added to the visit record.`}{" "}
-              You can close this page or add more.
-            </p>
+                ? tx("Your photo was added to the visit record.")
+                : `Your ${doneCount} photos were added to the visit record.`}{" "}{tx("You can close this page or add more.")}</p>
           </div>
         </div>
       )}

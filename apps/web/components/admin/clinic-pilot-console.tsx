@@ -8,6 +8,7 @@ import {
   FlaskConical,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import { tx } from "@/lib/i18n";
 
 type PracticeOption = {
   id: string;
@@ -422,22 +423,18 @@ export function ClinicPilotConsole({
         <div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <FlaskConical className="h-4 w-4" />
-            <span className="text-sm">First supported clinic cohort</span>
+            <span className="text-sm">{tx("First supported clinic cohort")}</span>
           </div>
-          <p className="mt-2 max-w-3xl text-xs text-muted-foreground">
-            Operator decisions are separate from product evidence. Saving here
-            records an immutable, PHI-free snapshot; it never emails a clinic,
-            enables texting, changes billing, or calls a provider.
-          </p>
+          <p className="mt-2 max-w-3xl text-xs text-muted-foreground">{tx("Operator decisions are separate from product evidence. Saving here records an immutable, PHI-free snapshot; it never emails a clinic, enables texting, changes billing, or calls a provider.")}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <select
-            aria-label="Clinic to review for the pilot"
+            aria-label={tx("Clinic to review for the pilot")}
             value={candidateId}
             onChange={(event) => setCandidateId(event.target.value)}
             className="rounded-md border border-input bg-background px-3 py-2 text-sm"
           >
-            <option value="">Select a registered clinic…</option>
+            <option value="">{tx("Select a registered clinic…")}</option>
             {candidates.map((practice) => (
               <option key={practice.id} value={practice.id}>
                 {practice.name}
@@ -457,20 +454,15 @@ export function ClinicPilotConsole({
               }
             }}
             className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
-          >
-            Review for pilot
-          </button>
+          >{tx("Review for pilot")}</button>
         </div>
       </div>
 
       {error ? (
-        <p className="mt-4 text-sm text-destructive">
-          Could not load the pilot cohort: {error.message}
+        <p className="mt-4 text-sm text-destructive">{tx("Could not load the pilot cohort:")}{" "}{error.message}
         </p>
       ) : isLoading ? (
-        <p className="mt-4 text-sm text-muted-foreground">
-          Loading pilot operations…
-        </p>
+        <p className="mt-4 text-sm text-muted-foreground">{tx("Loading pilot operations…")}</p>
       ) : pilots && pilots.length > 0 ? (
         <div className="mt-5 grid gap-3">
           {pilots.map((pilot) => {
@@ -489,8 +481,7 @@ export function ClinicPilotConsole({
                   <div>
                     <p className="font-medium">{pilot.practiceName}</p>
                     <p className="mt-1 text-xs capitalize text-muted-foreground">
-                      {pilot.cohortKey} · {humanize(pilot.workflow)} · operator
-                      stage {humanize(pilot.stage)} · decision{" "}
+                      {pilot.cohortKey} · {humanize(pilot.workflow)}{" "}{tx("· operator stage")}{" "}{humanize(pilot.stage)}{" "}{tx("· decision")}{" "}
                       {humanize(pilot.decision)}
                     </p>
                   </div>
@@ -498,9 +489,7 @@ export function ClinicPilotConsole({
                     type="button"
                     onClick={() => editPilot(pilot)}
                     className="rounded border border-border px-2.5 py-1.5 text-xs font-medium hover:bg-muted"
-                  >
-                    Review
-                  </button>
+                  >{tx("Review")}</button>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs">
                   <EvidenceItem
@@ -508,11 +497,11 @@ export function ClinicPilotConsole({
                     done={pilot.evidence.setupComplete}
                   />
                   <EvidenceItem
-                    label="Activated"
+                    label={tx("Activated")}
                     done={Boolean(pilot.evidence.activatedAt)}
                   />
                   <EvidenceItem
-                    label="First visit"
+                    label={tx("First visit")}
                     done={Boolean(pilot.evidence.firstVisitCompletedAt)}
                   />
                   <EvidenceItem
@@ -520,37 +509,33 @@ export function ClinicPilotConsole({
                     done={pilot.evidence.distinctClinicDays >= 5}
                   />
                   <EvidenceItem
-                    label="Payment method"
+                    label={tx("Payment method")}
                     done={Boolean(pilot.evidence.paymentMethodCollectedAt)}
                   />
                   <EvidenceItem
-                    label="First positive payment"
+                    label={tx("First positive payment")}
                     done={Boolean(pilot.evidence.firstPositivePaymentAt)}
                   />
                   <EvidenceItem
                     label={`Current access: ${pilot.billingStatus}`}
                     done={pilot.evidence.hostedFullAccess}
                   />
-                  <span className="capitalize text-muted-foreground">
-                    SMS: {humanize(pilot.smsStatus)}
+                  <span className="capitalize text-muted-foreground">{tx("SMS:")}{" "}{humanize(pilot.smsStatus)}
                   </span>
                 </div>
                 <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
-                  <span className="capitalize">
-                    Next: {humanize(pilot.nextAction)}
+                  <span className="capitalize">{tx("Next:")}{" "}{humanize(pilot.nextAction)}
                   </span>
-                  <span>
-                    Review:{" "}
+                  <span>{tx("Review:")}{" "}
                     {pilot.nextReviewAt
                       ? new Date(pilot.nextReviewAt).toLocaleString()
-                      : "closed"}
+                      : tx("closed")}
                   </span>
-                  <span>Blockers: {pilot.blockerCodes.length}</span>
-                  <span>
-                    Audit: {new Date(pilot.lastChangedAt).toLocaleString()} by{" "}
+                  <span>{tx("Blockers:")}{" "}{pilot.blockerCodes.length}</span>
+                  <span>{tx("Audit:")}{" "}{new Date(pilot.lastChangedAt).toLocaleString()}{" "}{tx("by")}{" "}
                     {pilot.lastChangedBy}
                   </span>
-                  <span>Owner: {pilot.ownerIdentity}</span>
+                  <span>{tx("Owner:")}{" "}{pilot.ownerIdentity}</span>
                 </div>
                 {pilot.gateIssues.length > 0 ? (
                   <div className="mt-3 rounded border border-amber-300/70 bg-amber-50 p-2 text-xs text-amber-900">
@@ -563,35 +548,25 @@ export function ClinicPilotConsole({
           })}
         </div>
       ) : (
-        <p className="mt-4 text-sm text-muted-foreground">
-          No clinic has been enrolled in the controlled cohort. Qualification is
-          intentionally deliberate.
-        </p>
+        <p className="mt-4 text-sm text-muted-foreground">{tx("No clinic has been enrolled in the controlled cohort. Qualification is intentionally deliberate.")}</p>
       )}
 
       {draft ? (
         <div className="mt-5 rounded-md border border-primary/30 bg-muted/20 p-4">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="font-medium">Pilot review · {draft.practiceName}</p>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Record only operational facts. Never enter client, patient,
-                clinical, payment-card, or credential data here.
-              </p>
+              <p className="font-medium">{tx("Pilot review ·")}{" "}{draft.practiceName}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{tx("Record only operational facts. Never enter client, patient, clinical, payment-card, or credential data here.")}</p>
             </div>
             <button
               type="button"
               onClick={() => setDraft(null)}
               className="text-xs text-muted-foreground hover:text-foreground"
-            >
-              Cancel
-            </button>
+            >{tx("Cancel")}</button>
           </div>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <label className="text-xs font-medium">
-              Workflow
-              <select
+            <label className="text-xs font-medium">{tx("Workflow")}<select
                 value={draft.workflow}
                 onChange={(event) =>
                   setDraft({
@@ -601,13 +576,11 @@ export function ClinicPilotConsole({
                 }
                 className="mt-1 block w-full rounded border border-input bg-background px-2 py-2 text-sm"
               >
-                <option value="general_practice">General practice</option>
-                <option value="house_call">House call</option>
+                <option value="general_practice">{tx("General practice")}</option>
+                <option value="house_call">{tx("House call")}</option>
               </select>
             </label>
-            <label className="text-xs font-medium">
-              Stage
-              <select
+            <label className="text-xs font-medium">{tx("Stage")}<select
                 value={draft.stage}
                 onChange={(event) => {
                   const stage = event.target.value as Draft["stage"];
@@ -633,15 +606,13 @@ export function ClinicPilotConsole({
                   >
                     {humanize(option)}
                     {stageRequirements(draft, option).length > 0
-                      ? " · gated"
+                      ? tx(" · gated")
                       : ""}
                   </option>
                 ))}
               </select>
             </label>
-            <label className="text-xs font-medium">
-              Readiness decision
-              <select
+            <label className="text-xs font-medium">{tx("Readiness decision")}<select
                 value={draft.decision}
                 onChange={(event) => {
                   const decision = event.target.value as Draft["decision"];
@@ -663,9 +634,7 @@ export function ClinicPilotConsole({
                 ))}
               </select>
             </label>
-            <label className="text-xs font-medium">
-              Support cadence
-              <select
+            <label className="text-xs font-medium">{tx("Support cadence")}<select
                 value={draft.supportCadence}
                 onChange={(event) =>
                   setDraft({
@@ -676,18 +645,16 @@ export function ClinicPilotConsole({
                 }
                 className="mt-1 block w-full rounded border border-input bg-background px-2 py-2 text-sm capitalize"
               >
-                <option value="daily">Daily</option>
-                <option value="twice_weekly">Twice weekly</option>
-                <option value="weekly">Weekly</option>
+                <option value="daily">{tx("Daily")}</option>
+                <option value="twice_weekly">{tx("Twice weekly")}</option>
+                <option value="weekly">{tx("Weekly")}</option>
               </select>
             </label>
           </div>
 
           <div className="mt-4 grid gap-4 lg:grid-cols-2">
             <fieldset className="rounded border border-border p-3">
-              <legend className="px-1 text-xs font-semibold">
-                Clinic fit · all required to qualify
-              </legend>
+              <legend className="px-1 text-xs font-semibold">{tx("Clinic fit · all required to qualify")}</legend>
               <div className="grid gap-2 sm:grid-cols-2">
                 {Object.entries(qualificationLabels).map(([key, label]) => (
                   <label key={key} className="flex gap-2 text-xs">
@@ -715,9 +682,7 @@ export function ClinicPilotConsole({
               </div>
             </fieldset>
             <fieldset className="rounded border border-border p-3">
-              <legend className="px-1 text-xs font-semibold">
-                Launch readiness · all required to approve
-              </legend>
+              <legend className="px-1 text-xs font-semibold">{tx("Launch readiness · all required to approve")}</legend>
               <div className="grid gap-2 sm:grid-cols-2">
                 {Object.entries(readinessLabels).map(([key, label]) => (
                   <label key={key} className="flex gap-2 text-xs">
@@ -742,13 +707,9 @@ export function ClinicPilotConsole({
           </div>
 
           <fieldset className="mt-4 rounded border border-border p-3">
-            <legend className="px-1 text-xs font-semibold">
-              Evidence attestations
-            </legend>
+            <legend className="px-1 text-xs font-semibold">{tx("Evidence attestations")}</legend>
             <div className="grid gap-3 md:grid-cols-2">
-              <label className="text-xs font-medium">
-                Client communication path
-                <select
+              <label className="text-xs font-medium">{tx("Client communication path")}<select
                   value={draft.communicationMode}
                   onChange={(event) =>
                     setDraft({
@@ -760,10 +721,8 @@ export function ClinicPilotConsole({
                   }
                   className="mt-1 block w-full rounded border border-input bg-background px-2 py-2 text-sm"
                 >
-                  <option value="email_only">Verified email fallback</option>
-                  <option value="email_and_sms">
-                    Email and operational SMS
-                  </option>
+                  <option value="email_only">{tx("Verified email fallback")}</option>
+                  <option value="email_and_sms">{tx("Email and operational SMS")}</option>
                 </select>
               </label>
               <div className="grid gap-2 text-xs">
@@ -777,9 +736,7 @@ export function ClinicPilotConsole({
                         communicationTested: event.target.checked,
                       })
                     }
-                  />
-                  Selected communication path was tested successfully
-                </label>
+                  />{tx("Selected communication path was tested successfully")}</label>
                 <label className="flex gap-2">
                   <input
                     type="checkbox"
@@ -794,9 +751,7 @@ export function ClinicPilotConsole({
                         firstVisitValidated: event.target.checked,
                       })
                     }
-                  />
-                  Operator confirmed the observed visit was real clinic work
-                </label>
+                  />{tx("Operator confirmed the observed visit was real clinic work")}</label>
                 <label className="flex gap-2">
                   <input
                     type="checkbox"
@@ -811,9 +766,7 @@ export function ClinicPilotConsole({
                         clinicUseValidated: event.target.checked,
                       })
                     }
-                  />
-                  Operator reviewed five distinct days as real clinic use
-                </label>
+                  />{tx("Operator reviewed five distinct days as real clinic use")}</label>
                 <label className="flex gap-2">
                   <input
                     type="checkbox"
@@ -835,14 +788,10 @@ export function ClinicPilotConsole({
                           : "",
                       });
                     }}
-                  />
-                  Clinic explicitly accepted the golden day and go-live
-                </label>
+                  />{tx("Clinic explicitly accepted the golden day and go-live")}</label>
               </div>
               {draft.clinicAcceptanceConfirmed ? (
-                <label className="text-xs font-medium md:col-start-2">
-                  Accepting clinic administrator
-                  <select
+                <label className="text-xs font-medium md:col-start-2">{tx("Accepting clinic administrator")}<select
                     value={draft.clinicAcceptanceByUserId}
                     onChange={(event) =>
                       setDraft({
@@ -864,9 +813,7 @@ export function ClinicPilotConsole({
           </fieldset>
 
           <fieldset className="mt-4 rounded border border-border p-3">
-            <legend className="px-1 text-xs font-semibold">
-              Open blockers
-            </legend>
+            <legend className="px-1 text-xs font-semibold">{tx("Open blockers")}</legend>
             <div className="flex flex-wrap gap-x-4 gap-y-2">
               {Object.entries(blockerLabels).map(([key, label]) => {
                 const blocker = key as Blocker;
@@ -910,9 +857,7 @@ export function ClinicPilotConsole({
           </fieldset>
 
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <label className="text-xs font-medium">
-              Next action
-              <select
+            <label className="text-xs font-medium">{tx("Next action")}<select
                 value={draft.nextAction}
                 onChange={(event) =>
                   setDraft({
@@ -929,9 +874,7 @@ export function ClinicPilotConsole({
                 ))}
               </select>
             </label>
-            <label className="text-xs font-medium">
-              Target start
-              <input
+            <label className="text-xs font-medium">{tx("Target start")}<input
                 type="date"
                 value={draft.targetStartOn}
                 onChange={(event) =>
@@ -940,9 +883,7 @@ export function ClinicPilotConsole({
                 className="mt-1 block w-full rounded border border-input bg-background px-2 py-2 text-sm"
               />
             </label>
-            <label className="text-xs font-medium">
-              Next review
-              <input
+            <label className="text-xs font-medium">{tx("Next review")}<input
                 type="datetime-local"
                 disabled={
                   draft.stage === "completed" || draft.stage === "closed"
@@ -956,9 +897,7 @@ export function ClinicPilotConsole({
                 className="mt-1 block w-full rounded border border-input bg-background px-2 py-2 text-sm disabled:opacity-50"
               />
             </label>
-            <label className="text-xs font-medium">
-              Change reason
-              <select
+            <label className="text-xs font-medium">{tx("Change reason")}<select
                 value={draft.reason}
                 onChange={(event) =>
                   setDraft({
@@ -975,9 +914,7 @@ export function ClinicPilotConsole({
                 ))}
               </select>
             </label>
-            <label className="text-xs font-medium">
-              Last contact
-              <input
+            <label className="text-xs font-medium">{tx("Last contact")}<input
                 type="datetime-local"
                 value={draft.lastContactAt}
                 onChange={(event) =>
@@ -986,9 +923,7 @@ export function ClinicPilotConsole({
                 className="mt-1 block w-full rounded border border-input bg-background px-2 py-2 text-sm"
               />
             </label>
-            <label className="text-xs font-medium">
-              Contact outcome
-              <select
+            <label className="text-xs font-medium">{tx("Contact outcome")}<select
                 value={draft.lastContactOutcome}
                 onChange={(event) =>
                   setDraft({
@@ -999,7 +934,7 @@ export function ClinicPilotConsole({
                 }
                 className="mt-1 block w-full rounded border border-input bg-background px-2 py-2 text-sm capitalize"
               >
-                <option value="">Not recorded</option>
+                <option value="">{tx("Not recorded")}</option>
                 {contactOutcomeOptions.map((option) => (
                   <option key={option} value={option}>
                     {humanize(option)}
@@ -1010,14 +945,12 @@ export function ClinicPilotConsole({
           </div>
 
           {save.error ? (
-            <p className="mt-4 text-sm text-destructive">
-              Could not save pilot review: {save.error.message}
+            <p className="mt-4 text-sm text-destructive">{tx("Could not save pilot review:")}{" "}{save.error.message}
             </p>
           ) : null}
           {draftStageIssues.length > 0 ? (
             <p className="mt-4 rounded border border-amber-300/70 bg-amber-50 p-2 text-xs text-amber-900">
-              <AlertTriangle className="mr-1 inline h-3.5 w-3.5" />
-              This stage is gated: {draftStageIssues.join(", ")}.
+              <AlertTriangle className="mr-1 inline h-3.5 w-3.5" />{tx("This stage is gated:")}{" "}{draftStageIssues.join(", ")}.
             </p>
           ) : null}
           <div className="mt-4 flex justify-end">
@@ -1027,7 +960,7 @@ export function ClinicPilotConsole({
               onClick={submit}
               className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground disabled:opacity-50"
             >
-              {save.isPending ? "Saving…" : "Save audited review"}
+              {save.isPending ? tx("Saving…") : tx("Save audited review")}
             </button>
           </div>
         </div>

@@ -13,6 +13,7 @@ import {
   portalPaymentBanner,
 } from "@/lib/portal/payments";
 import { fetchWithClientTimeout } from "@/lib/client-fetch";
+import { tx } from "@/lib/i18n";
 
 const statusStyles: Record<string, string> = {
   draft: "bg-gray-100 text-gray-600",
@@ -71,9 +72,9 @@ function PayButton({ invoiceId }: { invoiceId: string }) {
         className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50 sm:w-auto"
       >
         <CreditCard className="h-4 w-4" aria-hidden="true" />
-        {loading ? "Opening secure checkout..." : "Pay securely online"}
+        {loading ? tx("Opening secure checkout...") : tx("Pay securely online")}
       </button>
-      <span className="text-xs text-gray-500">Powered by Stripe</span>
+      <span className="text-xs text-gray-500">{tx("Powered by Stripe")}</span>
       {error && (
         <span role="alert" className="text-xs text-red-600">
           {error}
@@ -85,10 +86,7 @@ function PayButton({ invoiceId }: { invoiceId: string }) {
 
 function PaymentUnavailable() {
   return (
-    <p className="text-sm text-gray-600">
-      Online payment is temporarily unavailable. Please contact the clinic to
-      pay.
-    </p>
+    <p className="text-sm text-gray-600">{tx("Online payment is temporarily unavailable. Please contact the clinic to pay.")}</p>
   );
 }
 
@@ -116,8 +114,8 @@ export default function InvoicesPage() {
         <EmptyState
           className="py-12"
           icon={AlertCircle}
-          title="Unable to load invoices"
-          description="Please refresh this page or contact your clinic if the portal link has expired."
+          title={tx("Unable to load invoices")}
+          description={tx("Please refresh this page or contact your clinic if the portal link has expired.")}
         />
       </div>
     );
@@ -141,11 +139,9 @@ export default function InvoicesPage() {
             strokeLinejoin="round"
             d="M15.75 19.5L8.25 12l7.5-7.5"
           />
-        </svg>
-        Back to portal
-      </Link>
+        </svg>{tx("Back to portal")}</Link>
 
-      <h1 className="text-2xl font-bold text-gray-900 mb-8">Invoices</h1>
+      <h1 className="text-2xl font-bold text-gray-900 mb-8">{tx("Invoices")}</h1>
 
       {paymentBanner && (
         <div
@@ -163,8 +159,8 @@ export default function InvoicesPage() {
         <EmptyState
           className="py-12"
           icon={Receipt}
-          title="No invoices yet"
-          description="Invoices and estimates from your clinic will appear here."
+          title={tx("No invoices yet")}
+          description={tx("Invoices and estimates from your clinic will appear here.")}
         />
       ) : (
         <>
@@ -207,13 +203,11 @@ export default function InvoicesPage() {
                     </span>
                   </div>
                   {inv.patientName && (
-                    <p className="text-sm text-gray-500">
-                      Patient: {inv.patientName}
+                    <p className="text-sm text-gray-500">{tx("Patient:")}{" "}{inv.patientName}
                     </p>
                   )}
                   <div className="flex justify-between mt-2 text-sm">
-                    <span className="text-gray-400">
-                      Paid:{" "}
+                    <span className="text-gray-400">{tx("Paid:")}{" "}
                       {formatCurrency(
                         inv.paidAmount,
                         inv.currency,
@@ -221,8 +215,7 @@ export default function InvoicesPage() {
                       )}
                     </span>
                     {adjusted > 0 && (
-                      <span className="text-gray-400">
-                        Adjusted:{" "}
+                      <span className="text-gray-400">{tx("Adjusted:")}{" "}
                         {formatCurrency(
                           inv.adjustedAmount,
                           inv.currency,
@@ -231,15 +224,13 @@ export default function InvoicesPage() {
                       </span>
                     )}
                     {balance > 0 && (
-                      <span className="font-medium text-red-600">
-                        Balance:{" "}
+                      <span className="font-medium text-red-600">{tx("Balance:")}{" "}
                         {formatCurrency(balance, inv.currency, inv.country)}
                       </span>
                     )}
                   </div>
                   {inv.dueDate && (
-                    <p className="text-xs text-gray-400 mt-1">
-                      Due: {formatDate(inv.dueDate, inv.country, inv.timezone)}
+                    <p className="text-xs text-gray-400 mt-1">{tx("Due:")}{" "}{formatDate(inv.dueDate, inv.country, inv.timezone)}
                     </p>
                   )}
                   {canPay && (
@@ -262,13 +253,13 @@ export default function InvoicesPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-gray-200 text-left text-gray-500">
-                  <th className="pb-2 pr-4 font-medium">Date</th>
-                  <th className="pb-2 pr-4 font-medium">Patient</th>
-                  <th className="pb-2 pr-4 font-medium text-right">Total</th>
-                  <th className="pb-2 pr-4 font-medium text-right">Paid</th>
-                  <th className="pb-2 font-medium text-right">Balance</th>
-                  <th className="pb-2 pl-6 pr-4 font-medium">Status</th>
-                  <th className="pb-2 pr-4 font-medium">Due Date</th>
+                  <th className="pb-2 pr-4 font-medium">{tx("Date")}</th>
+                  <th className="pb-2 pr-4 font-medium">{tx("Patient")}</th>
+                  <th className="pb-2 pr-4 font-medium text-right">{tx("Total")}</th>
+                  <th className="pb-2 pr-4 font-medium text-right">{tx("Paid")}</th>
+                  <th className="pb-2 font-medium text-right">{tx("Balance")}</th>
+                  <th className="pb-2 pl-6 pr-4 font-medium">{tx("Status")}</th>
+                  <th className="pb-2 pr-4 font-medium">{tx("Due Date")}</th>
                   <th className="pb-2 font-medium" />
                 </tr>
               </thead>
@@ -306,8 +297,7 @@ export default function InvoicesPage() {
                           inv.country,
                         )}
                         {adjusted > 0 && (
-                          <span className="block text-xs text-gray-400">
-                            Adj{" "}
+                          <span className="block text-xs text-gray-400">{tx("Adj")}{" "}
                             {formatCurrency(
                               inv.adjustedAmount,
                               inv.currency,

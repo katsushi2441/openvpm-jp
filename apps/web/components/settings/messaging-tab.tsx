@@ -24,6 +24,7 @@ import {
 } from "@/lib/messaging/policy";
 import { toast } from "sonner";
 import { MessagingRegistrationForm } from "@/components/settings/messaging-registration-form";
+import { tx } from "@/lib/i18n";
 
 const REGISTRATION_BADGE: Record<
   NonNullable<MessagingSetupLocation["messaging"]>["registrationStatus"],
@@ -32,12 +33,12 @@ const REGISTRATION_BADGE: Record<
     variant: "success" | "warning" | "destructive" | "secondary";
   }
 > = {
-  not_started: { label: "Not started", variant: "secondary" },
-  pending: { label: "Registration pending", variant: "warning" },
-  active: { label: "Active", variant: "success" },
-  action_required: { label: "Action required", variant: "warning" },
-  failed: { label: "Failed", variant: "destructive" },
-  suspended: { label: "Suspended", variant: "destructive" },
+  not_started: { label: tx("Not started"), variant: "secondary" },
+  pending: { label: tx("Registration pending"), variant: "warning" },
+  active: { label: tx("Active"), variant: "success" },
+  action_required: { label: tx("Action required"), variant: "warning" },
+  failed: { label: tx("Failed"), variant: "destructive" },
+  suspended: { label: tx("Suspended"), variant: "destructive" },
 };
 
 const EMPTY_MESSAGING_LOCATIONS: MessagingSetupLocation[] = [];
@@ -135,49 +136,30 @@ export function MessagingTab() {
     <div className="max-w-3xl space-y-6">
       <div className="space-y-1">
         <h2 className="flex items-center gap-2 text-lg font-semibold">
-          <MessageSquare className="h-5 w-5" /> Messaging
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          Text appointment reminders from each location&apos;s own number.
-          Clients who reply land in your inbox; STOP opt-outs are handled
-          automatically.
-        </p>
+          <MessageSquare className="h-5 w-5" />{" "}{tx("Messaging")}</h2>
+        <p className="text-sm text-muted-foreground">{tx("Text appointment reminders from each location's own number. Clients who reply land in your inbox; STOP opt-outs are handled automatically.")}</p>
       </div>
 
       {data.launch.hosted && !data.launch.setupAvailable ? (
         <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">
-          <p className="font-medium">Texting is a controlled clinic pilot</p>
-          <p className="mt-1">
-            Number setup is not enabled for this clinic yet, so OpenVPM will not
-            search for or purchase a number. Email appointment reminders remain
-            available. Contact OpenVPM support when your clinic is ready to join
-            the texting pilot.
-          </p>
+          <p className="font-medium">{tx("Texting is a controlled clinic pilot")}</p>
+          <p className="mt-1">{tx("Number setup is not enabled for this clinic yet, so OpenVPM will not search for or purchase a number. Email appointment reminders remain available. Contact OpenVPM support when your clinic is ready to join the texting pilot.")}</p>
         </div>
       ) : data.launch.hosted && !data.launch.pilotEnabled ? (
         <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-950">
-          <p className="font-medium">Outbound texting is safely off</p>
-          <p className="mt-1">
-            Your clinic can continue setup, but no SMS can send until carrier
-            activation is complete and OpenVPM approves the exact clinic
-            location for the controlled pilot.
-          </p>
+          <p className="font-medium">{tx("Outbound texting is safely off")}</p>
+          <p className="mt-1">{tx("Your clinic can continue setup, but no SMS can send until carrier activation is complete and OpenVPM approves the exact clinic location for the controlled pilot.")}</p>
         </div>
       ) : null}
 
       <div className="rounded-lg border border-border bg-card p-4 sm:p-5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="font-medium">Automatic appointment reminders</p>
-            <p className="mt-1 text-sm leading-6 text-muted-foreground">
-              Send one reminder for each confirmed appointment. Delivery follows
-              the client&apos;s saved reminder preference. Texts require
-              recorded consent and an active clinic number; suppressed email
-              addresses stay blocked.
-            </p>
+            <p className="font-medium">{tx("Automatic appointment reminders")}</p>
+            <p className="mt-1 text-sm leading-6 text-muted-foreground">{tx("Send one reminder for each confirmed appointment. Delivery follows the client's saved reminder preference. Texts require recorded consent and an active clinic number; suppressed email addresses stay blocked.")}</p>
           </div>
           <Checkbox
-            aria-label="Enable automatic appointment reminders"
+            aria-label={tx("Enable automatic appointment reminders")}
             checked={reminderSettings.enabled}
             disabled={updateReminderSettings.isPending}
             onChange={(event) => {
@@ -200,7 +182,7 @@ export function MessagingTab() {
         </div>
 
         <label className="mt-4 block max-w-xs space-y-1.5 text-sm">
-          <span className="font-medium">Send approximately</span>
+          <span className="font-medium">{tx("Send approximately")}</span>
           <select
             className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm disabled:cursor-not-allowed disabled:opacity-50"
             value={reminderSettings.leadHours}
@@ -222,25 +204,21 @@ export function MessagingTab() {
           >
             {APPOINTMENT_REMINDER_LEAD_OPTIONS.map((hours) => (
               <option key={hours} value={hours}>
-                {hours} hours before the appointment
-              </option>
+                {hours}{" "}{tx("hours before the appointment")}</option>
             ))}
           </select>
         </label>
 
         <p className="mt-3 text-xs text-muted-foreground">
           {reminderSettings.enabled
-            ? "Automatic reminders are on. "
-            : "Off by default. No automatic appointment reminders are sent until a clinic administrator enables them here. "}
-          Enabling reminders or increasing this window may send reminders for
-          existing eligible confirmed appointments on the next hourly run.
-        </p>
+            ? tx("Automatic reminders are on. ")
+            : tx("Off by default. No automatic appointment reminders are sent until a clinic administrator enables them here. ")}{tx("Enabling reminders or increasing this window may send reminders for existing eligible confirmed appointments on the next hourly run.")}</p>
       </div>
 
       {/* Usage + consent summary */}
       <div className="grid gap-4 sm:grid-cols-3">
         <SummaryStat
-          label="SMS this month"
+          label={tx("SMS this month")}
           value={
             usage
               ? usage.includedSms != null
@@ -251,11 +229,11 @@ export function MessagingTab() {
           hint={usage?.includedSms != null ? "included" : undefined}
         />
         <SummaryStat
-          label="Clients opted in"
+          label={tx("Clients opted in")}
           value={String(consent?.optedIn ?? 0)}
         />
         <SummaryStat
-          label="Do-not-text numbers"
+          label={tx("Do-not-text numbers")}
           value={String(consent?.suppressed ?? 0)}
         />
       </div>
@@ -273,9 +251,7 @@ export function MessagingTab() {
           />
         ))}
         {locations.length === 0 && (
-          <p className="rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground">
-            Add a location in Practice Info to set up texting.
-          </p>
+          <p className="rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground">{tx("Add a location in Practice Info to set up texting.")}</p>
         )}
       </div>
 
@@ -311,16 +287,14 @@ function MessagingLoadError({
       <div className="flex items-start gap-2">
         <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
         <div>
-          <p className="font-medium">Unable to load messaging settings</p>
+          <p className="font-medium">{tx("Unable to load messaging settings")}</p>
           <p className="mt-1">{message}</p>
           <Button
             variant="outline"
             size="sm"
             onClick={onRetry}
             className="mt-3"
-          >
-            Retry
-          </Button>
+          >{tx("Retry")}</Button>
         </div>
       </div>
     </div>
@@ -372,7 +346,7 @@ function LocationCard({
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <span className="font-medium">{loc.name}</span>
-          {loc.isPrimary && <Badge variant="secondary">Primary</Badge>}
+          {loc.isPrimary && <Badge variant="secondary">{tx("Primary")}</Badge>}
         </div>
         {loc.messaging && (
           <Badge
@@ -443,13 +417,13 @@ function ConfiguredLocation({
     onError: (e) => toast.error(e.message),
   });
   const testSend = trpc.messaging.testSend.useMutation({
-    onSuccess: () => toast.success("Test message sent"),
+    onSuccess: () => toast.success(tx("Test message sent")),
     onError: (e) => toast.error(e.message),
   });
   const reconcileSetup = trpc.messaging.provisionNumber.useMutation({
     onSuccess: () => {
       toast.success(
-        "Provider setup reconciled. No additional number was purchased.",
+        tx("Provider setup reconciled. No additional number was purchased."),
       );
       onChanged();
     },
@@ -464,10 +438,10 @@ function ConfiguredLocation({
         {m.numberSource && (
           <Badge variant="outline">
             {m.numberSource === "hosted"
-              ? "Your existing number"
+              ? tx("Your existing number")
               : m.numberSource === "purchased"
-                ? "New local number"
-                : "Toll-free"}
+                ? tx("New local number")
+                : tx("Toll-free")}
           </Badge>
         )}
       </div>
@@ -480,13 +454,8 @@ function ConfiguredLocation({
 
       {waitingForProviderVerification ? (
         <div className="rounded-md border border-amber-300 bg-amber-50 p-3 text-xs text-amber-950">
-          <p className="font-medium">Provider safety check required</p>
-          <p className="mt-1">
-            OpenVPM must verify the exact texting profile immediately before
-            sending can be enabled. Your clinic does not need to repeat carrier
-            registration; this operational check keeps the webhook, US-only
-            destinations, and spend cap in the approved state.
-          </p>
+          <p className="font-medium">{tx("Provider safety check required")}</p>
+          <p className="mt-1">{tx("OpenVPM must verify the exact texting profile immediately before sending can be enabled. Your clinic does not need to repeat carrier registration; this operational check keeps the webhook, US-only destinations, and spend cap in the approved state.")}</p>
         </div>
       ) : null}
 
@@ -504,14 +473,12 @@ function ConfiguredLocation({
         >
           {reconcileSetup.isPending ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : null}
-          Reconcile provider setup
-        </Button>
+          ) : null}{tx("Reconcile provider setup")}</Button>
       ) : m.registrationStatus === "failed" && !m.enabled ? (
         <p className="text-xs text-muted-foreground">
           {hosted
-            ? "OpenVPM support must review this failed pilot setup before another provider reconciliation attempt."
-            : "Your OpenVPM administrator must enable provisioning before another provider reconciliation attempt."}
+            ? tx("OpenVPM support must review this failed pilot setup before another provider reconciliation attempt.")
+            : tx("Your OpenVPM administrator must enable provisioning before another provider reconciliation attempt.")}
         </p>
       ) : null}
 
@@ -525,16 +492,12 @@ function ConfiguredLocation({
               enabled: e.target.checked,
             })
           }
-        />
-        Sending enabled
-      </label>
+        />{tx("Sending enabled")}</label>
 
       {testSendAllowed ? (
         <div className="flex flex-wrap items-end gap-2 border-t border-border pt-4">
           <label className="space-y-1.5">
-            <span className="text-xs font-medium text-muted-foreground">
-              Send a test message to
-            </span>
+            <span className="text-xs font-medium text-muted-foreground">{tx("Send a test message to")}</span>
             <Input
               value={testTo}
               onChange={(e) => setTestTo(e.target.value)}
@@ -558,15 +521,10 @@ function ConfiguredLocation({
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
               <Send className="mr-2 h-4 w-4" />
-            )}
-            Send test
-          </Button>
+            )}{tx("Send test")}</Button>
         </div>
       ) : (
-        <p className="border-t border-border pt-4 text-xs text-muted-foreground">
-          Arbitrary test destinations are disabled for hosted clinics during the
-          controlled pilot. Use a consented client workflow after activation.
-        </p>
+        <p className="border-t border-border pt-4 text-xs text-muted-foreground">{tx("Arbitrary test destinations are disabled for hosted clinics during the controlled pilot. Use a consented client workflow after activation.")}</p>
       )}
     </div>
   );
@@ -587,24 +545,21 @@ function UnconfiguredLocation({
     <div className="mt-4 rounded-xl border border-dashed border-border bg-muted/20 p-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="space-y-1">
-          <p className="text-sm font-medium">Texting is not set up yet</p>
+          <p className="text-sm font-medium">{tx("Texting is not set up yet")}</p>
           <p className="text-sm text-muted-foreground">
             {setupAvailable
-              ? "Start a guided setup and choose a new local texting number. Your existing clinic phone line will not be ported or changed."
+              ? tx("Start a guided setup and choose a new local texting number. Your existing clinic phone line will not be ported or changed.")
               : hosted
-                ? "OpenVPM will enable number setup after your clinic joins the controlled texting pilot. Email reminders can be used now."
-                : "Number setup is disabled by your OpenVPM administrator. Email reminders can be used now."}
+                ? tx("OpenVPM will enable number setup after your clinic joins the controlled texting pilot. Email reminders can be used now.")
+                : tx("Number setup is disabled by your OpenVPM administrator. Email reminders can be used now.")}
           </p>
           {loc.existingPhone ? (
-            <p className="text-xs text-muted-foreground">
-              Existing phone on file: {loc.existingPhone}
+            <p className="text-xs text-muted-foreground">{tx("Existing phone on file:")}{" "}{loc.existingPhone}
             </p>
           ) : null}
         </div>
         {setupAvailable ? (
-          <Button onClick={onStartSetup} className="shrink-0">
-            Set up texting
-          </Button>
+          <Button onClick={onStartSetup} className="shrink-0">{tx("Set up texting")}</Button>
         ) : null}
       </div>
     </div>

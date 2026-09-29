@@ -7,6 +7,7 @@ import Highlight from "@tiptap/extension-highlight";
 import { Bold, Italic, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { tx } from "@/lib/i18n";
 
 interface SoapNoteEditorProps {
   value: string;
@@ -77,7 +78,7 @@ export function SoapNoteEditor({
             size="sm"
             variant={editor.isActive("bold") ? "default" : "outline"}
             onClick={toggleBold}
-            title="Bold (Ctrl+B)"
+            title={tx("Bold (Ctrl+B)")}
             className="h-8 w-8 p-0"
           >
             <Bold className="h-4 w-4" />
@@ -87,7 +88,7 @@ export function SoapNoteEditor({
             size="sm"
             variant={editor.isActive("italic") ? "default" : "outline"}
             onClick={toggleItalic}
-            title="Italic (Ctrl+I)"
+            title={tx("Italic (Ctrl+I)")}
             className="h-8 w-8 p-0"
           >
             <Italic className="h-4 w-4" />
@@ -97,7 +98,7 @@ export function SoapNoteEditor({
             size="sm"
             variant={editor.isActive("underline") ? "default" : "outline"}
             onClick={toggleUnderline}
-            title="Underline (Ctrl+U)"
+            title={tx("Underline (Ctrl+U)")}
             className="h-8 w-8 p-0"
           >
             <u className="text-sm font-bold">U</u>
@@ -112,21 +113,17 @@ export function SoapNoteEditor({
             size="sm"
             variant="outline"
             onClick={() => editor.chain().focus().toggleBulletList().run()}
-            title="Bullet List"
+            title={tx("Bullet List")}
             className="h-8 px-2 text-xs"
-          >
-            • List
-          </Button>
+          >{tx("• List")}</Button>
           <Button
             type="button"
             size="sm"
             variant="outline"
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            title="Ordered List"
+            title={tx("Ordered List")}
             className="h-8 px-2 text-xs"
-          >
-            1. List
-          </Button>
+          >{tx("1. List")}</Button>
         </div>
 
         <div className="w-px h-6 bg-border mx-1" />
@@ -136,7 +133,7 @@ export function SoapNoteEditor({
           size="sm"
           variant="outline"
           onClick={clearFormatting}
-          title="Clear Formatting"
+          title={tx("Clear Formatting")}
           className="h-8 w-8 p-0"
         >
           <Trash2 className="h-4 w-4" />

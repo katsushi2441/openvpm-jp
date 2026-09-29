@@ -42,6 +42,7 @@ import {
 } from "@/lib/communications/policy";
 import { communicationStatusLabel } from "@/lib/communications/status";
 import { toast } from "sonner";
+import { tx, uiLocale } from "@/lib/i18n";
 
 type FilterTab = "all" | "unread" | "sent";
 type Channel = "phone" | "sms" | "email" | "portal";
@@ -119,9 +120,9 @@ function formatInboxDate(date: Date, timeZone?: string | null): string {
   };
 
   try {
-    return date.toLocaleDateString("en-US", options);
+    return date.toLocaleDateString(uiLocale(), options);
   } catch {
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString(uiLocale(), {
       ...options,
       timeZone: undefined,
     });
@@ -306,7 +307,7 @@ export default function InboxPage() {
   const createMutation = trpc.communications.create.useMutation({
     onSuccess: () => {
       externalComposeRequest.current = null;
-      toast.success("Message sent");
+      toast.success(tx("Message sent"));
       utils.communications.listConversations.invalidate();
       if (selectedClientId) {
         utils.communications.getByClient.invalidate({
@@ -547,7 +548,7 @@ export default function InboxPage() {
       },
       {
         onSuccess: () => {
-          toast.success("Message linked to client");
+          toast.success(tx("Message linked to client"));
           setSelectedUnmatched(null);
           setSelectedClientId(client.id);
           setSelectedClientName(clientName);
@@ -558,9 +559,9 @@ export default function InboxPage() {
   }
 
   const filterTabs: { key: FilterTab; label: string }[] = [
-    { key: "all", label: "All" },
-    { key: "unread", label: "Unread" },
-    { key: "sent", label: "Sent" },
+    { key: "all", label: tx("All") },
+    { key: "unread", label: tx("Unread") },
+    { key: "sent", label: tx("Sent") },
   ];
 
   return (
@@ -568,14 +569,12 @@ export default function InboxPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="font-heading text-xl font-semibold">Inbox</h2>
-          <p className="text-sm text-muted-foreground">Client communications</p>
+          <h2 className="font-heading text-xl font-semibold">{tx("Inbox")}</h2>
+          <p className="text-sm text-muted-foreground">{tx("Client communications")}</p>
         </div>
         {canMutateInbox ? (
           <Button onClick={handleNewMessage} className="gap-2">
-            <Plus className="h-4 w-4" />
-            New Message
-          </Button>
+            <Plus className="h-4 w-4" />{tx("New Message")}</Button>
         ) : null}
       </div>
 
@@ -587,27 +586,21 @@ export default function InboxPage() {
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
-                <h3 className="font-heading text-base font-semibold text-destructive">
-                  Unable to check texting setup
-                </h3>
-                <Badge variant="destructive">SMS status unavailable</Badge>
+                <h3 className="font-heading text-base font-semibold text-destructive">{tx("Unable to check texting setup")}</h3>
+                <Badge variant="destructive">{tx("SMS status unavailable")}</Badge>
               </div>
-              <p className="mt-1 text-sm text-destructive/80">
-                Retry before staff send SMS conversations from the shared inbox.
-              </p>
+              <p className="mt-1 text-sm text-destructive/80">{tx("Retry before staff send SMS conversations from the shared inbox.")}</p>
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() => void refetchMessagingStatus()}
-                >
-                  Retry
-                </Button>
+                >{tx("Retry")}</Button>
               </div>
             </div>
             <button
               type="button"
-              aria-label="Dismiss SMS status warning"
+              aria-label={tx("Dismiss SMS status warning")}
               onClick={() => setSmsBannerDismissed(true)}
               className="h-8 w-8 shrink-0 rounded-md text-destructive/70 transition-colors hover:bg-destructive/10 hover:text-destructive"
             >
@@ -641,15 +634,13 @@ export default function InboxPage() {
                     </Link>
                   </Button>
                 ) : (
-                  <p className="text-xs font-medium text-muted-foreground">
-                    Ask an administrator to manage texting.
-                  </p>
+                  <p className="text-xs font-medium text-muted-foreground">{tx("Ask an administrator to manage texting.")}</p>
                 )}
               </div>
             </div>
             <button
               type="button"
-              aria-label="Dismiss SMS setup prompt"
+              aria-label={tx("Dismiss SMS setup prompt")}
               onClick={() => setSmsBannerDismissed(true)}
               className="h-8 w-8 shrink-0 rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
             >
@@ -695,18 +686,16 @@ export default function InboxPage() {
             {inboxListError || inboxListMissing ? (
               <div className="m-4 rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
                 {inboxListError?.message ??
-                  "Unable to load inbox messages. Please retry."}
+                  tx("Unable to load inbox messages. Please retry.")}
               </div>
             ) : inboxListLoading ? (
               <div className="flex items-center justify-center gap-2 p-4 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Loading messages...
-              </div>
+                <Loader2 className="h-4 w-4 animate-spin" />{tx("Loading messages...")}</div>
             ) : conversationGroups.length === 0 ? (
               <EmptyState
                 className="border-0 bg-transparent p-8"
                 icon={InboxIcon}
-                title="No messages yet"
+                title={tx("No messages yet")}
               />
             ) : (
               conversationGroups.map((group) => {
@@ -776,13 +765,11 @@ export default function InboxPage() {
                             : preview}
                         </p>
                         {group.kind === "unmatched" ? (
-                          <p className="mt-1 text-[11px] font-medium text-amber-700">
-                            Needs client match
-                          </p>
+                          <p className="mt-1 text-[11px] font-medium text-amber-700">{tx("Needs client match")}</p>
                         ) : group.latest.assignedTo ? (
                           <p className="mt-1 text-[11px] font-medium text-muted-foreground">
                             {group.latest.assignedTo === currentUserId
-                              ? "Assigned to you"
+                              ? tx("Assigned to you")
                               : `Assigned to ${
                                   group.latest.assignedToName ?? "staff"
                                 }`}
@@ -816,19 +803,17 @@ export default function InboxPage() {
               }}
               className="flex items-center gap-1.5 border-b border-border px-4 py-2 text-sm text-muted-foreground hover:text-foreground md:hidden"
             >
-              <ArrowLeft className="h-4 w-4" />
-              Back to conversations
-            </button>
+              <ArrowLeft className="h-4 w-4" />{tx("Back to conversations")}</button>
           )}
           {newMessageMode && canMutateInbox ? (
             /* New message - client search */
             <div className="flex-1 flex flex-col">
               <div className="p-4 border-b border-border">
-                <h3 className="font-medium text-sm mb-2">New Message</h3>
+                <h3 className="font-medium text-sm mb-2">{tx("New Message")}</h3>
                 <div className="relative">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
-                    placeholder="Search clients..."
+                    placeholder={tx("Search clients...")}
                     value={newClientSearch}
                     maxLength={CLIENT_SEARCH_MAX_LENGTH}
                     onChange={(e) => setNewClientSearch(e.target.value)}
@@ -840,13 +825,11 @@ export default function InboxPage() {
                 {searchError || searchMissing ? (
                   <div className="m-2 rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
                     {searchError?.message ??
-                      "Unable to search clients. Please retry."}
+                      tx("Unable to search clients. Please retry.")}
                   </div>
                 ) : searchLoading ? (
                   <div className="flex items-center justify-center gap-2 py-8 text-sm text-muted-foreground">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Searching clients...
-                  </div>
+                    <Loader2 className="h-4 w-4 animate-spin" />{tx("Searching clients...")}</div>
                 ) : searchResults && searchResults.length > 0 ? (
                   searchResults.map((client) => (
                     <button
@@ -863,7 +846,7 @@ export default function InboxPage() {
                         {client.firstName} {client.lastName}
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        {client.email || client.phone || "No contact info"}
+                        {client.email || client.phone || tx("No contact info")}
                       </div>
                     </button>
                   ))
@@ -871,13 +854,13 @@ export default function InboxPage() {
                   <EmptyState
                     className="border-0 bg-transparent py-8"
                     icon={Search}
-                    title="No clients found"
+                    title={tx("No clients found")}
                   />
                 ) : (
                   <EmptyState
                     className="border-0 bg-transparent py-8"
                     icon={Search}
-                    title="Type to search for a client"
+                    title={tx("Type to search for a client")}
                   />
                 )}
               </div>
@@ -896,12 +879,8 @@ export default function InboxPage() {
                     <AlertCircle className="h-4 w-4" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="truncate font-medium text-sm">
-                      Unmatched inbound message
-                    </h3>
-                    <Badge variant="secondary" className="mt-1">
-                      Needs client
-                    </Badge>
+                    <h3 className="truncate font-medium text-sm">{tx("Unmatched inbound message")}</h3>
+                    <Badge variant="secondary" className="mt-1">{tx("Needs client")}</Badge>
                   </div>
                 </div>
               </div>
@@ -924,7 +903,7 @@ export default function InboxPage() {
                     ) : null}
 
                     <p className="text-sm whitespace-pre-wrap">
-                      {selectedUnmatched.content || "No content"}
+                      {selectedUnmatched.content || tx("No content")}
                     </p>
 
                     <div className="flex items-center gap-1 mt-1 text-muted-foreground">
@@ -948,10 +927,8 @@ export default function InboxPage() {
               <div className="border-t border-border p-4 space-y-3">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <h4 className="text-sm font-medium">Link to client</h4>
-                    <p className="text-xs text-muted-foreground">
-                      Search by name, email, or phone.
-                    </p>
+                    <h4 className="text-sm font-medium">{tx("Link to client")}</h4>
+                    <p className="text-xs text-muted-foreground">{tx("Search by name, email, or phone.")}</p>
                   </div>
                 </div>
 
@@ -960,7 +937,7 @@ export default function InboxPage() {
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
-                        placeholder="Search clients..."
+                        placeholder={tx("Search clients...")}
                         value={linkClientSearch}
                         maxLength={CLIENT_SEARCH_MAX_LENGTH}
                         onChange={(e) => setLinkClientSearch(e.target.value)}
@@ -972,13 +949,11 @@ export default function InboxPage() {
                       {linkClientError || linkClientMissing ? (
                         <div className="m-2 rounded-lg border border-destructive bg-destructive/10 p-3 text-sm text-destructive">
                           {linkClientError?.message ??
-                            "Unable to search clients. Please retry."}
+                            tx("Unable to search clients. Please retry.")}
                         </div>
                       ) : linkClientLoading ? (
                         <div className="flex items-center justify-center gap-2 py-6 text-sm text-muted-foreground">
-                          <Loader2 className="h-4 w-4 animate-spin" />
-                          Searching clients...
-                        </div>
+                          <Loader2 className="h-4 w-4 animate-spin" />{tx("Searching clients...")}</div>
                       ) : linkClientResults && linkClientResults.length > 0 ? (
                         linkClientResults.map((client) => (
                           <button
@@ -994,7 +969,7 @@ export default function InboxPage() {
                               <div className="truncate text-xs text-muted-foreground">
                                 {client.email ||
                                   client.phone ||
-                                  "No contact info"}
+                                  tx("No contact info")}
                               </div>
                             </div>
                             <UserPlus className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -1004,21 +979,19 @@ export default function InboxPage() {
                         <EmptyState
                           className="border-0 bg-transparent py-6"
                           icon={Search}
-                          title="No clients found"
+                          title={tx("No clients found")}
                         />
                       ) : (
                         <EmptyState
                           className="border-0 bg-transparent py-6"
                           icon={Search}
-                          title="Type to search for a client"
+                          title={tx("Type to search for a client")}
                         />
                       )}
                     </div>
                   </>
                 ) : (
-                  <p className="text-sm text-muted-foreground">
-                    Viewer access cannot link inbox messages.
-                  </p>
+                  <p className="text-sm text-muted-foreground">{tx("Viewer access cannot link inbox messages.")}</p>
                 )}
               </div>
             </div>
@@ -1059,7 +1032,7 @@ export default function InboxPage() {
                     ) : (
                       <UserCheck className="h-3.5 w-3.5" />
                     )}
-                    {assignedToMe ? "Unassign" : "Assign to me"}
+                    {assignedToMe ? tx("Unassign") : tx("Assign to me")}
                   </Button>
                 ) : null}
               </div>
@@ -1069,13 +1042,11 @@ export default function InboxPage() {
                 {timelineDisplayError || timelineDisplayMissing ? (
                   <div className="rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
                     {timelineDisplayError?.message ??
-                      "Unable to load conversation messages. Please retry."}
+                      tx("Unable to load conversation messages. Please retry.")}
                   </div>
                 ) : timelineDisplayLoading ? (
                   <div className="flex items-center justify-center gap-2 py-8 text-sm text-muted-foreground">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Loading messages...
-                  </div>
+                    <Loader2 className="h-4 w-4 animate-spin" />{tx("Loading messages...")}</div>
                 ) : timeline && timeline.length > 0 ? (
                   [...timeline].reverse().map((msg) => {
                     const Icon = channelIcons[msg.channel as Channel];
@@ -1161,7 +1132,7 @@ export default function InboxPage() {
                   <EmptyState
                     className="border-0 bg-transparent py-8"
                     icon={MessageSquare}
-                    title="No messages with this client yet"
+                    title={tx("No messages with this client yet")}
                   />
                 )}
               </div>
@@ -1177,12 +1148,12 @@ export default function InboxPage() {
                     className="rounded-md border border-input bg-background px-3 py-1.5 text-sm"
                   >
                     <option value="sms">SMS</option>
-                    <option value="portal">Portal</option>
+                    <option value="portal">{tx("Portal")}</option>
                   </select>
 
                   {composeChannel === "email" && (
                     <Input
-                      placeholder="Subject"
+                      placeholder={tx("Subject")}
                       value={composeSubject}
                       onChange={(e) => setComposeSubject(e.target.value)}
                       maxLength={COMMUNICATION_SUBJECT_MAX_LENGTH}
@@ -1194,7 +1165,7 @@ export default function InboxPage() {
 
                 <div className="flex gap-2">
                   <textarea
-                    placeholder="Type a message..."
+                    placeholder={tx("Type a message...")}
                     value={composeContent}
                     onChange={(e) => setComposeContent(e.target.value)}
                     maxLength={composeContentMaxLength}
@@ -1208,33 +1179,20 @@ export default function InboxPage() {
                     size="sm"
                     className="self-end gap-1"
                   >
-                    <Send className="h-3.5 w-3.5" />
-                    Send
-                  </Button>
+                    <Send className="h-3.5 w-3.5" />{tx("Send")}</Button>
                 </div>
                 {smsStatusUnavailable ? (
-                  <p className="text-xs text-muted-foreground">
-                    Unable to check texting setup. Retry from the inbox banner
-                    before sending SMS.
-                  </p>
+                  <p className="text-xs text-muted-foreground">{tx("Unable to check texting setup. Retry from the inbox banner before sending SMS.")}</p>
                 ) : composeChannel === "portal" ? (
-                  <p className="text-xs text-muted-foreground">
-                    Portal messages are visible to the client in their portal
-                    message thread and replies return to this inbox.
-                  </p>
+                  <p className="text-xs text-muted-foreground">{tx("Portal messages are visible to the client in their portal message thread and replies return to this inbox.")}</p>
                 ) : smsComposeBlocked && smsSummary ? (
                   <p className="text-xs text-muted-foreground">
                     {smsSummary.description}
                   </p>
                 ) : smsComposeBlocked ? (
-                  <p className="text-xs text-muted-foreground">
-                    Checking texting setup before SMS can be sent.
-                  </p>
+                  <p className="text-xs text-muted-foreground">{tx("Checking texting setup before SMS can be sent.")}</p>
                 ) : composeChannel === "sms" ? (
-                  <p className="text-xs text-muted-foreground">
-                    Service messages only: appointments, care updates, and
-                    replies. Marketing or promotional texting is not supported.
-                  </p>
+                  <p className="text-xs text-muted-foreground">{tx("Service messages only: appointments, care updates, and replies. Marketing or promotional texting is not supported.")}</p>
                 ) : null}
               </div>
             </div>
@@ -1244,8 +1202,8 @@ export default function InboxPage() {
               <EmptyState
                 className="border-0 bg-transparent"
                 icon={MessageSquare}
-                title="Select a conversation"
-                description="Pick a conversation from the list to read and reply."
+                title={tx("Select a conversation")}
+                description={tx("Pick a conversation from the list to read and reply.")}
               />
             </div>
           ) : (
@@ -1254,16 +1212,16 @@ export default function InboxPage() {
               <EmptyState
                 className="border-0 bg-transparent"
                 icon={InboxIcon}
-                title="No messages yet"
+                title={tx("No messages yet")}
                 description={
                   canMutateInbox
-                    ? "Send your first message to a client."
-                    : "No client communications to review yet."
+                    ? tx("Send your first message to a client.")
+                    : tx("No client communications to review yet.")
                 }
                 action={
                   canMutateInbox
                     ? {
-                        label: "New message",
+                        label: tx("New message"),
                         onClick: handleNewMessage,
                         icon: Plus,
                       }

@@ -12,6 +12,7 @@ import { Check, ChevronsUpDown, Loader2, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { trpc } from "@/lib/trpc";
 import { TEMPLATE_CATALOG_SEARCH_MAX_LENGTH } from "@/lib/templates/catalog-search";
+import { tx } from "@/lib/i18n";
 
 export type TemplateCatalogItem = {
   id: string;
@@ -174,7 +175,7 @@ export function TemplateCatalogPicker({
             {query ? (
               <button
                 type="button"
-                aria-label="Clear search"
+                aria-label={tx("Clear search")}
                 className="rounded p-2 text-muted-foreground hover:bg-accent"
                 onClick={() => {
                   setQuery("");
@@ -196,7 +197,7 @@ export function TemplateCatalogPicker({
                 inputRef.current?.focus();
               }}
             >
-              <X className="h-4 w-4" /> Clear selected {label}
+              <X className="h-4 w-4" />{" "}{tx("Clear selected")}{" "}{label}
             </button>
           ) : null}
 
@@ -210,15 +211,11 @@ export function TemplateCatalogPicker({
           >
             {queryIsStale || catalogQuery.isFetching ? (
               <div className="flex items-center justify-center gap-2 px-3 py-6 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" /> Searching...
-              </div>
+                <Loader2 className="h-4 w-4 animate-spin" />{" "}{tx("Searching...")}</div>
             ) : catalogQuery.error ? (
-              <div role="alert" className="px-3 py-6 text-sm text-destructive">
-                Catalog search failed. Edit the query to retry.
-              </div>
+              <div role="alert" className="px-3 py-6 text-sm text-destructive">{tx("Catalog search failed. Edit the query to retry.")}</div>
             ) : results.length === 0 ? (
-              <p className="px-3 py-6 text-center text-sm text-muted-foreground">
-                No active {label}s match &quot;{query.trim()}&quot;.
+              <p className="px-3 py-6 text-center text-sm text-muted-foreground">{tx("No active")}{" "}{label}{tx("s match \"")}{query.trim()}&quot;.
               </p>
             ) : (
               results.map((item, index) => (
@@ -250,7 +247,7 @@ export function TemplateCatalogPicker({
                     </span>
                     <span className="block truncate text-xs text-muted-foreground">
                       {[item.code, item.category].filter(Boolean).join(" · ") ||
-                        "No code or category"}
+                        tx("No code or category")}
                     </span>
                   </span>
                   <span className="shrink-0 tabular-nums text-muted-foreground">

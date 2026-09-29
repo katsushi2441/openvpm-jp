@@ -96,16 +96,17 @@ import {
   isProcedureOptionalTextInputValid,
   isProcedureRequiredTextInputValid,
 } from "@/lib/records/procedure-policy";
+import { tx, uiLocale } from "@/lib/i18n";
 
 type Tab = "soap" | "vaccinations" | "prescriptions" | "problems" | "labResults" | "procedures";
 
 const tabs: { id: Tab; label: string; icon: React.ElementType }[] = [
-  { id: "soap", label: "SOAP Notes", icon: FileText },
-  { id: "vaccinations", label: "Vaccinations", icon: Syringe },
-  { id: "prescriptions", label: "Prescriptions", icon: Pill },
-  { id: "problems", label: "Problems", icon: ClipboardList },
-  { id: "labResults", label: "Lab Results", icon: FlaskConical },
-  { id: "procedures", label: "Procedures", icon: Scissors },
+  { id: "soap", label: tx("SOAP Notes"), icon: FileText },
+  { id: "vaccinations", label: tx("Vaccinations"), icon: Syringe },
+  { id: "prescriptions", label: tx("Prescriptions"), icon: Pill },
+  { id: "problems", label: tx("Problems"), icon: ClipboardList },
+  { id: "labResults", label: tx("Lab Results"), icon: FlaskConical },
+  { id: "procedures", label: tx("Procedures"), icon: Scissors },
 ];
 
 function isTab(value: string | null): value is Tab {
@@ -176,7 +177,7 @@ function formatClinicalDate(
   if (typeof value === "string") {
     const dateOnly = clinicalDateInputToUtcDate(value);
     if (dateOnly) {
-      return dateOnly.toLocaleDateString("en-US", {
+      return dateOnly.toLocaleDateString(uiLocale(), {
         ...CLINICAL_DATE_FORMAT,
         timeZone: "UTC",
       });
@@ -190,9 +191,9 @@ function formatClinicalDate(
   };
 
   try {
-    return date.toLocaleDateString("en-US", options);
+    return date.toLocaleDateString(uiLocale(), options);
   } catch {
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString(uiLocale(), {
       ...options,
       timeZone: undefined,
     });
@@ -217,18 +218,18 @@ function getVaccineDueStatus(
 
   if (daysUntilDue < 0)
     return {
-      label: "Overdue",
+      label: tx("Overdue"),
       className:
         "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",
     };
   if (daysUntilDue <= 30)
     return {
-      label: "Due Soon",
+      label: tx("Due Soon"),
       className:
         "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",
     };
   return {
-    label: "Current",
+    label: tx("Current"),
     className:
       "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400",
   };
@@ -406,9 +407,7 @@ function PrescriptionSafetyPanel({
   if (isLoading) {
     return (
       <div className="flex items-center gap-2 rounded-md border border-border bg-muted/30 px-3 py-2 text-sm text-muted-foreground">
-        <Loader2 className="h-3.5 w-3.5 animate-spin" />
-        Checking prescription safety
-      </div>
+        <Loader2 className="h-3.5 w-3.5 animate-spin" />{tx("Checking prescription safety")}</div>
     );
   }
 
@@ -416,7 +415,7 @@ function PrescriptionSafetyPanel({
     return (
       <div className="flex items-start gap-2 rounded-md border border-destructive bg-destructive/10 px-3 py-2 text-sm text-destructive">
         <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
-        <span>Unable to check prescription safety. {errorMessage}</span>
+        <span>{tx("Unable to check prescription safety.")}{" "}{errorMessage}</span>
       </div>
     );
   }
@@ -424,9 +423,7 @@ function PrescriptionSafetyPanel({
   if (warnings.length === 0) {
     return (
       <div className="flex items-center gap-2 rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
-        <CheckCircle2 className="h-4 w-4" />
-        No allergy or active-medication warnings found.
-      </div>
+        <CheckCircle2 className="h-4 w-4" />{tx("No allergy or active-medication warnings found.")}</div>
     );
   }
 
@@ -447,9 +444,7 @@ function PrescriptionSafetyPanel({
             "h-4 w-4",
             hasBlockingWarning ? "text-amber-700" : "text-muted-foreground"
           )}
-        />
-        Prescription safety warnings
-      </div>
+        />{tx("Prescription safety warnings")}</div>
       <div className="space-y-2">
         {warnings.map((warning, index) => (
           <div
@@ -462,7 +457,7 @@ function PrescriptionSafetyPanel({
                 {warning.severity}
               </Badge>
               {warning.requiresOverride && (
-                <Badge variant="outline">Override required</Badge>
+                <Badge variant="outline">{tx("Override required")}</Badge>
               )}
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
@@ -527,15 +522,14 @@ function CorrectedLabResultHistory({
         onClick={() => setExpanded((value) => !value)}
       >
         <History className="mr-1.5 h-4 w-4" aria-hidden="true" />
-        {expanded ? "Hide evidence history" : "Show evidence history"}
+        {expanded ? tx("Hide evidence history") : tx("Show evidence history")}
       </Button>
       {expanded ? (
         <div className="mt-2 space-y-2" aria-live="polite">
           {history.isLoading ? (
-            <p className="text-xs text-muted-foreground">Loading evidence…</p>
+            <p className="text-xs text-muted-foreground">{tx("Loading evidence…")}</p>
           ) : history.error ? (
-            <p role="alert" className="text-xs text-destructive">
-              Evidence history could not be loaded. {history.error.message}
+            <p role="alert" className="text-xs text-destructive">{tx("Evidence history could not be loaded.")}{" "}{history.error.message}
             </p>
           ) : history.data?.length ? (
             <ol className="space-y-2">
@@ -565,16 +559,14 @@ function CorrectedLabResultHistory({
                             ? ` · reference ${event.referenceRangeLow}–${event.referenceRangeHigh}`
                             : ""
                         } · ${event.resultFlag}`
-                      : "Values pending at this event"}
+                      : tx("Values pending at this event")}
                   </p>
                   {event.note ? <p className="mt-1">{event.note}</p> : null}
                 </li>
               ))}
             </ol>
           ) : (
-            <p className="text-xs text-muted-foreground">
-              No immutable event history is available for this legacy result.
-            </p>
+            <p className="text-xs text-muted-foreground">{tx("No immutable event history is available for this legacy result.")}</p>
           )}
         </div>
       ) : null}
@@ -800,7 +792,7 @@ function RecordsPageContent() {
   }, [soapNotes]);
   const correctSoap = trpc.records.markSoapNoteEnteredInError.useMutation({
     onSuccess: async () => {
-      toast.success("SOAP note retained and marked entered in error");
+      toast.success(tx("SOAP note retained and marked entered in error"));
       await utils.records.listSoapNotes.invalidate({ patientId });
     },
     onError: (error) => toast.error(error.message),
@@ -815,7 +807,7 @@ function RecordsPageContent() {
       setAddendumNoteId(null);
       setAddendumContent("");
       setAddendumOperationId(null);
-      toast.success("Addendum added to the finalized record");
+      toast.success(tx("Addendum added to the finalized record"));
       await utils.records.listSoapNotes.invalidate({ patientId });
     },
     onError: (error) => toast.error(error.message),
@@ -837,7 +829,7 @@ function RecordsPageContent() {
   const correctVaccination =
     trpc.records.markVaccinationEnteredInError.useMutation({
       onSuccess: async () => {
-        toast.success("Vaccination retained and marked entered in error");
+        toast.success(tx("Vaccination retained and marked entered in error"));
         await utils.records.listVaccinations.invalidate({ patientId });
       },
       onError: (error) => toast.error(error.message),
@@ -1030,7 +1022,7 @@ function RecordsPageContent() {
 
   const createVaccination = trpc.records.createVaccination.useMutation({
     onSuccess: async () => {
-      toast.success("Vaccination recorded");
+      toast.success(tx("Vaccination recorded"));
       await Promise.all([refetchVaccinations(), refreshLinkedVisit()]);
       setShowVaccinationForm(false);
       setVaccinationForm(initialVaccinationForm());
@@ -1041,7 +1033,7 @@ function RecordsPageContent() {
   });
   const createProblem = trpc.records.createProblem.useMutation({
     onSuccess: () => {
-      toast.success("Problem added");
+      toast.success(tx("Problem added"));
       refetchProblems();
       setShowProblemForm(false);
       setProblemForm(initialProblemForm());
@@ -1052,7 +1044,7 @@ function RecordsPageContent() {
   });
   const updateProblemStatus = trpc.records.updateProblemStatus.useMutation({
     onSuccess: () => {
-      toast.success("Problem status updated");
+      toast.success(tx("Problem status updated"));
       refetchProblems();
     },
     onError: (err) => {
@@ -1092,7 +1084,7 @@ function RecordsPageContent() {
   const correctLabResult = trpc.records.markLabResultEnteredInError.useMutation(
     {
       onSuccess: async (correction) => {
-        toast.success("Lab result retained and marked entered in error");
+        toast.success(tx("Lab result retained and marked entered in error"));
         if (correction.labResultId) {
           labCorrectionOperationIds.current.delete(correction.labResultId);
         }
@@ -1106,7 +1098,7 @@ function RecordsPageContent() {
   );
   const updateLabResultStatus = trpc.records.updateLabResultStatus.useMutation({
     onSuccess: (result) => {
-      toast.success("Lab result status updated");
+      toast.success(tx("Lab result status updated"));
       labReviewOperationIds.current.delete(result.id);
       refetchLabResults();
       utils.records.listLabReviewInbox.invalidate();
@@ -1117,7 +1109,7 @@ function RecordsPageContent() {
   });
   const createProcedure = trpc.records.createProcedure.useMutation({
     onSuccess: async () => {
-      toast.success("Procedure recorded");
+      toast.success(tx("Procedure recorded"));
       await Promise.all([refetchProcedures(), refreshLinkedVisit()]);
       setShowProcedureForm(false);
       setProcedureForm(initialProcedureForm());
@@ -1128,7 +1120,7 @@ function RecordsPageContent() {
   });
   const createPrescription = trpc.records.createPrescription.useMutation({
     onSuccess: async () => {
-      toast.success("Prescription created");
+      toast.success(tx("Prescription created"));
       await Promise.all([refetchPrescriptions(), refreshLinkedVisit()]);
       setShowPrescriptionForm(false);
       setPrescriptionForm(initialPrescriptionForm(recordsTimeZone));
@@ -1235,12 +1227,8 @@ function RecordsPageContent() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-heading text-xl font-semibold">
-            Medical Records
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Clinical documentation and patient history
-          </p>
+          <h2 className="font-heading text-xl font-semibold">{tx("Medical Records")}</h2>
+          <p className="text-sm text-muted-foreground">{tx("Clinical documentation and patient history")}</p>
         </div>
       </div>
 
@@ -1249,7 +1237,7 @@ function RecordsPageContent() {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search patients by patient or owner name..."
+            placeholder={tx("Search patients by patient or owner name...")}
             value={searchQuery}
             maxLength={PATIENT_SEARCH_MAX_LENGTH}
             onChange={(e) => {
@@ -1271,17 +1259,13 @@ function RecordsPageContent() {
             {patientSearchError || patientSearchMissing ? (
               <div className="px-4 py-3 text-sm text-destructive">
                 {patientSearchError?.message ??
-                  "Unable to search patients. Please retry."}
+                  tx("Unable to search patients. Please retry.")}
               </div>
             ) : isSearchingPatients ? (
               <div className="flex items-center gap-2 px-4 py-3 text-sm text-muted-foreground">
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                Searching patients...
-              </div>
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />{tx("Searching patients...")}</div>
             ) : searchResults && searchResults.length === 0 ? (
-              <div className="px-4 py-3 text-sm text-muted-foreground">
-                No patients found
-              </div>
+              <div className="px-4 py-3 text-sm text-muted-foreground">{tx("No patients found")}</div>
             ) : (
               searchResults?.map((patient) => (
                 <button
@@ -1313,8 +1297,7 @@ function RecordsPageContent() {
                     </span>
                   </div>
                   {patient.clientFirstName && (
-                    <span className="text-xs text-muted-foreground">
-                      Owner: {patient.clientFirstName}{" "}
+                    <span className="text-xs text-muted-foreground">{tx("Owner:")}{" "}{patient.clientFirstName}{" "}
                       {patient.clientLastName}
                     </span>
                   )}
@@ -1340,8 +1323,7 @@ function RecordsPageContent() {
               {selectedPatient.breed ? ` - ${selectedPatient.breed}` : ""}
             </span>
             {selectedPatient.clientFirstName && (
-              <span className="block truncate text-muted-foreground sm:ml-3 sm:inline">
-                Owner: {selectedPatient.clientFirstName}{" "}
+              <span className="block truncate text-muted-foreground sm:ml-3 sm:inline">{tx("Owner:")}{" "}{selectedPatient.clientFirstName}{" "}
                 {selectedPatient.clientLastName}
               </span>
             )}
@@ -1365,9 +1347,7 @@ function RecordsPageContent() {
                 setShowPrescriptionForm(false);
                 setPrescriptionForm(initialPrescriptionForm());
               }}
-            >
-              Change Patient
-            </Button>
+            >{tx("Change Patient")}</Button>
           ) : null}
         </div>
       )}
@@ -1377,11 +1357,8 @@ function RecordsPageContent() {
       linkedPatientId === selectedPatient.id ? (
         <div className="mt-3 flex flex-col gap-2 rounded-lg border border-teal-300 bg-teal-50 px-4 py-3 text-sm text-teal-950 dark:border-teal-900 dark:bg-teal-950/30 dark:text-teal-100 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="font-medium">Recording for this visit</p>
-            <p className="mt-0.5 text-xs">
-              New clinical work created here will stay attached to the active
-              appointment and appear in checkout reconciliation.
-            </p>
+            <p className="font-medium">{tx("Recording for this visit")}</p>
+            <p className="mt-0.5 text-xs">{tx("New clinical work created here will stay attached to the active appointment and appear in checkout reconciliation.")}</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Button
@@ -1390,9 +1367,7 @@ function RecordsPageContent() {
               className="h-11 flex-1 sm:h-9 sm:flex-none"
               asChild
             >
-              <Link href={`/encounters/${linkedAppointmentId}`}>
-                Back to visit
-              </Link>
+              <Link href={`/encounters/${linkedAppointmentId}`}>{tx("Back to visit")}</Link>
             </Button>
             <Button
               size="sm"
@@ -1402,9 +1377,7 @@ function RecordsPageContent() {
             >
               <Link
                 href={`/records?patientId=${encodeURIComponent(linkedPatientId)}&tab=${encodeURIComponent(requestedTab ?? "soap")}`}
-              >
-                Leave visit context
-              </Link>
+              >{tx("Leave visit context")}</Link>
             </Button>
           </div>
         </div>
@@ -1414,10 +1387,7 @@ function RecordsPageContent() {
         <div
           className="mt-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-3 text-sm text-amber-950 dark:text-amber-100"
           role="status"
-        >
-          Offline — clinical forms stay only on this device. Keep this page
-          open and reconnect before saving a record.
-        </div>
+        >{tx("Offline — clinical forms stay only on this device. Keep this page open and reconnect before saving a record.")}</div>
       ) : null}
 
       {/* Tabs */}
@@ -1461,7 +1431,7 @@ function RecordsPageContent() {
                 }
               />
             ) : recordsSettingsLoading ? (
-              <RecordsLoadingPanel label="Loading records settings..." />
+              <RecordsLoadingPanel label={tx("Loading records settings...")} />
             ) : (
               <>
             {/* SOAP Notes Tab */}
@@ -1476,7 +1446,7 @@ function RecordsPageContent() {
                     }
                   />
                 ) : isLoadingSoapNotes ? (
-                  <RecordsLoadingPanel label="Loading SOAP notes..." />
+                  <RecordsLoadingPanel label={tx("Loading SOAP notes...")} />
                 ) : soapNotes && soapNotes.length > 0 ? (
                   <div className="space-y-3">
                         {soapNotes.map((note) => {
@@ -1528,12 +1498,10 @@ function RecordsPageContent() {
                                               note.createdAt,
                                               recordsTimeZone,
                                             )
-                                          : "No date"}
+                                          : tx("No date")}
                                       </p>
                                       {note.imported ? (
-                                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
-                                          Imported
-                                        </span>
+                                        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">{tx("Imported")}</span>
                                       ) : null}
                                       <span
                                         className={cn(
@@ -1544,21 +1512,19 @@ function RecordsPageContent() {
                                         )}
                                       >
                                         {note.status === "draft"
-                                          ? "Draft"
-                                          : "Finalized"}
+                                          ? tx("Draft")
+                                          : tx("Finalized")}
                                       </span>
                                       {note.correctionId ? (
-                                        <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-[11px] font-medium text-destructive">
-                                          Entered in error
-                                        </span>
+                                        <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-[11px] font-medium text-destructive">{tx("Entered in error")}</span>
                                       ) : null}
                                     </div>
                                     <p className="text-xs text-muted-foreground">
                                       {note.imported
                                         ? note.authorName
                                           ? `Imported by ${note.authorName}`
-                                          : "Imported record"
-                                        : (note.authorName ?? "Unknown author")}
+                                          : tx("Imported record")
+                                        : (note.authorName ?? tx("Unknown author"))}
                                     </p>
                                   </div>
                                   <p className="text-sm text-muted-foreground line-clamp-1 max-w-md">
@@ -1567,7 +1533,7 @@ function RecordsPageContent() {
                                         note.subjective ||
                                         note.objective ||
                                         note.plan,
-                                    ) || "No note recorded"}
+                                    ) || tx("No note recorded")}
                                   </p>
                                 </div>
                                 {isExpanded ? (
@@ -1579,10 +1545,9 @@ function RecordsPageContent() {
                               {isExpanded && (
                                 <div className="border-t border-border px-4 py-4 space-y-4">
                                   {note.status === "finalized" ? (
-                                    <p className="text-xs text-muted-foreground">
-                                      Finalized by{" "}
+                                    <p className="text-xs text-muted-foreground">{tx("Finalized by")}{" "}
                                       {note.finalizerName ??
-                                        "Unknown clinician"}
+                                        tx("Unknown clinician")}
                                       {note.finalizedAt
                                         ? ` on ${formatClinicalDateTime(note.finalizedAt, recordsTimeZone)}`
                                         : ""}
@@ -1592,60 +1557,44 @@ function RecordsPageContent() {
                                     <a
                                       href={`/records/new-soap/${encodeURIComponent(patientId)}?appointmentId=${encodeURIComponent(note.appointmentId)}`}
                                       className="inline-flex text-sm font-medium text-primary hover:underline"
-                                    >
-                                      Resume draft
-                                    </a>
+                                    >{tx("Resume draft")}</a>
                                   ) : null}
                                   {note.replacesSoapNoteId ? (
                                     <div className="rounded-md border border-primary/30 bg-primary/5 p-3 text-sm">
-                                      <p className="font-medium text-primary">
-                                        Current replacement SOAP
-                                      </p>
+                                      <p className="font-medium text-primary">{tx("Current replacement SOAP")}</p>
                                       <a
                                         href={`#soap-note-${note.replacesSoapNoteId}`}
                                         className="mt-1 inline-flex text-xs font-medium text-primary hover:underline"
-                                      >
-                                        View retained original
-                                      </a>
+                                      >{tx("View retained original")}</a>
                                     </div>
                                   ) : null}
                                   <div>
-                                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-                                      Subjective
-                                    </h4>
+                                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">{tx("Subjective")}</h4>
                                     <p className="text-sm">
                                       {soapSectionText(note.subjective) || "--"}
                                     </p>
                                   </div>
                                   <div>
-                                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-                                      Objective
-                                    </h4>
+                                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">{tx("Objective")}</h4>
                                     <p className="text-sm">
                                       {soapSectionText(note.objective) || "--"}
                                     </p>
                                   </div>
                                   <div>
-                                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-                                      Assessment
-                                    </h4>
+                                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">{tx("Assessment")}</h4>
                                     <p className="text-sm">
                                       {soapSectionText(note.assessment) || "--"}
                                     </p>
                                   </div>
                                   <div>
-                                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
-                                      Plan
-                                    </h4>
+                                    <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">{tx("Plan")}</h4>
                                     <p className="text-sm">
                                       {soapSectionText(note.plan) || "--"}
                                     </p>
                                   </div>
                                   {note.addenda.length > 0 ? (
                                     <div className="space-y-2 border-t border-border pt-3">
-                                      <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                                        Addenda
-                                      </h4>
+                                      <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">{tx("Addenda")}</h4>
                                       {note.addenda.map((addendum) => (
                                         <div
                                           key={addendum.id}
@@ -1673,13 +1622,8 @@ function RecordsPageContent() {
                                         <label
                                           className="text-sm font-medium"
                                           htmlFor={`records-addendum-${note.id}`}
-                                        >
-                                          Add attributed addendum
-                                        </label>
-                                        <p className="mt-1 text-xs text-muted-foreground">
-                                          Addenda cannot be edited or deleted
-                                          after saving.
-                                        </p>
+                                        >{tx("Add attributed addendum")}</label>
+                                        <p className="mt-1 text-xs text-muted-foreground">{tx("Addenda cannot be edited or deleted after saving.")}</p>
                                         <textarea
                                           id={`records-addendum-${note.id}`}
                                           value={addendumContent}
@@ -1710,8 +1654,8 @@ function RecordsPageContent() {
                                             }
                                           >
                                             {addSoapAddendum.isPending
-                                              ? "Saving..."
-                                              : "Save addendum"}
+                                              ? tx("Saving...")
+                                              : tx("Save addendum")}
                                           </Button>
                                           <Button
                                             size="sm"
@@ -1722,9 +1666,7 @@ function RecordsPageContent() {
                                               setAddendumContent("");
                                               setAddendumOperationId(null);
                                             }}
-                                          >
-                                            Cancel
-                                          </Button>
+                                          >{tx("Cancel")}</Button>
                                         </div>
                                       </div>
                                     ) : (
@@ -1739,9 +1681,7 @@ function RecordsPageContent() {
                                           );
                                         }}
                                       >
-                                        <Plus className="mr-2 h-4 w-4" />
-                                        Add addendum
-                                      </Button>
+                                        <Plus className="mr-2 h-4 w-4" />{tx("Add addendum")}</Button>
                                     )
                                   ) : null}
                                   {note.status === "finalized" ? (
@@ -1762,7 +1702,7 @@ function RecordsPageContent() {
                                             : null
                                         }
                                         triggerLabel="Void without replacement"
-                                        description="The original stays in permanent chart history but leaves current clinical summaries immediately. If its content needs correction, cancel and use Replace finalized SOAP. Use void alone only when no replacement belongs on this encounter; closeout will require a documented reason."
+                                        description={tx("The original stays in permanent chart history but leaves current clinical summaries immediately. If its content needs correction, cancel and use Replace finalized SOAP. Use void alone only when no replacement belongs on this encounter; closeout will require a documented reason.")}
                                         canCorrect={canCorrectClinicalRecords}
                                         isPending={
                                           correctSoap.isPending &&
@@ -1782,9 +1722,7 @@ function RecordsPageContent() {
                                           <a
                                             href={`#soap-note-${note.replacementSoapNoteId}`}
                                             className="text-sm font-medium text-primary hover:underline"
-                                          >
-                                            View signed replacement
-                                          </a>
+                                          >{tx("View signed replacement")}</a>
                                         </div>
                                       ) : canCorrectClinicalRecords &&
                                         (!note.correctionId ||
@@ -1796,8 +1734,8 @@ function RecordsPageContent() {
                                               href={`/records/replace-soap/${encodeURIComponent(patientId)}?sourceNoteId=${encodeURIComponent(note.id)}&return=records`}
                                             >
                                               {note.correctionId
-                                                ? "Create missing replacement"
-                                                : "Replace finalized SOAP"}
+                                                ? tx("Create missing replacement")
+                                                : tx("Replace finalized SOAP")}
                                             </Link>
                                           </Button>
                                         </div>
@@ -1807,17 +1745,12 @@ function RecordsPageContent() {
                                           <Button asChild size="sm" variant="outline">
                                             <a
                                               href={`/records/new-soap/${encodeURIComponent(patientId)}?appointmentId=${encodeURIComponent(note.appointmentId)}`}
-                                            >
-                                              Review encounter SOAP draft
-                                            </a>
+                                            >{tx("Review encounter SOAP draft")}</a>
                                           </Button>
                                         </div>
                                       ) : note.correctionId &&
                                         hasOtherCurrentAppointmentSoap ? (
-                                        <p className="mt-3 text-right text-xs text-muted-foreground">
-                                          This encounter already has a current
-                                          finalized SOAP.
-                                        </p>
+                                        <p className="mt-3 text-right text-xs text-muted-foreground">{tx("This encounter already has a current finalized SOAP.")}</p>
                                       ) : null}
                                     </>
                                   ) : null}
@@ -1830,8 +1763,8 @@ function RecordsPageContent() {
                 ) : (
                   <EmptyState
                     icon={FileText}
-                    title="No SOAP notes yet"
-                    description="SOAP notes are created from an active visit so documentation stays attached to the correct encounter."
+                    title={tx("No SOAP notes yet")}
+                    description={tx("SOAP notes are created from an active visit so documentation stays attached to the correct encounter.")}
                   />
                 )}
               </div>
@@ -1853,9 +1786,7 @@ function RecordsPageContent() {
                         setShowVaccinationForm(!showVaccinationForm);
                       }}
                     >
-                      <Plus className="mr-2 h-4 w-4" />
-                      Add Vaccination
-                    </Button>
+                      <Plus className="mr-2 h-4 w-4" />{tx("Add Vaccination")}</Button>
                   </div>
                 )}
 
@@ -1905,7 +1836,7 @@ function RecordsPageContent() {
                         className="h-11 sm:h-9"
                         disabled={!canSubmitVaccination}
                       >
-                        {createVaccination.isPending ? "Saving..." : "Save"}
+                        {createVaccination.isPending ? tx("Saving...") : tx("Save")}
                       </Button>
                       <Button
                         type="button"
@@ -1916,9 +1847,7 @@ function RecordsPageContent() {
                           setShowVaccinationForm(false);
                           setVaccinationForm(initialVaccinationForm());
                         }}
-                      >
-                        Cancel
-                      </Button>
+                      >{tx("Cancel")}</Button>
                     </div>
                   </form>
                 )}
@@ -1932,27 +1861,17 @@ function RecordsPageContent() {
                     }
                   />
                 ) : isLoadingVaccinations ? (
-                  <RecordsLoadingPanel label="Loading vaccinations..." />
+                  <RecordsLoadingPanel label={tx("Loading vaccinations...")} />
                 ) : vaccinations && vaccinations.length > 0 ? (
                   <div className="overflow-x-auto rounded-lg border border-border">
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b border-border bg-muted/50">
-                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                            Vaccine
-                          </th>
-                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                            Date Administered
-                          </th>
-                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                            Next Due
-                          </th>
-                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                            Administered By
-                          </th>
-                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                            Status
-                          </th>
+                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Vaccine")}</th>
+                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Date Administered")}</th>
+                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Next Due")}</th>
+                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Administered By")}</th>
+                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Status")}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -1994,9 +1913,7 @@ function RecordsPageContent() {
                                   </td>
                                   <td className="px-4 py-3">
                                     {vax.correctionId ? (
-                                      <span className="inline-flex items-center rounded-full bg-destructive/10 px-2.5 py-0.5 text-xs font-medium text-destructive">
-                                        Entered in error
-                                      </span>
+                                      <span className="inline-flex items-center rounded-full bg-destructive/10 px-2.5 py-0.5 text-xs font-medium text-destructive">{tx("Entered in error")}</span>
                                     ) : (
                                       <span
                                         className={cn(
@@ -2046,7 +1963,7 @@ function RecordsPageContent() {
                 ) : (
                   <EmptyState
                     icon={Syringe}
-                    title="No vaccination records yet"
+                    title={tx("No vaccination records yet")}
                   />
                 )}
               </div>
@@ -2078,9 +1995,7 @@ function RecordsPageContent() {
                         );
                       }}
                     >
-                      <Plus className="mr-2 h-4 w-4" />
-                      New Prescription
-                    </Button>
+                      <Plus className="mr-2 h-4 w-4" />{tx("New Prescription")}</Button>
                   </div>
                 )}
 
@@ -2098,7 +2013,7 @@ function RecordsPageContent() {
                         !prescriptionForm.acknowledgeSafetyWarnings
                       ) {
                         toast.error(
-                          "Acknowledge prescription safety warnings before saving."
+                          tx("Acknowledge prescription safety warnings before saving.")
                         );
                         return;
                       }
@@ -2132,9 +2047,7 @@ function RecordsPageContent() {
                   >
                     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                       <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Medication *
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Medication *")}</label>
                         <Input
                           required
                           value={prescriptionForm.medicationName}
@@ -2146,13 +2059,11 @@ function RecordsPageContent() {
                               acknowledgeSafetyWarnings: false,
                             }))
                           }
-                          placeholder="e.g. Carprofen"
+                          placeholder={tx("e.g. Carprofen")}
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Inventory Item
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Inventory Item")}</label>
                         <PrescriptionInventoryProductPicker
                           value={prescriptionForm.productId}
                           selectedProduct={linkedPrescriptionProduct}
@@ -2172,18 +2083,12 @@ function RecordsPageContent() {
                         />
                         {prescriptionForm.productId &&
                         linkedPrescriptionProduct ? (
-                          <p className="mt-1 text-xs text-muted-foreground">
-                            Stock and billing both use individual units at{" "}
-                            {linkedPrescriptionProduct.unitPrice} per unit.
-                            The prescription quantity will be deducted and
-                            charged in that same unit.
-                          </p>
+                          <p className="mt-1 text-xs text-muted-foreground">{tx("Stock and billing both use individual units at")}{" "}
+                            {linkedPrescriptionProduct.unitPrice}{" "}{tx("per unit. The prescription quantity will be deducted and charged in that same unit.")}</p>
                         ) : null}
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Dosage *
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Dosage *")}</label>
                         <Input
                           required
                           value={prescriptionForm.dosage}
@@ -2194,13 +2099,11 @@ function RecordsPageContent() {
                               dosage: e.target.value,
                             }))
                           }
-                          placeholder="e.g. 75 mg"
+                          placeholder={tx("e.g. 75 mg")}
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Frequency *
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Frequency *")}</label>
                         <Input
                           required
                           value={prescriptionForm.frequency}
@@ -2211,21 +2114,21 @@ function RecordsPageContent() {
                               frequency: e.target.value,
                             }))
                           }
-                          placeholder="e.g. Every 12 hours"
+                          placeholder={tx("e.g. Every 12 hours")}
                         />
                       </div>
                       <div>
                         <label className="block text-xs font-medium text-muted-foreground mb-1">
                           {linkedPrescriptionProduct
-                            ? "Quantity (inventory units)"
-                            : "Quantity"}
+                            ? tx("Quantity (inventory units)")
+                            : tx("Quantity")}
                         </label>
                         <Input
                           type="number"
                           min={PRESCRIPTION_QUANTITY_MIN}
                           max={PRESCRIPTION_COUNT_MAX}
                           step="0.001"
-                          aria-label="Prescription quantity"
+                          aria-label={tx("Prescription quantity")}
                           aria-describedby={linkedPrescriptionProduct ? "prescription-stock-feedback" : undefined}
                           aria-invalid={Boolean(prescriptionForm.productId) && !hasValidPrescriptionQuantityForInventory}
                           value={prescriptionForm.quantity}
@@ -2241,23 +2144,21 @@ function RecordsPageContent() {
                           <div id="prescription-stock-feedback" className="mt-2 text-xs" role="status">
                             <p>{linkedPrescriptionProduct.inventoryTracked
                               ? `${linkedPrescriptionProduct.stockQuantity} inventory units available. Quantity is the total amount dispensed, in the same units as stock and price.`
-                              : "Stock tracking has not been set up for this item. Enter a reviewed opening quantity before dispensing."}</p>
+                              : tx("Stock tracking has not been set up for this item. Enter a reviewed opening quantity before dispensing.")}</p>
                             {!hasValidPrescriptionQuantityForInventory && !linkedProductQuery.isFetching && linkedPrescriptionProduct.inventoryTracked ? (
                               <p className="mt-1 text-destructive">{linkedProductQuery.isError
-                                ? "Unable to verify stock. Refresh stock before saving."
-                                : "Cannot save this quantity against the recorded stock. Review the stock balance and dispensing units before continuing."}</p>
+                                ? tx("Unable to verify stock. Refresh stock before saving.")
+                                : tx("Cannot save this quantity against the recorded stock. Review the stock balance and dispensing units before continuing.")}</p>
                             ) : null}
-                            <a className="mt-1 inline-block underline" href="/inventory" target="_blank" rel="noopener noreferrer">Review inventory in a new tab</a>
+                            <a className="mt-1 inline-block underline" href="/inventory" target="_blank" rel="noopener noreferrer">{tx("Review inventory in a new tab")}</a>
                             <button type="button" className="ml-3 underline" disabled={linkedProductQuery.isFetching} onClick={() => void linkedProductQuery.refetch()}>
-                              {linkedProductQuery.isFetching ? "Checking stock…" : "Refresh stock"}
+                              {linkedProductQuery.isFetching ? tx("Checking stock…") : tx("Refresh stock")}
                             </button>
                           </div>
                         ) : null}
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Refills
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Refills")}</label>
                         <Input
                           type="number"
                           min={PRESCRIPTION_REFILLS_MIN}
@@ -2273,9 +2174,7 @@ function RecordsPageContent() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Start Date *
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Start Date *")}</label>
                         <Input
                           type="date"
                           required
@@ -2289,9 +2188,7 @@ function RecordsPageContent() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          End Date
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("End Date")}</label>
                         <Input
                           type="date"
                           value={prescriptionForm.endDate}
@@ -2305,9 +2202,7 @@ function RecordsPageContent() {
                         />
                       </div>
                       <div className="sm:col-span-2">
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Instructions
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Instructions")}</label>
                         <Input
                           value={prescriptionForm.instructions}
                           maxLength={PRESCRIPTION_INSTRUCTIONS_MAX_LENGTH}
@@ -2317,17 +2212,13 @@ function RecordsPageContent() {
                               instructions: e.target.value,
                             }))
                           }
-                          placeholder="Give with food"
+                          placeholder={tx("Give with food")}
                         />
                       </div>
                     </div>
 
                     <div className="mt-4 space-y-3">
-                      <p className="rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900">
-                        Controlled-substance recordkeeping is not automated.
-                        When applicable, complete the clinic&apos;s required
-                        controlled drug log separately.
-                      </p>
+                      <p className="rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs text-amber-900">{tx("Controlled-substance recordkeeping is not automated. When applicable, complete the clinic's required controlled drug log separately.")}</p>
                       <PrescriptionSafetyPanel
                         medicationName={medicationNameForSafety}
                         isLoading={prescriptionSafety.isFetching}
@@ -2355,10 +2246,7 @@ function RecordsPageContent() {
                             }
                             className="mt-0.5"
                           />
-                          <span>
-                            Clinician reviewed and accepts these prescription
-                            safety warnings.
-                          </span>
+                          <span>{tx("Clinician reviewed and accepts these prescription safety warnings.")}</span>
                         </label>
                       )}
                     </div>
@@ -2372,9 +2260,7 @@ function RecordsPageContent() {
                       >
                         {createPrescription.isPending ? (
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : null}
-                        Save Prescription
-                      </Button>
+                        ) : null}{tx("Save Prescription")}</Button>
                       <Button
                         type="button"
                         variant="ghost"
@@ -2387,9 +2273,7 @@ function RecordsPageContent() {
                             initialPrescriptionForm(recordsTimeZone)
                           );
                         }}
-                      >
-                        Cancel
-                      </Button>
+                      >{tx("Cancel")}</Button>
                     </div>
                   </form>
                 )}
@@ -2403,33 +2287,19 @@ function RecordsPageContent() {
                     }
                   />
                 ) : isLoadingPrescriptions ? (
-                  <RecordsLoadingPanel label="Loading prescriptions..." />
+                  <RecordsLoadingPanel label={tx("Loading prescriptions...")} />
                 ) : prescriptionsList && prescriptionsList.length > 0 ? (
                   <div className="overflow-x-auto rounded-lg border border-border">
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b border-border bg-muted/50">
-                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                            Medication
-                          </th>
-                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                            Dosage
-                          </th>
-                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                            Frequency
-                          </th>
-                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                            Inventory
-                          </th>
-                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                            Status
-                          </th>
-                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                            Refills
-                          </th>
-                          <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-                            Actions
-                          </th>
+                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Medication")}</th>
+                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Dosage")}</th>
+                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Frequency")}</th>
+                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Inventory")}</th>
+                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Status")}</th>
+                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Refills")}</th>
+                          <th className="px-4 py-3 text-right font-medium text-muted-foreground">{tx("Actions")}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -2450,8 +2320,7 @@ function RecordsPageContent() {
                                 <span>
                                   {rx.productName}
                                   {rx.quantity != null ? (
-                                    <span className="block text-xs">
-                                      Dispensed {rx.quantity}
+                                    <span className="block text-xs">{tx("Dispensed")}{" "}{rx.quantity}
                                     </span>
                                   ) : null}
                                 </span>
@@ -2466,7 +2335,7 @@ function RecordsPageContent() {
                                   getPrescriptionStatusBadge(rx.effectiveStatus)
                                 )}
                               >
-                                {rx.effectiveStatus ?? "unknown"}
+                                {rx.effectiveStatus ?? tx("unknown")}
                               </span>
                             </td>
                             <td className="px-4 py-3">
@@ -2479,8 +2348,8 @@ function RecordsPageContent() {
                                   size="sm"
                                   title={
                                     rx.effectiveStatus === "active"
-                                      ? "Print Label"
-                                      : "Only active prescriptions can print a dispensing label"
+                                      ? tx("Print Label")
+                                      : tx("Only active prescriptions can print a dispensing label")
                                   }
                                   disabled={rx.effectiveStatus !== "active"}
                                   onClick={async () => {
@@ -2523,9 +2392,7 @@ function RecordsPageContent() {
                                   );
                                   }}
                                 >
-                                  <Tag className="mr-1 h-3.5 w-3.5" />
-                                  Print Label
-                                </Button>
+                                  <Tag className="mr-1 h-3.5 w-3.5" />{tx("Print Label")}</Button>
                               </div>
                               <PrescriptionLifecycleControl
                                 prescription={{
@@ -2553,7 +2420,7 @@ function RecordsPageContent() {
                     </table>
                   </div>
                 ) : (
-                  <EmptyState icon={Pill} title="No prescriptions yet" />
+                  <EmptyState icon={Pill} title={tx("No prescriptions yet")} />
                 )}
               </div>
             )}
@@ -2574,9 +2441,7 @@ function RecordsPageContent() {
                         setShowProblemForm(!showProblemForm);
                       }}
                     >
-                      <Plus className="mr-2 h-4 w-4" />
-                      Add Problem
-                    </Button>
+                      <Plus className="mr-2 h-4 w-4" />{tx("Add Problem")}</Button>
                   </div>
                 )}
 
@@ -2596,9 +2461,7 @@ function RecordsPageContent() {
                   >
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div className="sm:col-span-2">
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Problem *
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Problem *")}</label>
                         <Input
                           name="description"
                           required
@@ -2610,13 +2473,11 @@ function RecordsPageContent() {
                               description: e.target.value,
                             }))
                           }
-                          placeholder="e.g. Chronic otitis"
+                          placeholder={tx("e.g. Chronic otitis")}
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Status
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Status")}</label>
                         <select
                           name="status"
                           value={problemForm.status}
@@ -2636,9 +2497,7 @@ function RecordsPageContent() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Onset Date
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Onset Date")}</label>
                         <Input
                           name="onsetDate"
                           type="date"
@@ -2664,7 +2523,7 @@ function RecordsPageContent() {
                         className="h-11 sm:h-9"
                         disabled={!canSubmitProblem}
                       >
-                        {createProblem.isPending ? "Saving..." : "Save"}
+                        {createProblem.isPending ? tx("Saving...") : tx("Save")}
                       </Button>
                       <Button
                         type="button"
@@ -2675,9 +2534,7 @@ function RecordsPageContent() {
                           setShowProblemForm(false);
                           setProblemForm(initialProblemForm());
                         }}
-                      >
-                        Cancel
-                      </Button>
+                      >{tx("Cancel")}</Button>
                     </div>
                   </form>
                 )}
@@ -2691,7 +2548,7 @@ function RecordsPageContent() {
                     }
                   />
                 ) : isLoadingProblems ? (
-                  <RecordsLoadingPanel label="Loading problems..." />
+                  <RecordsLoadingPanel label={tx("Loading problems...")} />
                 ) : problems && problems.length > 0 ? (
                   <div className="space-y-2">
                     {problems.map((problem) => (
@@ -2711,8 +2568,7 @@ function RecordsPageContent() {
                             {problem.description}
                           </p>
                           {problem.onsetDate && (
-                            <p className="text-xs text-muted-foreground mt-0.5">
-                              Onset:{" "}
+                            <p className="text-xs text-muted-foreground mt-0.5">{tx("Onset:")}{" "}
                               {formatClinicalDate(
                                 problem.onsetDate,
                                 recordsTimeZone
@@ -2731,7 +2587,7 @@ function RecordsPageContent() {
                                   : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400"
                             )}
                           >
-                            {problem.status ?? "active"}
+                            {problem.status ?? tx("active")}
                           </span>
                           {canManageProblems && (
                             <div className="flex flex-wrap gap-1">
@@ -2747,9 +2603,7 @@ function RecordsPageContent() {
                                       status: "active",
                                     })
                                   }
-                                >
-                                  Reopen
-                                </Button>
+                                >{tx("Reopen")}</Button>
                               )}
                               {problem.status !== "chronic" && (
                                 <Button
@@ -2763,9 +2617,7 @@ function RecordsPageContent() {
                                       status: "chronic",
                                     })
                                   }
-                                >
-                                  Chronic
-                                </Button>
+                                >{tx("Chronic")}</Button>
                               )}
                               {problem.status !== "resolved" && (
                                 <Button
@@ -2779,9 +2631,7 @@ function RecordsPageContent() {
                                       status: "resolved",
                                     })
                                   }
-                                >
-                                  Resolve
-                                </Button>
+                                >{tx("Resolve")}</Button>
                               )}
                             </div>
                           )}
@@ -2792,7 +2642,7 @@ function RecordsPageContent() {
                 ) : (
                   <EmptyState
                     icon={ClipboardList}
-                    title="No problems recorded"
+                    title={tx("No problems recorded")}
                   />
                 )}
               </div>
@@ -2805,14 +2655,8 @@ function RecordsPageContent() {
                   <div className="flex gap-3 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-950 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-100">
                     <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
                     <div>
-                      <p className="font-medium">
-                        Manual lab entry only
-                      </p>
-                      <p className="mt-1 text-xs leading-5 text-amber-900 dark:text-amber-200">
-                        Reference lab ordering is disabled until IDEXX, Antech,
-                        or Zoetis provider credentials and a real adapter are
-                        connected.
-                      </p>
+                      <p className="font-medium">{tx("Manual lab entry only")}</p>
+                      <p className="mt-1 text-xs leading-5 text-amber-900 dark:text-amber-200">{tx("Reference lab ordering is disabled until IDEXX, Antech, or Zoetis provider credentials and a real adapter are connected.")}</p>
                     </div>
                   </div>
                   {canManageLabResults && (
@@ -2828,9 +2672,7 @@ function RecordsPageContent() {
                         setShowLabForm(!showLabForm);
                       }}
                     >
-                      <Plus className="mr-2 h-4 w-4" />
-                      Add Manual Lab Result
-                    </Button>
+                      <Plus className="mr-2 h-4 w-4" />{tx("Add Manual Lab Result")}</Button>
                   )}
                 </div>
 
@@ -2874,45 +2716,25 @@ function RecordsPageContent() {
                     {replacesLabResultId ? (
                       <div className="space-y-3 rounded-md border border-blue-300 bg-blue-50 px-3 py-3 text-sm text-blue-950 dark:border-blue-900 dark:bg-blue-950/30 dark:text-blue-100">
                         <div>
-                          <p className="font-medium">
-                            Creating an attributed replacement
-                          </p>
-                          <p className="mt-1 text-xs">
-                            Source chart: {selectedPatient?.name ?? "Unknown"} · Correct destination: {replacementPatient?.name ?? "Choose a patient"}. Only the test name was copied. Deliberately review the destination and enter new values before saving; nothing is submitted automatically.
-                          </p>
-                          <p className="mt-2 text-xs">
-                            If the original visit is still open and this work
-                            was unbilled, a same-patient replacement creates new
-                            unresolved visit work. Prior charged or no-charge
-                            work stays unchanged and is not billed again.
-                            Closed-visit and wrong-patient replacements from this
-                            dashboard create no visit work.
-                          </p>
+                          <p className="font-medium">{tx("Creating an attributed replacement")}</p>
+                          <p className="mt-1 text-xs">{tx("Source chart:")}{" "}{selectedPatient?.name ?? tx("Unknown")}{" "}{tx("· Correct destination:")}{" "}{replacementPatient?.name ?? tx("Choose a patient")}{tx(". Only the test name was copied. Deliberately review the destination and enter new values before saving; nothing is submitted automatically.")}</p>
+                          <p className="mt-2 text-xs">{tx("If the original visit is still open and this work was unbilled, a same-patient replacement creates new unresolved visit work. Prior charged or no-charge work stays unchanged and is not billed again. Closed-visit and wrong-patient replacements from this dashboard create no visit work.")}</p>
                         </div>
                         <div className="rounded-md border border-blue-200 bg-background/80 p-3 text-foreground dark:border-blue-900">
-                          <label className="block text-xs font-medium">
-                            Replacement patient
-                            <Input
+                          <label className="block text-xs font-medium">{tx("Replacement patient")}<Input
                               className="mt-1"
                               value={replacementPatientSearch}
                               onChange={(event) =>
                                 setReplacementPatientSearch(event.target.value)
                               }
-                              placeholder="Search another patient by name or owner"
+                              placeholder={tx("Search another patient by name or owner")}
                             />
                           </label>
-                          <p className="mt-1 text-xs text-muted-foreground">
-                            Leave {selectedPatient?.name ?? "this patient"}{" "}
-                            selected for a same-patient correction, or search
-                            and deliberately choose the correct chart for a
-                            wrong-patient repair.
-                          </p>
+                          <p className="mt-1 text-xs text-muted-foreground">{tx("Leave")}{" "}{selectedPatient?.name ?? tx("this patient")}{" "}{tx("selected for a same-patient correction, or search and deliberately choose the correct chart for a wrong-patient repair.")}</p>
                           {canSearchReplacementPatients ? (
                             <div className="mt-2 max-h-40 space-y-1 overflow-y-auto">
                               {replacementPatientResults.isLoading ? (
-                                <p className="px-2 py-1 text-xs text-muted-foreground">
-                                  Searching patients…
-                                </p>
+                                <p className="px-2 py-1 text-xs text-muted-foreground">{tx("Searching patients…")}</p>
                               ) : replacementPatientResults.data?.length ? (
                                 replacementPatientResults.data.map((option) => (
                                   <button
@@ -2937,14 +2759,12 @@ function RecordsPageContent() {
                                         option.clientLastName,
                                       ]
                                         .filter(Boolean)
-                                        .join(" ") || "Owner unavailable"}
+                                        .join(" ") || tx("Owner unavailable")}
                                     </span>
                                   </button>
                                 ))
                               ) : (
-                                <p className="px-2 py-1 text-xs text-muted-foreground">
-                                  No matching patient found.
-                                </p>
+                                <p className="px-2 py-1 text-xs text-muted-foreground">{tx("No matching patient found.")}</p>
                               )}
                             </div>
                           ) : null}
@@ -2953,9 +2773,7 @@ function RecordsPageContent() {
                     ) : null}
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                       <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Test Name *
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Test Name *")}</label>
                         <Input
                           name="testName"
                           required
@@ -2967,13 +2785,11 @@ function RecordsPageContent() {
                               testName: e.target.value,
                             }))
                           }
-                          placeholder="e.g. CBC"
+                          placeholder={tx("e.g. CBC")}
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Result Value
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Result Value")}</label>
                         <Input
                           name="resultValue"
                           value={labForm.resultValue}
@@ -2991,9 +2807,7 @@ function RecordsPageContent() {
                         <label
                           htmlFor="lab-result-flag"
                           className="block text-xs font-medium text-muted-foreground mb-1"
-                        >
-                          Clinical flag
-                        </label>
+                        >{tx("Clinical flag")}</label>
                         <select
                           id="lab-result-flag"
                           value={labForm.resultFlag}
@@ -3006,16 +2820,14 @@ function RecordsPageContent() {
                           }
                           className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm disabled:cursor-not-allowed disabled:opacity-50"
                         >
-                          <option value="unknown">Not assessed</option>
-                          <option value="normal">Normal</option>
-                          <option value="abnormal">Abnormal</option>
-                          <option value="critical">Critical</option>
+                          <option value="unknown">{tx("Not assessed")}</option>
+                          <option value="normal">{tx("Normal")}</option>
+                          <option value="abnormal">{tx("Abnormal")}</option>
+                          <option value="critical">{tx("Critical")}</option>
                         </select>
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Unit
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Unit")}</label>
                         <Input
                           name="unit"
                           value={labForm.unit}
@@ -3026,13 +2838,11 @@ function RecordsPageContent() {
                               unit: e.target.value,
                             }))
                           }
-                          placeholder="e.g. mg/dL"
+                          placeholder={tx("e.g. mg/dL")}
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Ref. Range Low
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Ref. Range Low")}</label>
                         <Input
                           name="referenceRangeLow"
                           type="number"
@@ -3055,9 +2865,7 @@ function RecordsPageContent() {
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Ref. Range High
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Ref. Range High")}</label>
                         <Input
                           name="referenceRangeHigh"
                           type="number"
@@ -3086,8 +2894,8 @@ function RecordsPageContent() {
                     </div>
                     <p className="text-xs text-muted-foreground">
                       {replacesLabResultId
-                        ? "Enter a fresh result value to create a completed replacement and send it to the clinic Lab Inbox for review. A replacement cannot be saved as an empty pending result."
-                        : "Entering a value records this result as completed and sends it to the clinic Lab Inbox for review. A result without values stays pending."}
+                        ? tx("Enter a fresh result value to create a completed replacement and send it to the clinic Lab Inbox for review. A replacement cannot be saved as an empty pending result.")
+                        : tx("Entering a value records this result as completed and sends it to the clinic Lab Inbox for review. A result without values stays pending.")}
                     </p>
                     <div className="flex gap-2">
                       <Button
@@ -3096,7 +2904,7 @@ function RecordsPageContent() {
                         className="h-11 sm:h-9"
                         disabled={!canSubmitLabResult}
                       >
-                        {createLabResult.isPending ? "Saving..." : "Save"}
+                        {createLabResult.isPending ? tx("Saving...") : tx("Save")}
                       </Button>
                       <Button
                         type="button"
@@ -3117,9 +2925,7 @@ function RecordsPageContent() {
                           router.replace(`/records?${params.toString()}`);
                           labResultCreationOperationId.current = null;
                         }}
-                      >
-                        Cancel
-                      </Button>
+                      >{tx("Cancel")}</Button>
                     </div>
                   </form>
                 )}
@@ -3133,7 +2939,7 @@ function RecordsPageContent() {
                     }
                   />
                 ) : isLoadingLabResults ? (
-                  <RecordsLoadingPanel label="Loading lab results..." />
+                  <RecordsLoadingPanel label={tx("Loading lab results...")} />
                 ) : labResultsList && labResultsList.length > 0 ? (
                   <div className="space-y-4">
                     {labTrendGroups.length > 0 && (
@@ -3143,33 +2949,15 @@ function RecordsPageContent() {
                       <table className="w-full text-sm">
                         <thead>
                           <tr className="border-b border-border bg-muted/50">
-                            <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                              Test Name
-                            </th>
-                            <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                              Result
-                            </th>
-                            <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                              Unit
-                            </th>
-                            <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                              Reference Range
-                            </th>
-                            <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                              Status
-                            </th>
-                            <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                              Review evidence
-                            </th>
-                            <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                              Ordered By
-                            </th>
-                            <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                              Date
-                            </th>
-                            <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                              Actions
-                            </th>
+                            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Test Name")}</th>
+                            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Result")}</th>
+                            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Unit")}</th>
+                            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Reference Range")}</th>
+                            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Status")}</th>
+                            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Review evidence")}</th>
+                            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Ordered By")}</th>
+                            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Date")}</th>
+                            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Actions")}</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -3195,17 +2983,13 @@ function RecordsPageContent() {
                                     <a
                                       href={`/records?patientId=${lab.replacesLabResultPatientId ?? patientId}&tab=labResults#lab-result-${lab.replacesLabResultId}`}
                                       className="mt-1 block text-xs font-normal text-primary hover:underline"
-                                    >
-                                      Replaces entered-in-error result
-                                    </a>
+                                    >{tx("Replaces entered-in-error result")}</a>
                                   ) : null}
                                   {lab.replacementLabResultId ? (
                                     <a
                                       href={`/records?patientId=${lab.replacementLabResultPatientId ?? patientId}&tab=labResults#lab-result-${lab.replacementLabResultId}`}
                                       className="mt-1 block text-xs font-normal text-primary hover:underline"
-                                    >
-                                      View replacement result
-                                    </a>
+                                    >{tx("View replacement result")}</a>
                                   ) : null}
                                 </td>
                                 <td
@@ -3253,20 +3037,17 @@ function RecordsPageContent() {
                                 </td>
                                 <td className="px-4 py-3 text-xs text-muted-foreground">
                                   {lab.completedAt ? (
-                                    <span className="block">
-                                      Completed {formatClinicalDate(lab.completedAt, recordsTimeZone)} · {lab.completionActorName ?? "actor unavailable (legacy)"}
+                                    <span className="block">{tx("Completed")}{" "}{formatClinicalDate(lab.completedAt, recordsTimeZone)} · {lab.completionActorName ?? tx("actor unavailable (legacy)")}
                                     </span>
                                   ) : (
-                                    "Awaiting values"
+                                    tx("Awaiting values")
                                   )}
                                   {lab.reviewedAt ? (
-                                    <span className="mt-1 block">
-                                      Reviewed {formatClinicalDate(lab.reviewedAt, recordsTimeZone)}{lab.reviewedByName ? ` by ${lab.reviewedByName}` : ""}
+                                    <span className="mt-1 block">{tx("Reviewed")}{" "}{formatClinicalDate(lab.reviewedAt, recordsTimeZone)}{lab.reviewedByName ? ` by ${lab.reviewedByName}` : ""}
                                     </span>
                                   ) : null}
                                   {lab.followUpStatus === "open" ? (
-                                    <span className="mt-1 block font-medium text-amber-700 dark:text-amber-300">
-                                      Follow-up: {lab.followUpAssigneeName ?? "assigned"}
+                                    <span className="mt-1 block font-medium text-amber-700 dark:text-amber-300">{tx("Follow-up:")}{" "}{lab.followUpAssigneeName ?? tx("assigned")}
                                     </span>
                                   ) : null}
                                 </td>
@@ -3342,9 +3123,7 @@ function RecordsPageContent() {
                                             labResultCreationOperationId.current =
                                               null;
                                           }}
-                                        >
-                                          Create replacement
-                                        </Button>
+                                        >{tx("Create replacement")}</Button>
                                       ) : null}
                                     </div>
                                   ) : (
@@ -3372,23 +3151,17 @@ function RecordsPageContent() {
                                           disabled={
                                             updateLabResultStatus.isPending
                                           }
-                                        >
-                                          Mark Reviewed
-                                        </Button>
+                                        >{tx("Mark Reviewed")}</Button>
                                       ) : lab.status === "completed" &&
                                         lab.resultFlag === "critical" &&
                                         lab.followUpStatus === "not_required" &&
                                         canManageLabResults ? (
                                         <Button asChild variant="ghost" size="sm">
-                                          <Link href={`/lab-results?resultId=${lab.id}`}>
-                                            Assign follow-up
-                                          </Link>
+                                          <Link href={`/lab-results?resultId=${lab.id}`}>{tx("Assign follow-up")}</Link>
                                         </Button>
                                       ) : lab.status === "pending" && canManageLabResults ? (
                                         <Button asChild variant="ghost" size="sm">
-                                          <Link href={`/lab-results?resultId=${lab.id}`}>
-                                            Open selected result
-                                          </Link>
+                                          <Link href={`/lab-results?resultId=${lab.id}`}>{tx("Open selected result")}</Link>
                                         </Button>
                                       ) : null}
                                       <ClinicalCorrectionControl
@@ -3396,7 +3169,7 @@ function RecordsPageContent() {
                                         correction={null}
                                         canCorrect={canCorrectClinicalRecords}
                                         isPending={correctLabResult.isPending}
-                                        description="The original result and immutable event evidence remain permanently visible in chart history. It will leave the active Lab Inbox, trends, and follow-up workflows. Unresolved unbilled visit work is voided; charged or no-charge financial history is never changed. Create an attributed replacement after confirming this correction."
+                                        description={tx("The original result and immutable event evidence remain permanently visible in chart history. It will leave the active Lab Inbox, trends, and follow-up workflows. Unresolved unbilled visit work is voided; charged or no-charge financial history is never changed. Create an attributed replacement after confirming this correction.")}
                                         onCorrect={async (reason) => {
                                           let operationId =
                                             labCorrectionOperationIds.current.get(
@@ -3428,7 +3201,7 @@ function RecordsPageContent() {
                     </div>
                   </div>
                 ) : (
-                  <EmptyState icon={FlaskConical} title="No lab results yet" />
+                  <EmptyState icon={FlaskConical} title={tx("No lab results yet")} />
                 )}
               </div>
             )}
@@ -3448,9 +3221,7 @@ function RecordsPageContent() {
                         setShowProcedureForm(!showProcedureForm);
                       }}
                     >
-                      <Plus className="mr-2 h-4 w-4" />
-                      Add Procedure
-                    </Button>
+                      <Plus className="mr-2 h-4 w-4" />{tx("Add Procedure")}</Button>
                   </div>
                 )}
 
@@ -3479,9 +3250,7 @@ function RecordsPageContent() {
                   >
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                       <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Name *
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Name *")}</label>
                         <Input
                           name="name"
                           required
@@ -3493,13 +3262,11 @@ function RecordsPageContent() {
                               name: e.target.value,
                             }))
                           }
-                          placeholder="e.g. Dental Prophylaxis"
+                          placeholder={tx("e.g. Dental Prophylaxis")}
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Duration (minutes)
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Duration (minutes)")}</label>
                         <Input
                           name="durationMinutes"
                           type="number"
@@ -3522,9 +3289,7 @@ function RecordsPageContent() {
                         />
                       </div>
                       <div className="sm:col-span-2">
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Description
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Description")}</label>
                         <Input
                           name="description"
                           value={procedureForm.description}
@@ -3535,13 +3300,11 @@ function RecordsPageContent() {
                               description: e.target.value,
                             }))
                           }
-                          placeholder="Brief description of the procedure"
+                          placeholder={tx("Brief description of the procedure")}
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Anesthesia Used
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Anesthesia Used")}</label>
                         <Input
                           name="anesthesiaUsed"
                           value={procedureForm.anesthesiaUsed}
@@ -3552,13 +3315,11 @@ function RecordsPageContent() {
                               anesthesiaUsed: e.target.value,
                             }))
                           }
-                          placeholder="e.g. Isoflurane"
+                          placeholder={tx("e.g. Isoflurane")}
                         />
                       </div>
                       <div className="sm:col-span-2">
-                        <label className="block text-xs font-medium text-muted-foreground mb-1">
-                          Notes
-                        </label>
+                        <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Notes")}</label>
                         <Input
                           name="notes"
                           value={procedureForm.notes}
@@ -3569,7 +3330,7 @@ function RecordsPageContent() {
                               notes: e.target.value,
                             }))
                           }
-                          placeholder="Additional notes"
+                          placeholder={tx("Additional notes")}
                         />
                       </div>
                     </div>
@@ -3580,7 +3341,7 @@ function RecordsPageContent() {
                         className="h-11 sm:h-9"
                         disabled={!canSubmitProcedure}
                       >
-                        {createProcedure.isPending ? "Saving..." : "Save"}
+                        {createProcedure.isPending ? tx("Saving...") : tx("Save")}
                       </Button>
                       <Button
                         type="button"
@@ -3591,9 +3352,7 @@ function RecordsPageContent() {
                           setShowProcedureForm(false);
                           setProcedureForm(initialProcedureForm());
                         }}
-                      >
-                        Cancel
-                      </Button>
+                      >{tx("Cancel")}</Button>
                     </div>
                   </form>
                 )}
@@ -3607,27 +3366,17 @@ function RecordsPageContent() {
                     }
                   />
                 ) : isLoadingProcedures ? (
-                  <RecordsLoadingPanel label="Loading procedures..." />
+                  <RecordsLoadingPanel label={tx("Loading procedures...")} />
                 ) : proceduresList && proceduresList.length > 0 ? (
                   <div className="overflow-x-auto rounded-lg border border-border">
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="border-b border-border bg-muted/50">
-                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                            Name
-                          </th>
-                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                            Performed By
-                          </th>
-                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                            Duration
-                          </th>
-                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                            Anesthesia
-                          </th>
-                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                            Date
-                          </th>
+                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Name")}</th>
+                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Performed By")}</th>
+                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Duration")}</th>
+                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Anesthesia")}</th>
+                          <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Date")}</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -3669,7 +3418,7 @@ function RecordsPageContent() {
                     </table>
                   </div>
                 ) : (
-                  <EmptyState icon={Scissors} title="No procedures recorded" />
+                  <EmptyState icon={Scissors} title={tx("No procedures recorded")} />
                 )}
               </div>
             )}
@@ -3684,7 +3433,7 @@ function RecordsPageContent() {
         <EmptyState
           className="mt-6"
           icon={Search}
-          title="Search for a patient above to view their medical records"
+          title={tx("Search for a patient above to view their medical records")}
         />
       )}
     </div>
@@ -3693,7 +3442,7 @@ function RecordsPageContent() {
 
 export default function RecordsPage() {
   return (
-    <Suspense fallback={<RecordsLoadingPanel label="Loading records..." />}>
+    <Suspense fallback={<RecordsLoadingPanel label={tx("Loading records...")} />}>
       <RecordsPageContent />
     </Suspense>
   );

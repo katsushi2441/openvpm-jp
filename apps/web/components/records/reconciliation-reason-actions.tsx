@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { tx } from "@/lib/i18n";
 
 export function ReconciliationReasonActions({
   label,
@@ -28,9 +29,7 @@ export function ReconciliationReasonActions({
           aria-pressed={status === "no_charge"}
           disabled={disabled}
           onClick={() => setStatus("no_charge")}
-        >
-          No charge
-        </Button>
+        >{tx("No charge")}</Button>
         {canVoid && (
           <Button
             type="button"
@@ -38,17 +37,15 @@ export function ReconciliationReasonActions({
             aria-pressed={status === "voided"}
             disabled={disabled}
             onClick={() => setStatus("voided")}
-          >
-            Void/corrected
-          </Button>
+          >{tx("Void/corrected")}</Button>
         )}
       </div>
       {status && (
         <div className="space-y-2 rounded-md border p-3">
           <label className="block text-sm">
             {status === "voided"
-              ? "Why is this work void or corrected?"
-              : "Why is there no charge?"}
+              ? tx("Why is this work void or corrected?")
+              : tx("Why is there no charge?")}
             <Input
               autoFocus
               value={reason}
@@ -58,16 +55,12 @@ export function ReconciliationReasonActions({
               onChange={(event) => setReason(event.target.value)}
             />
           </label>
-          <p className="text-xs text-muted-foreground">
-            Enter at least 3 characters. This reason and your name will be
-            recorded.
-          </p>
+          <p className="text-xs text-muted-foreground">{tx("Enter at least 3 characters. This reason and your name will be recorded.")}</p>
           <Button
             type="button"
             disabled={disabled || reason.trim().length < 3}
             onClick={() => onResolve({ status, reason: reason.trim() })}
-          >
-            Confirm {status === "voided" ? "void/correction" : "no charge"}
+          >{tx("Confirm")}{" "}{status === "voided" ? tx("void/correction") : tx("no charge")}
           </Button>
         </div>
       )}

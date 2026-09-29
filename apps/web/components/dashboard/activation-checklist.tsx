@@ -24,6 +24,7 @@ import {
   DEFAULT_ONBOARDING_INTENT,
   getOnboardingIntentOption,
 } from "@/lib/onboarding/intent";
+import { tx } from "@/lib/i18n";
 
 type Milestone = {
   key: string;
@@ -80,7 +81,7 @@ export function ActivationChecklist() {
   const requestSetupHelp = trpc.settings.requestOnboardingHelp.useMutation({
     onSuccess: async () => {
       await utils.settings.getOnboardingState.invalidate();
-      toast.success("Setup request received");
+      toast.success(tx("Setup request received"));
     },
     onError: (error) => toast.error(error.message),
   });
@@ -177,28 +178,28 @@ export function ActivationChecklist() {
   const explorationMilestones: Milestone[] = [
     {
       key: "tour",
-      label: "Take the 60-second tour",
+      label: tx("Take the 60-second tour"),
       hint: "See the schedule, records, billing, and AI in a minute.",
       done: tourDone,
       onClick: () => start(),
     },
     {
       key: "brand",
-      label: "Make it your brand",
+      label: tx("Make it your brand"),
       hint: "Add your logo and accent color.",
       done: !!practiceData.logoUrl || !!brandColor,
       href: "/settings?tab=practice",
     },
     {
       key: "team",
-      label: "Invite a teammate",
+      label: tx("Invite a teammate"),
       hint: "Bring your doctors and front desk in. Staff is unlimited.",
       done: (subscriptionData.billableSeatCount ?? 1) > 1,
       href: "/settings?tab=staff",
     },
     {
       key: "ai",
-      label: "Ask the AI assistant something",
+      label: tx("Ask the AI assistant something"),
       hint: "Try “Which pets are overdue for vaccines?”",
       done: (subscriptionData.usage?.aiRuns ?? 0) > 0,
       href: "/agent",
@@ -208,21 +209,21 @@ export function ActivationChecklist() {
   const goLiveMilestones: Milestone[] = [
     {
       key: "data",
-      label: "Add one real client and pet",
+      label: tx("Add one real client and pet"),
       hint: "Start small: create one client, then add their pet.",
       done: onboardingData.hasRealData,
       href: "/clients/new",
     },
     {
       key: "firstAppointment",
-      label: "Book that pet's first appointment",
+      label: tx("Book that pet's first appointment"),
       hint: "Put one real appointment on the schedule. Your current PIMS can stay in place.",
       done: onboardingData.hasRealAppointment,
       href: "/schedule",
     },
     {
       key: "firstVisit",
-      label: "Complete your first visit",
+      label: tx("Complete your first visit"),
       hint: "Check in, start the exam, finalize the owner handoff, save the charge or no-charge reason, and complete checkout.",
       done: onboardingData.hasCompletedRealVisit,
       href: onboardingData.nextRealAppointmentId
@@ -231,14 +232,14 @@ export function ActivationChecklist() {
     },
     {
       key: "team",
-      label: "Invite a teammate",
+      label: tx("Invite a teammate"),
       hint: "Test the handoff between a doctor and the front desk.",
       done: (subscriptionData.billableSeatCount ?? 1) > 1,
       href: "/settings?tab=staff",
     },
     {
       key: "booking",
-      label: "Configure appointment requests",
+      label: tx("Configure appointment requests"),
       hint: "Choose which visit types and times clients can request, then publish the page.",
       done:
         bookingData.page?.published === true &&
@@ -249,7 +250,7 @@ export function ActivationChecklist() {
       ? [
           {
             key: "texting",
-            label: "Finish texting activation",
+            label: tx("Finish texting activation"),
             hint: "Submit carrier registration and wait for approval. Texting is not live until an active number is enabled.",
             done: textingData.hasActiveNumber,
             href: "/settings?tab=messaging&setup=texting",
@@ -260,7 +261,7 @@ export function ActivationChecklist() {
       ? [
           {
             key: "clientPayments",
-            label: "Set up client card payments",
+            label: tx("Set up client card payments"),
             hint: "Connect the clinic's Stripe account so pet-owner payments go directly to the clinic.",
             done: clientPaymentData.enabled,
             href: "/settings?tab=billing",
@@ -271,7 +272,7 @@ export function ActivationChecklist() {
       ? [
           {
             key: "billing",
-            label: "Confirm billing is connected",
+            label: tx("Confirm billing is connected"),
             hint: "A saved card lets the trial convert without interrupting access. Cancel anytime.",
             done: !!subscriptionData.hasBillingAccount,
             href: "/settings?tab=billing",
@@ -350,21 +351,14 @@ export function ActivationChecklist() {
             <PartyPopper className="h-4 w-4" />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="font-heading text-sm font-semibold">
-              Guided setup checks complete
-            </p>
-            <p className="text-xs text-zinc-400">
-              Keep validating real clinic workflows with your team before
-              switching systems.
-            </p>
+            <p className="font-heading text-sm font-semibold">{tx("Guided setup checks complete")}</p>
+            <p className="text-xs text-zinc-400">{tx("Keep validating real clinic workflows with your team before switching systems.")}</p>
           </div>
           <button
             type="button"
             onClick={dontShowAgain}
             className="text-xs font-medium text-zinc-400 transition-colors hover:text-zinc-100"
-          >
-            Dismiss
-          </button>
+          >{tx("Dismiss")}</button>
         </div>
       </div>
     );
@@ -378,8 +372,8 @@ export function ActivationChecklist() {
         <button
           type="button"
           onClick={snooze}
-          aria-label="Hide for now"
-          title="Hide for now"
+          aria-label={tx("Hide for now")}
+          title={tx("Hide for now")}
           className="absolute right-3 top-3 rounded-md p-1 text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-200"
         >
           <X className="h-4 w-4" />
@@ -390,12 +384,9 @@ export function ActivationChecklist() {
             <Sparkles className="h-4 w-4" />
           </span>
           <div className="min-w-0">
-            <p className="truncate font-heading text-sm font-semibold">
-              Finish {practiceName}&apos;s setup checks
-            </p>
+            <p className="truncate font-heading text-sm font-semibold">{tx("Finish")}{" "}{practiceName}{tx("'s setup checks")}</p>
             <p className="text-xs text-zinc-400">
-              {pathway.shortLabel} · {doneCount} of {total} done
-            </p>
+              {pathway.shortLabel} · {doneCount}{" "}{tx("of")}{" "}{total}{" "}{tx("done")}</p>
           </div>
         </div>
 
@@ -414,13 +405,13 @@ export function ActivationChecklist() {
             <span className="min-w-0 flex-1">
               <span className="block text-sm font-semibold">
                 {guidedSetupStarted
-                  ? "Resume guided setup"
-                  : "Start guided setup"}
+                  ? tx("Resume guided setup")
+                  : tx("Start guided setup")}
               </span>
               <span className="block truncate text-xs text-emerald-950/75">
                 {guidedSetupStage
                   ? `Continue at ${guidedSetupStage}`
-                  : "Choose your path and save progress as you go"}
+                  : tx("Choose your path and save progress as you go")}
               </span>
             </span>
             <ArrowRight className="h-4 w-4 shrink-0" />
@@ -484,9 +475,7 @@ export function ActivationChecklist() {
         <div className="mt-3 flex items-center justify-between gap-3 border-t border-zinc-800 pt-2.5">
           {setupHelpRequestedAt ? (
             <span className="inline-flex items-center gap-1.5 text-xs font-medium text-emerald-400">
-              <Check className="h-3.5 w-3.5" />
-              Setup help requested
-            </span>
+              <Check className="h-3.5 w-3.5" />{tx("Setup help requested")}</span>
           ) : (
             <button
               type="button"
@@ -498,17 +487,13 @@ export function ActivationChecklist() {
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
               ) : (
                 <Headphones className="h-3.5 w-3.5" />
-              )}
-              Help me set this up
-            </button>
+              )}{tx("Help me set this up")}</button>
           )}
           <button
             type="button"
             onClick={dontShowAgain}
             className="text-xs font-medium text-zinc-500 transition-colors hover:text-zinc-200"
-          >
-            Don&apos;t show this again
-          </button>
+          >{tx("Don't show this again")}</button>
         </div>
       </div>
     </div>
@@ -532,18 +517,14 @@ function ActivationChecklistError({
       <div className="flex items-start gap-3 rounded-2xl border border-zinc-800 bg-zinc-900 p-4 text-zinc-50 shadow-2xl shadow-black/30">
         <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold">
-            Setup checklist could not load
-          </p>
+          <p className="text-sm font-semibold">{tx("Setup checklist could not load")}</p>
           <p className="mt-1 text-xs text-zinc-400">{message}</p>
           <Button
             variant="outline"
             size="sm"
             onClick={onRetry}
             className="mt-2 border-zinc-700 bg-transparent text-zinc-100 hover:bg-zinc-800"
-          >
-            Retry
-          </Button>
+          >{tx("Retry")}</Button>
         </div>
       </div>
     </div>

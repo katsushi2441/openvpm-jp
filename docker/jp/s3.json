@@ -1,0 +1,9 @@
+{
+  "identities": [
+    {
+      "name": "openpims",
+      "credentials": [{ "accessKey": "openpims", "secretKey": "openpims123" }],
+      "actions": ["Admin", "Read", "List", "Tagging", "Write"]
+    }
+  ]
+}

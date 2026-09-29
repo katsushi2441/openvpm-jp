@@ -19,6 +19,7 @@ import {
   prescriptionLifecycleHistoryLabel,
   type PrescriptionStatus,
 } from "@/lib/records/prescription-lifecycle";
+import { tx, uiLocale } from "@/lib/i18n";
 
 type ActionMode = "refill" | "complete" | "cancel";
 
@@ -38,13 +39,13 @@ export interface PrescriptionLifecycleControlProps {
 function formatEventTime(value: Date | string, timeZone?: string | null) {
   const date = value instanceof Date ? value : new Date(value);
   try {
-    return date.toLocaleString("en-US", {
+    return date.toLocaleString(uiLocale(), {
       dateStyle: "medium",
       timeStyle: "short",
       timeZone: timeZone ?? undefined,
     });
   } catch {
-    return date.toLocaleString("en-US", {
+    return date.toLocaleString(uiLocale(), {
       dateStyle: "medium",
       timeStyle: "short",
     });
@@ -142,9 +143,7 @@ export function PrescriptionLifecycleControl({
             <ChevronUp className="mr-1 h-3.5 w-3.5" />
           ) : (
             <ChevronDown className="mr-1 h-3.5 w-3.5" />
-          )}
-          History
-        </Button>
+          )}{tx("History")}</Button>
         {canManage && isActive ? (
           <>
             <Button
@@ -155,16 +154,16 @@ export function PrescriptionLifecycleControl({
               title={
                 canRefill
                   ? isExternalPrescription
-                    ? "Authorize one external-pharmacy refill"
-                    : "Dispense one clinic-stock refill"
+                    ? tx("Authorize one external-pharmacy refill")
+                    : tx("Dispense one clinic-stock refill")
                   : hasInvalidInventoryLink
-                    ? "The linked inventory prescription is missing a positive dispensing quantity"
-                    : "This prescription has no remaining refills"
+                    ? tx("The linked inventory prescription is missing a positive dispensing quantity")
+                    : tx("This prescription has no remaining refills")
               }
               onClick={() => openAction("refill")}
             >
               <RotateCcw className="mr-1 h-3.5 w-3.5" />
-              {isExternalPrescription ? "Authorize refill" : "Refill"}
+              {isExternalPrescription ? tx("Authorize refill") : tx("Refill")}
             </Button>
             <Button
               type="button"
@@ -173,9 +172,7 @@ export function PrescriptionLifecycleControl({
               disabled={isPending}
               onClick={() => openAction("complete")}
             >
-              <Check className="mr-1 h-3.5 w-3.5" />
-              Complete
-            </Button>
+              <Check className="mr-1 h-3.5 w-3.5" />{tx("Complete")}</Button>
             <Button
               type="button"
               variant="ghost"
@@ -183,9 +180,7 @@ export function PrescriptionLifecycleControl({
               disabled={isPending}
               onClick={() => openAction("cancel")}
             >
-              <X className="mr-1 h-3.5 w-3.5" />
-              Cancel
-            </Button>
+              <X className="mr-1 h-3.5 w-3.5" />{tx("Cancel")}</Button>
           </>
         ) : null}
       </div>
@@ -195,24 +190,24 @@ export function PrescriptionLifecycleControl({
           <p className="text-sm font-medium">
             {mode === "refill"
               ? isExternalPrescription
-                ? "Authorize external-pharmacy refill"
+                ? tx("Authorize external-pharmacy refill")
                 : `Dispense ${prescription.quantity ?? "--"} from inventory`
               : mode === "complete"
-                ? "Complete prescription"
-                : "Cancel prescription"}
+                ? tx("Complete prescription")
+                : tx("Cancel prescription")}
           </p>
           <p className="mt-1 text-xs text-muted-foreground">
             {mode === "refill"
               ? isExternalPrescription
-                ? "This records authorization and uses one refill. It does not dispense stock or contact the pharmacy. An optional note is retained in history."
-                : "This deducts the original quantity from stock, records the refill, uses one refill, and creates an unbilled dispense in Billing. Billing staff still confirm the draft invoice or an admin records a no-charge reason."
-              : "Enter a clinical reason (at least 5 characters). The status change is permanent and audited."}
+                ? tx("This records authorization and uses one refill. It does not dispense stock or contact the pharmacy. An optional note is retained in history.")
+                : tx("This deducts the original quantity from stock, records the refill, uses one refill, and creates an unbilled dispense in Billing. Billing staff still confirm the draft invoice or an admin records a no-charge reason.")
+              : tx("Enter a clinical reason (at least 5 characters). The status change is permanent and audited.")}
           </p>
           <Textarea
             className="mt-2 min-h-16"
             value={reason}
             maxLength={PRESCRIPTION_LIFECYCLE_REASON_MAX_LENGTH}
-            aria-label={mode === "refill" ? "Refill note" : "Clinical reason"}
+            aria-label={mode === "refill" ? tx("Refill note") : tx("Clinical reason")}
             aria-invalid={
               mode !== "refill" &&
               reason.length > 0 &&
@@ -220,8 +215,8 @@ export function PrescriptionLifecycleControl({
             }
             placeholder={
               mode === "refill"
-                ? "Optional dispensing note"
-                : "Required clinical reason"
+                ? tx("Optional dispensing note")
+                : tx("Required clinical reason")
             }
             onChange={(event) => {
               setReason(event.target.value);
@@ -229,11 +224,7 @@ export function PrescriptionLifecycleControl({
             }}
           />
           {mode === "refill" && !isExternalPrescription ? (
-            <p className="mt-2 rounded bg-amber-50 px-2 py-1.5 text-xs text-amber-900">
-              Controlled-substance log entries are not automated. If applicable,
-              complete the required controlled drug record separately before
-              dispensing.
-            </p>
+            <p className="mt-2 rounded bg-amber-50 px-2 py-1.5 text-xs text-amber-900">{tx("Controlled-substance log entries are not automated. If applicable, complete the required controlled drug record separately before dispensing.")}</p>
           ) : null}
           <div className="mt-2 flex justify-end gap-2">
             <Button
@@ -242,9 +233,7 @@ export function PrescriptionLifecycleControl({
               size="sm"
               disabled={isPending}
               onClick={resetAction}
-            >
-              Back
-            </Button>
+            >{tx("Back")}</Button>
             <Button
               type="button"
               size="sm"
@@ -257,9 +246,7 @@ export function PrescriptionLifecycleControl({
             >
               {isPending ? (
                 <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />
-              ) : null}
-              Confirm
-            </Button>
+              ) : null}{tx("Confirm")}</Button>
           </div>
         </div>
       ) : null}
@@ -268,27 +255,22 @@ export function PrescriptionLifecycleControl({
         <div className="ml-auto max-w-sm rounded-md border border-border bg-muted/30 p-3">
           {history.isLoading ? (
             <p className="flex items-center gap-2 text-xs text-muted-foreground">
-              <Loader2 className="h-3.5 w-3.5 animate-spin" /> Loading history…
-            </p>
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />{" "}{tx("Loading history…")}</p>
           ) : history.error || !history.data ? (
             <div className="space-y-2">
               <p className="text-xs text-destructive">
                 {history.error?.message ??
-                  "Unable to load prescription history."}
+                  tx("Unable to load prescription history.")}
               </p>
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={() => history.refetch()}
-              >
-                Retry
-              </Button>
+              >{tx("Retry")}</Button>
             </div>
           ) : history.data.length === 0 ? (
-            <p className="text-xs text-muted-foreground">
-              No lifecycle history recorded.
-            </p>
+            <p className="text-xs text-muted-foreground">{tx("No lifecycle history recorded.")}</p>
           ) : (
             <ol className="space-y-3">
               {history.data.map((event) => (
@@ -308,20 +290,14 @@ export function PrescriptionLifecycleControl({
                     {event.actorName}
                   </p>
                   {event.eventType === "refill_dispensed" ? (
-                    <p className="text-muted-foreground">
-                      Dispensed {event.quantity}; {event.refillsAfter} refill
-                      {event.refillsAfter === 1 ? "" : "s"} remaining
-                    </p>
+                    <p className="text-muted-foreground">{tx("Dispensed")}{" "}{event.quantity}; {event.refillsAfter}{" "}{tx("refill")}{event.refillsAfter === 1 ? "" : tx("s")}{" "}{tx("remaining")}</p>
                   ) : event.eventType === "refill_authorized" ? (
                     <p className="text-muted-foreground">
-                      External refill authorized; {event.refillsAfter} refill
-                      {event.refillsAfter === 1 ? "" : "s"} remaining
-                    </p>
+                      External refill authorized; {event.refillsAfter}{" "}{tx("refill")}{event.refillsAfter === 1 ? "" : tx("s")}{" "}{tx("remaining")}</p>
                   ) : null}
                   {event.dispenseChargeStatus ? (
-                    <p className="mt-1 font-medium">
-                      Billing: {event.dispenseChargeStatus}
-                      {event.dispenseChargeInvoiceId ? " on invoice" : ""}
+                    <p className="mt-1 font-medium">{tx("Billing:")}{" "}{event.dispenseChargeStatus}
+                      {event.dispenseChargeInvoiceId ? tx(" on invoice") : ""}
                     </p>
                   ) : null}
                   {event.reason ? <p className="mt-1">{event.reason}</p> : null}

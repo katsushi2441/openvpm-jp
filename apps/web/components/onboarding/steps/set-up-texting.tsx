@@ -10,6 +10,7 @@ import {
   type MessagingSetupLocation,
 } from "@/components/settings/messaging-wizard";
 import type { StepHandle } from "../journey-types";
+import { tx } from "@/lib/i18n";
 
 /**
  * Optional step: text-enable a phone number so the clinic can send reminders and
@@ -116,51 +117,30 @@ export function SetUpTextingStep({
     <div className="space-y-5">
       <p className="text-sm leading-6 text-slate-600">
         {!setupCapabilityKnown ? (
-          <>
-            Texting setup is optional. We are checking whether new-number setup
-            is available for this clinic. Email appointment reminders remain
-            available, so you can continue and return to texting later.
-          </>
+          <>{tx("Texting setup is optional. We are checking whether new-number setup is available for this clinic. Email appointment reminders remain available, so you can continue and return to texting later.")}</>
         ) : setupDisabled ? (
           hosted ? (
             <>
               {hasAnyNumber
-                ? "Your clinic has an existing texting setup to review, but new-number setup is not currently available. "
-                : "Texting setup is currently a controlled clinic pilot and is not available for this clinic yet. "}
-              Email appointment reminders remain available, so you can continue
-              without new texting setup. Review{" "}
+                ? tx("Your clinic has an existing texting setup to review, but new-number setup is not currently available. ")
+                : tx("Texting setup is currently a controlled clinic pilot and is not available for this clinic yet. ")}{tx("Email appointment reminders remain available, so you can continue without new texting setup. Review")}{" "}
               <Link
                 href="/settings?tab=messaging"
                 className="font-medium text-emerald-700 underline underline-offset-2"
-              >
-                Messaging settings
-              </Link>{" "}
-              or{" "}
+              >{tx("Messaging settings")}</Link>{" "}{tx("or")}{" "}
               <a
                 href="mailto:support@openvpm.com?subject=OpenVPM%20texting%20pilot"
                 className="font-medium text-emerald-700 underline underline-offset-2"
-              >
-                contact OpenVPM support
-              </a>{" "}
+              >{tx("contact OpenVPM support")}</a>{" "}
               {hasAnyNumber
-                ? " for help with the existing setup."
-                : " when your clinic is ready to join the pilot."}
+                ? tx(" for help with the existing setup.")
+                : tx(" when your clinic is ready to join the pilot.")}
             </>
           ) : (
-            <>
-              Texting number setup is disabled in this deployment. Email
-              appointment reminders remain available, so you can continue
-              without texting. Ask your deployment administrator to configure
-              the provider and enable provisioning before setup.
-            </>
+            <>{tx("Texting number setup is disabled in this deployment. Email appointment reminders remain available, so you can continue without texting. Ask your deployment administrator to configure the provider and enable provisioning before setup.")}</>
           )
         ) : (
-          <>
-            Text your clients about appointments, reminders, and results, and
-            let them text you back. OpenVPM can set up a new local texting
-            number; your existing clinic voice line stays unchanged. This is
-            optional, so skip it and set it up later if you like.
-          </>
+          <>{tx("Text your clients about appointments, reminders, and results, and let them text you back. OpenVPM can set up a new local texting number; your existing clinic voice line stays unchanged. This is optional, so skip it and set it up later if you like.")}</>
         )}
       </p>
 
@@ -172,55 +152,41 @@ export function SetUpTextingStep({
           <div className="min-w-0 flex-1">
             {status.isLoading ? (
               <p className="flex items-center gap-2 text-sm text-slate-500">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Checking your texting setup…
-              </p>
+                <Loader2 className="h-4 w-4 animate-spin" />{tx("Checking your texting setup…")}</p>
             ) : status.error ? (
               <div className="space-y-1">
-                <p className="text-sm font-medium text-slate-900">
-                  Unable to check texting setup
-                </p>
-                <p className="text-xs text-slate-500">
-                  Retry this step before starting or changing setup.
-                </p>
+                <p className="text-sm font-medium text-slate-900">{tx("Unable to check texting setup")}</p>
+                <p className="text-xs text-slate-500">{tx("Retry this step before starting or changing setup.")}</p>
               </div>
             ) : setupUnavailable ? (
               <div className="space-y-1">
                 <p className="text-sm font-medium text-slate-900">
                   {hosted
-                    ? "Texting setup is in a controlled pilot"
-                    : "Texting number setup is disabled"}
+                    ? tx("Texting setup is in a controlled pilot")
+                    : tx("Texting number setup is disabled")}
                 </p>
                 <p className="text-xs text-slate-500">
                   {hosted
-                    ? "Email appointment reminders remain available while OpenVPM approves clinics for texting setup."
-                    : "Email appointment reminders remain available while your administrator configures texting."}
+                    ? tx("Email appointment reminders remain available while OpenVPM approves clinics for texting setup.")
+                    : tx("Email appointment reminders remain available while your administrator configures texting.")}
                 </p>
               </div>
             ) : setupDisabled && !messaging ? (
               <div className="space-y-1">
-                <p className="text-sm font-medium text-slate-900">
-                  New-number setup is unavailable
-                </p>
-                <p className="text-xs text-slate-500">
-                  Review the clinic&apos;s existing texting setup in Messaging
-                  settings.
-                </p>
+                <p className="text-sm font-medium text-slate-900">{tx("New-number setup is unavailable")}</p>
+                <p className="text-xs text-slate-500">{tx("Review the clinic's existing texting setup in Messaging settings.")}</p>
               </div>
             ) : messaging ? (
               <div className="space-y-1">
                 <p className="text-sm font-medium text-slate-900">
-                  {messaging.senderE164 ?? "Texting setup needs attention"}
+                  {messaging.senderE164 ?? tx("Texting setup needs attention")}
                 </p>
                 <p className="text-xs text-slate-500">{statusDetail}</p>
               </div>
             ) : (
               <div className="space-y-1">
-                <p className="text-sm font-medium text-slate-900">
-                  Texting is not set up yet
-                </p>
-                <p className="text-xs text-slate-500">
-                  Set up a number for {location?.name ?? "your clinic"}.
+                <p className="text-sm font-medium text-slate-900">{tx("Texting is not set up yet")}</p>
+                <p className="text-xs text-slate-500">{tx("Set up a number for")}{" "}{location?.name ?? tx("your clinic")}.
                 </p>
               </div>
             )}
@@ -229,9 +195,7 @@ export function SetUpTextingStep({
             setupAvailable === false || messaging ? (
               <Button asChild type="button" variant="outline" size="sm">
                 <Link href="/settings?tab=messaging">
-                  {isConfigured ? <Check className="mr-1.5 h-4 w-4" /> : null}
-                  Messaging settings
-                </Link>
+                  {isConfigured ? <Check className="mr-1.5 h-4 w-4" /> : null}{tx("Messaging settings")}</Link>
               </Button>
             ) : setupAvailable ? (
               <Button
@@ -239,9 +203,7 @@ export function SetUpTextingStep({
                 variant="default"
                 size="sm"
                 onClick={() => setWizardOpen(true)}
-              >
-                Set up texting
-              </Button>
+              >{tx("Set up texting")}</Button>
             ) : null
           ) : null}
         </div>

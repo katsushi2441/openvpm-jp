@@ -1,0 +1,28 @@
+# 日本語化キットの開発用（当社環境）。本家の docker-compose.yml に重ねて使う。
+#   docker compose -p openvpm-jp -f docker/docker-compose.yml -f docker/docker-compose.jp-local.yml up -d postgres minio minio-bootstrap
+#
+# 1) 本家の既定ポート(5432/9000/9001/3000)は他のサービスと衝突するので、127.0.0.1 の別番号に寄せる。
+# 2) MinIO は公式イメージの無償配布をやめた（2026-09-29 実測: docker.io の minio/minio・minio/mc、
+#    quay.io/minio/* とも pull を拒否）。S3互換の SeaweedFS に差し替える。サービス名は本家に合わせて minio のまま。
+services:
+  postgres:
+    ports: !override
+      - "127.0.0.1:55441:5432"
+  minio:
+    image: chrislusf/seaweedfs:latest
+    command: !override ["server", "-dir=/data", "-s3", "-s3.port=9000", "-s3.config=/etc/seaweedfs/s3.json"]
+    environment: !override {}
+    volumes: !override
+      - minio_data:/data
+      - ./jp/s3.json:/etc/seaweedfs/s3.json:ro
+    ports: !override
+      - "127.0.0.1:55442:9000"
+  minio-bootstrap:
+    image: chrislusf/seaweedfs:latest
+    entrypoint: !override
+      - /bin/sh
+      - -c
+      - |
+        until echo "s3.bucket.list" | weed shell -master=minio:9333 >/dev/null 2>&1; do sleep 2; done
+        echo "s3.bucket.create -name openpims" | weed shell -master=minio:9333
+        echo "s3.bucket.list" | weed shell -master=minio:9333

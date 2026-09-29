@@ -16,6 +16,7 @@ import {
   PATIENT_SPECIES_OPTIONS,
   type PatientSpecies,
 } from "@/lib/patients/species";
+import { tx } from "@/lib/i18n";
 
 function dateInputValue(d: Date): string {
   return d.toISOString().slice(0, 10);
@@ -88,8 +89,8 @@ export default function PublicBookingPage() {
       <EmptyState
         className="py-16"
         icon={AlertCircle}
-        title="This appointment request page isn't available"
-        description="The link may be incorrect, or online appointment requests may be turned off. Please contact the clinic directly."
+        title={tx("This appointment request page isn't available")}
+        description={tx("The link may be incorrect, or online appointment requests may be turned off. Please contact the clinic directly.")}
       />
     );
   }
@@ -164,42 +165,39 @@ export default function PublicBookingPage() {
             />
           </svg>
         </div>
-        <h1 className="text-xl font-bold text-gray-900 mb-2">Request sent!</h1>
+        <h1 className="text-xl font-bold text-gray-900 mb-2">{tx("Request sent!")}</h1>
         <p className="text-gray-600 max-w-sm mx-auto">{book.data.message}</p>
         <div className="mx-auto mt-5 max-w-sm rounded-xl border border-gray-200 bg-gray-50 p-4 text-left text-sm">
-          <p className="mb-3 font-semibold text-gray-900">
-            Requested — not yet confirmed
-          </p>
+          <p className="mb-3 font-semibold text-gray-900">{tx("Requested — not yet confirmed")}</p>
           <dl className="space-y-2 text-gray-600">
             <div className="flex justify-between gap-4">
-              <dt>Pet</dt>
+              <dt>{tx("Pet")}</dt>
               <dd className="font-medium text-gray-900">{petName}</dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt>Visit</dt>
+              <dt>{tx("Visit")}</dt>
               <dd className="font-medium text-gray-900">
-                {selectedType?.name ?? "Appointment"}
+                {selectedType?.name ?? tx("Appointment")}
               </dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt>Preferred time</dt>
+              <dt>{tx("Preferred time")}</dt>
               <dd className="font-medium text-gray-900">
-                {date} at {time}
+                {date}{" "}{tx("at")}{" "}{time}
               </dd>
             </div>
             <div className="flex justify-between gap-4">
-              <dt>Clinic</dt>
+              <dt>{tx("Clinic")}</dt>
               <dd className="text-right font-medium text-gray-900">
                 {selectedLocation?.name ?? data.practice.name}
               </dd>
             </div>
           </dl>
         </div>
-        <p className="text-gray-500 text-sm mt-4">
-          We sent the details to the clinic. Questions?{" "}
+        <p className="text-gray-500 text-sm mt-4">{tx("We sent the details to the clinic. Questions?")}{" "}
           {data.practice.phone
             ? `Call ${data.practice.phone}.`
-            : "Contact the clinic."}
+            : tx("Contact the clinic.")}
         </p>
       </div>
     );
@@ -248,13 +246,8 @@ export default function PublicBookingPage() {
         className="rounded-2xl bg-white p-6 shadow-sm space-y-5"
       >
         <div>
-          <h2 className="text-base font-semibold text-gray-900">
-            Request an appointment
-          </h2>
-          <p className="mt-1 text-sm text-gray-500">
-            Choose a preferred time. The clinic will review your request and
-            confirm the appointment with you.
-          </p>
+          <h2 className="text-base font-semibold text-gray-900">{tx("Request an appointment")}</h2>
+          <p className="mt-1 text-sm text-gray-500">{tx("Choose a preferred time. The clinic will review your request and confirm the appointment with you.")}</p>
         </div>
 
         {data.locations.length > 1 ? (
@@ -262,9 +255,7 @@ export default function PublicBookingPage() {
             <label
               htmlFor={locationFieldId}
               className="block text-sm font-medium text-gray-700 mb-1.5"
-            >
-              Clinic location
-            </label>
+            >{tx("Clinic location")}</label>
             <select
               id={locationFieldId}
               value={locationId}
@@ -275,9 +266,7 @@ export default function PublicBookingPage() {
               required
               className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
             >
-              <option value="" disabled>
-                Choose a location
-              </option>
+              <option value="" disabled>{tx("Choose a location")}</option>
               {data.locations.map((location) => (
                 <option key={location.id} value={location.id}>
                   {location.name}
@@ -303,9 +292,7 @@ export default function PublicBookingPage() {
           <label
             htmlFor={typeFieldId}
             className="block text-sm font-medium text-gray-700 mb-1.5"
-          >
-            What do you need?
-          </label>
+          >{tx("What do you need?")}</label>
           <select
             id={typeFieldId}
             value={typeId}
@@ -316,13 +303,10 @@ export default function PublicBookingPage() {
             required
             className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
           >
-            <option value="" disabled>
-              Choose a visit type
-            </option>
+            <option value="" disabled>{tx("Choose a visit type")}</option>
             {data.types.map((t) => (
               <option key={t.id} value={t.id}>
-                {t.name} ({t.durationMinutes} min)
-              </option>
+                {t.name} ({t.durationMinutes}{" "}{tx("min)")}</option>
             ))}
           </select>
         </div>
@@ -331,9 +315,7 @@ export default function PublicBookingPage() {
           <label
             htmlFor={dateFieldId}
             className="block text-sm font-medium text-gray-700 mb-1.5"
-          >
-            Pick a day
-          </label>
+          >{tx("Pick a day")}</label>
           <input
             id={dateFieldId}
             type="date"
@@ -351,25 +333,19 @@ export default function PublicBookingPage() {
 
         {date && typeId && locationId && (
           <fieldset>
-            <legend className="text-sm font-medium text-gray-700 mb-2">
-              Pick a time
-            </legend>
+            <legend className="text-sm font-medium text-gray-700 mb-2">{tx("Pick a time")}</legend>
             {slots.isLoading && (
-              <p className="text-xs text-gray-500">Checking suggested times…</p>
+              <p className="text-xs text-gray-500">{tx("Checking suggested times…")}</p>
             )}
             {!slots.isLoading && slots.error && (
-              <p className="text-xs text-red-600">
-                Suggested times could not be loaded. Please try again.
-              </p>
+              <p className="text-xs text-red-600">{tx("Suggested times could not be loaded. Please try again.")}</p>
             )}
             {!slots.isLoading &&
               !slots.error &&
               slots.data &&
               slots.data.length === 0 && (
                 <div className="flex items-center gap-2 text-xs text-gray-500">
-                  <CalendarX2 className="h-4 w-4" />
-                  No suggested request times that day. Try another date.
-                </div>
+                  <CalendarX2 className="h-4 w-4" />{tx("No suggested request times that day. Try another date.")}</div>
               )}
             {!slots.isLoading &&
               !slots.error &&
@@ -412,15 +388,13 @@ export default function PublicBookingPage() {
         )}
 
         <div className="border-t border-gray-100 pt-5 space-y-4">
-          <p className="text-sm font-semibold text-gray-900">About you</p>
+          <p className="text-sm font-semibold text-gray-900">{tx("About you")}</p>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label
                 htmlFor={firstNameFieldId}
                 className="block text-sm font-medium text-gray-700 mb-1.5"
-              >
-                First name
-              </label>
+              >{tx("First name")}</label>
               <input
                 id={firstNameFieldId}
                 value={firstName}
@@ -435,9 +409,7 @@ export default function PublicBookingPage() {
               <label
                 htmlFor={lastNameFieldId}
                 className="block text-sm font-medium text-gray-700 mb-1.5"
-              >
-                Last name
-              </label>
+              >{tx("Last name")}</label>
               <input
                 id={lastNameFieldId}
                 value={lastName}
@@ -454,9 +426,7 @@ export default function PublicBookingPage() {
               <label
                 htmlFor={emailFieldId}
                 className="block text-sm font-medium text-gray-700 mb-1.5"
-              >
-                Email
-              </label>
+              >{tx("Email")}</label>
               <input
                 id={emailFieldId}
                 type="email"
@@ -472,9 +442,8 @@ export default function PublicBookingPage() {
               <label
                 htmlFor={phoneFieldId}
                 className="block text-sm font-medium text-gray-700 mb-1.5"
-              >
-                Phone{" "}
-                <span className="text-gray-400 font-normal">(optional)</span>
+              >{tx("Phone")}{" "}
+                <span className="text-gray-400 font-normal">{tx("(optional)")}</span>
               </label>
               <input
                 id={phoneFieldId}
@@ -490,9 +459,7 @@ export default function PublicBookingPage() {
 
           {/* Honeypot: invisible to humans, present for bots. */}
           <div className="absolute -left-[9999px] top-auto" aria-hidden="true">
-            <label htmlFor={websiteFieldId}>
-              Website
-              <input
+            <label htmlFor={websiteFieldId}>{tx("Website")}<input
                 id={websiteFieldId}
                 tabIndex={-1}
                 autoComplete="off"
@@ -507,9 +474,7 @@ export default function PublicBookingPage() {
               <label
                 htmlFor={petNameFieldId}
                 className="block text-sm font-medium text-gray-700 mb-1.5"
-              >
-                Pet's name
-              </label>
+              >{tx("Pet's name")}</label>
               <input
                 id={petNameFieldId}
                 value={petName}
@@ -523,9 +488,7 @@ export default function PublicBookingPage() {
               <label
                 htmlFor={speciesFieldId}
                 className="block text-sm font-medium text-gray-700 mb-1.5"
-              >
-                Pet type
-              </label>
+              >{tx("Pet type")}</label>
               <select
                 id={speciesFieldId}
                 value={species}
@@ -545,9 +508,7 @@ export default function PublicBookingPage() {
             <label
               htmlFor={reasonFieldId}
               className="block text-sm font-medium text-gray-700 mb-1.5"
-            >
-              What's this visit about?
-            </label>
+            >{tx("What's this visit about?")}</label>
             <textarea
               id={reasonFieldId}
               value={reason}
@@ -555,7 +516,7 @@ export default function PublicBookingPage() {
               required
               rows={3}
               maxLength={BOOKING_REASON_MAX_LENGTH}
-              placeholder="Tell us a little about what your pet needs"
+              placeholder={tx("Tell us a little about what your pet needs")}
               className="w-full resize-none rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
             />
           </div>
@@ -584,16 +545,14 @@ export default function PublicBookingPage() {
           style={{ backgroundColor: accent }}
         >
           {book.isPending
-            ? "Sending request…"
+            ? tx("Sending request…")
             : selectedType
               ? `Request ${selectedType.name}`
-              : "Request appointment"}
+              : tx("Request appointment")}
         </button>
-        <p className="text-center text-xs text-gray-400">
-          Prefer to talk to a person?
-          {data.practice.phone
+        <p className="text-center text-xs text-gray-400">{tx("Prefer to talk to a person?")}{data.practice.phone
             ? ` Call ${data.practice.phone}.`
-            : " Contact the clinic."}
+            : tx(" Contact the clinic.")}
         </p>
       </form>
     </div>

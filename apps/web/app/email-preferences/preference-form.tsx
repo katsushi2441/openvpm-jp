@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CheckCircle2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { tx } from "@/lib/i18n";
 
 type State = "ready" | "saving" | "saved" | "error";
 
@@ -47,11 +48,8 @@ export function EmailPreferenceForm({ token }: { token: string }) {
       >
         <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />
         <div>
-          <p className="text-sm font-medium">Preference saved</p>
-          <p className="mt-1 text-xs leading-5">
-            Optional OpenVPM emails are now off. No sign-in or sales call was
-            required.
-          </p>
+          <p className="text-sm font-medium">{tx("Preference saved")}</p>
+          <p className="mt-1 text-xs leading-5">{tx("Optional OpenVPM emails are now off. No sign-in or sales call was required.")}</p>
         </div>
       </div>
     );
@@ -67,17 +65,13 @@ export function EmailPreferenceForm({ token }: { token: string }) {
       >
         {state === "saving" ? (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        ) : null}
-        Turn off optional emails
-      </Button>
+        ) : null}{tx("Turn off optional emails")}</Button>
       {error ? (
         <p className="text-sm text-destructive" role="alert">
           {error}
         </p>
       ) : (
-        <p className="text-center text-xs text-muted-foreground">
-          Immediate, no sign-in required.
-        </p>
+        <p className="text-center text-xs text-muted-foreground">{tx("Immediate, no sign-in required.")}</p>
       )}
     </div>
   );

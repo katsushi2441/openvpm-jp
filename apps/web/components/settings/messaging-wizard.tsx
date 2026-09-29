@@ -27,6 +27,7 @@ import {
   MESSAGING_AREA_CODE_LENGTH,
 } from "@/lib/messaging/policy";
 import { toast } from "sonner";
+import { tx, uiLocale } from "@/lib/i18n";
 
 export type MessagingSetupLocation = {
   locationId: string;
@@ -66,7 +67,7 @@ function formatCost(cost: string, currency: string): string {
   const value = Number(cost);
   if (!Number.isFinite(value)) return `${cost} ${currency}`;
   try {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat(uiLocale(), {
       style: "currency",
       currency,
     }).format(value);
@@ -76,10 +77,10 @@ function formatCost(cost: string, currency: string): string {
 }
 
 const STEPS: { id: Step; title: string }[] = [
-  { id: "choose", title: "Choose a texting number" },
-  { id: "confirm", title: "Confirm the number" },
-  { id: "registration", title: "Review and purchase" },
-  { id: "done", title: "Number ordered; registration not started" },
+  { id: "choose", title: tx("Choose a texting number") },
+  { id: "confirm", title: tx("Confirm the number") },
+  { id: "registration", title: tx("Review and purchase") },
+  { id: "done", title: tx("Number ordered; registration not started") },
 ];
 
 export function MessagingWizard({
@@ -137,7 +138,7 @@ export function MessagingWizard({
       setProvisionedSender(result.senderE164);
       setStep("done");
       toast.success(
-        "Number order accepted. Sending stays off until carrier approval.",
+        tx("Number order accepted. Sending stays off until carrier approval."),
       );
       onChanged();
     },
@@ -240,7 +241,7 @@ export function MessagingWizard({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Set up texting"
+      aria-label={tx("Set up texting")}
       className="fixed inset-0 z-[90] overflow-y-auto bg-[linear-gradient(135deg,#f8fafc_0%,#ecfdf5_52%,#f0fdfa_100%)] p-4 text-slate-950 sm:p-6"
     >
       <div className="flex min-h-full items-center justify-center">
@@ -248,20 +249,18 @@ export function MessagingWizard({
           <div className="flex items-start justify-between gap-4">
             <div>
               <div className="inline-flex items-center gap-2 text-sm font-medium text-emerald-700">
-                <MessageSquare className="h-4 w-4" />
-                Texting setup
-              </div>
+                <MessageSquare className="h-4 w-4" />{tx("Texting setup")}</div>
               <h2 className="mt-4 font-heading text-2xl font-bold tracking-tight text-slate-950">
                 {STEPS[currentIndex]?.title}
               </h2>
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 {location.name}
-                {location.isPrimary ? " primary location" : ""}
+                {location.isPrimary ? tx(" primary location") : ""}
               </p>
             </div>
             <button
               type="button"
-              aria-label="Close texting setup"
+              aria-label={tx("Close texting setup")}
               onClick={() => onOpenChange(false)}
               className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
             >
@@ -340,12 +339,9 @@ export function MessagingWizard({
               onClick={handleBack}
               disabled={step === "choose" || provision.isPending}
             >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back
-            </Button>
+              <ArrowLeft className="mr-2 h-4 w-4" />{tx("Back")}</Button>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-medium text-slate-500">
-                Step {currentIndex + 1} of {STEPS.length}
+              <span className="text-xs font-medium text-slate-500">{tx("Step")}{" "}{currentIndex + 1}{" "}{tx("of")}{" "}{STEPS.length}
               </span>
               <Button
                 type="button"
@@ -379,21 +375,16 @@ function ChooseStep({
 }) {
   return (
     <div className="space-y-4">
-      <p className="text-sm leading-6 text-slate-600">
-        OpenVPM currently sets up a new local number for texting. Your
-        clinic&apos;s existing voice line stays unchanged.
-      </p>
+      <p className="text-sm leading-6 text-slate-600">{tx("OpenVPM currently sets up a new local number for texting. Your clinic's existing voice line stays unchanged.")}</p>
       <div className="w-full rounded-xl border border-slate-200 bg-slate-50 p-4 text-left">
         <div className="flex items-start gap-3">
           <ShieldCheck className="mt-0.5 h-5 w-5 text-slate-500" />
           <div>
-            <p className="font-medium text-slate-950">
-              Existing-number texting is not available yet
-            </p>
+            <p className="font-medium text-slate-950">{tx("Existing-number texting is not available yet")}</p>
             <p className="mt-1 text-sm text-slate-600">
               {existingPhone
                 ? `${existingPhone} will not be ported, hosted, or changed.`
-                : "Your clinic phone line will not be ported, hosted, or changed."}
+                : tx("Your clinic phone line will not be ported, hosted, or changed.")}
             </p>
           </div>
         </div>
@@ -411,12 +402,8 @@ function ChooseStep({
         <div className="flex items-start gap-3">
           <Phone className="mt-0.5 h-5 w-5 text-emerald-600" />
           <div>
-            <p className="font-medium text-slate-950">
-              Get a new local texting number
-            </p>
-            <p className="mt-1 text-sm text-slate-600">
-              Choose a local number for outbound texts and client replies.
-            </p>
+            <p className="font-medium text-slate-950">{tx("Get a new local texting number")}</p>
+            <p className="mt-1 text-sm text-slate-600">{tx("Choose a local number for outbound texts and client replies.")}</p>
           </div>
         </div>
       </button>
@@ -456,37 +443,26 @@ function ConfirmStep({
   if (mode === "host") {
     return (
       <div className="space-y-5">
-        <p className="text-sm leading-6 text-slate-600">
-          We will check whether {location.existingPhone ?? "this number"} can be
-          text-enabled without porting voice service.
-        </p>
+        <p className="text-sm leading-6 text-slate-600">{tx("We will check whether")}{" "}{location.existingPhone ?? tx("this number")}{" "}{tx("can be text-enabled without porting voice service.")}</p>
         {eligibility === null ? (
           <Button variant="outline" onClick={checkExisting} disabled={checking}>
             {checking ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
               <Search className="mr-2 h-4 w-4" />
-            )}
-            Check eligibility
-          </Button>
+            )}{tx("Check eligibility")}</Button>
         ) : eligibility.eligible ? (
           <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
             <p className="flex items-center gap-2 text-sm font-medium text-emerald-800">
-              <Check className="h-4 w-4" />
-              Eligible to text-enable
-            </p>
-            <p className="mt-2 text-sm text-emerald-700">
-              Continue to review the carrier registration step.
-            </p>
+              <Check className="h-4 w-4" />{tx("Eligible to text-enable")}</p>
+            <p className="mt-2 text-sm text-emerald-700">{tx("Continue to review the carrier registration step.")}</p>
           </div>
         ) : (
           <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
-            <p className="text-sm font-medium text-amber-900">
-              This number is not eligible yet.
-            </p>
+            <p className="text-sm font-medium text-amber-900">{tx("This number is not eligible yet.")}</p>
             <p className="mt-2 text-sm text-amber-800">
               {eligibility.detail ??
-                "Choose a new local number instead, or update the location phone."}
+                tx("Choose a new local number instead, or update the location phone.")}
             </p>
           </div>
         )}
@@ -496,17 +472,14 @@ function ConfirmStep({
 
   return (
     <div className="space-y-5">
-      <p className="text-sm leading-6 text-slate-600">
-        Search for a local number. The selected number will be assigned to this
-        location. Carrier registration remains not started until you complete
-        the clinic details and{" "}
+      <p className="text-sm leading-6 text-slate-600">{tx("Search for a local number. The selected number will be assigned to this location. Carrier registration remains not started until you complete the clinic details and")}{" "}
         {hosted
-          ? "OpenVPM reviews them."
-          : "your administrator finishes provider activation."}
+          ? tx("OpenVPM reviews them.")
+          : tx("your administrator finishes provider activation.")}
       </p>
       <div className="flex flex-wrap items-end gap-2">
         <label className="space-y-1.5">
-          <span className="text-xs font-medium text-slate-600">Area code</span>
+          <span className="text-xs font-medium text-slate-600">{tx("Area code")}</span>
           <Input
             value={areaCode}
             onChange={(e) =>
@@ -532,9 +505,7 @@ function ConfirmStep({
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (
             <Search className="mr-2 h-4 w-4" />
-          )}
-          Search numbers
-        </Button>
+          )}{tx("Search numbers")}</Button>
       </div>
       {numbers.length > 0 ? (
         <div className="divide-y divide-slate-200 overflow-hidden rounded-xl border border-slate-200">
@@ -555,22 +526,18 @@ function ConfirmStep({
               </span>
               <span className="flex items-center gap-2">
                 <span className="text-xs text-slate-500">
-                  {formatCost(n.upfrontCost, n.currency)} today ·{" "}
+                  {formatCost(n.upfrontCost, n.currency)}{" "}{tx("today ·")}{" "}
                   {formatCost(n.monthlyCost, n.currency)}/mo
                 </span>
                 {selectedNumber?.phoneNumber === n.phoneNumber ? (
-                  <Badge variant="success">Selected</Badge>
+                  <Badge variant="success">{tx("Selected")}</Badge>
                 ) : null}
               </span>
             </button>
           ))}
         </div>
       ) : hasSearched ? (
-        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
-          No available numbers returned a complete upfront price, monthly price,
-          and currency. Nothing can be selected or purchased; search again
-          later.
-        </div>
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">{tx("No available numbers returned a complete upfront price, monthly price, and currency. Nothing can be selected or purchased; search again later.")}</div>
       ) : null}
     </div>
   );
@@ -606,23 +573,20 @@ function RegistrationStep({
       </div>
       {mode === "buy" && selectedNumber ? (
         <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
-          <p className="text-sm font-medium text-amber-950">Provider charges</p>
+          <p className="text-sm font-medium text-amber-950">{tx("Provider charges")}</p>
           <p className="mt-2 text-sm text-amber-900">
-            {formatCost(selectedNumber.upfrontCost, selectedNumber.currency)}{" "}
-            due now, then{" "}
+            {formatCost(selectedNumber.upfrontCost, selectedNumber.currency)}{" "}{tx("due now, then")}{" "}
             {formatCost(selectedNumber.monthlyCost, selectedNumber.currency)}
             /month for the number.
           </p>
         </div>
       ) : null}
       <div className="rounded-xl border border-teal-200 bg-teal-50 p-4">
-        <p className="text-sm font-medium text-teal-950">
-          Carrier approval is required before live US texting.
-        </p>
+        <p className="text-sm font-medium text-teal-950">{tx("Carrier approval is required before live US texting.")}</p>
         <p className="mt-2 text-sm leading-6 text-teal-800">
           {hosted
-            ? "The selected number will be saved with sending off. After this step, complete the clinic's legal and consent details in Messaging settings; OpenVPM reviews them before any fee-bearing carrier submission."
-            : "The selected number will be saved with sending off. After this step, complete the clinic's legal and consent details in Messaging settings; your administrator must finish carrier activation before sending."}
+            ? tx("The selected number will be saved with sending off. After this step, complete the clinic's legal and consent details in Messaging settings; OpenVPM reviews them before any fee-bearing carrier submission.")
+            : tx("The selected number will be saved with sending off. After this step, complete the clinic's legal and consent details in Messaging settings; your administrator must finish carrier activation before sending.")}
         </p>
       </div>
       <label className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-950">
@@ -632,11 +596,7 @@ function RegistrationStep({
           onChange={(event) => setChargeAcknowledged(event.target.checked)}
           className="mt-0.5 h-4 w-4 rounded border-amber-400"
         />
-        <span>
-          I authorize the exact upfront and monthly provider charges shown above
-          for this selected number. Texting stays off until carrier approval is
-          active and an administrator enables sending.
-        </span>
+        <span>{tx("I authorize the exact upfront and monthly provider charges shown above for this selected number. Texting stays off until carrier approval is active and an administrator enables sending.")}</span>
       </label>
     </div>
   );
@@ -653,24 +613,16 @@ function DoneStep({
     <div className="space-y-5">
       <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4">
         <p className="flex items-center gap-2 text-sm font-medium text-emerald-900">
-          <Check className="h-4 w-4" />
-          Number order accepted; sending remains off
-        </p>
+          <Check className="h-4 w-4" />{tx("Number order accepted; sending remains off")}</p>
         <p className="mt-2 text-sm leading-6 text-emerald-800">
-          {sender ?? "Your number"} is saved while the provider finishes any
-          activation work. Carrier registration has not been submitted yet, and
-          SMS sending stays off until approval is active and an admin turns it
-          on.
-        </p>
+          {sender ?? tx("Your number")}{" "}{tx("is saved while the provider finishes any activation work. Carrier registration has not been submitted yet, and SMS sending stays off until approval is active and an admin turns it on.")}</p>
       </div>
       <div className="rounded-xl border border-slate-200 p-4">
-        <p className="text-sm font-medium text-slate-950">
-          Next: carrier approval
-        </p>
+        <p className="text-sm font-medium text-slate-950">{tx("Next: carrier approval")}</p>
         <p className="mt-2 text-sm leading-6 text-slate-600">
           {hosted
-            ? "Complete the US carrier registration form in Messaging settings. OpenVPM will review and submit it. Hosted sending remains off until the clinic and one location are explicitly approved for the pilot; after approval, validate through a current consented client workflow."
-            : "Complete the US carrier registration form in Messaging settings. Your administrator must finish provider activation before enabling sending; after approval, validate through a current consented client workflow."}
+            ? tx("Complete the US carrier registration form in Messaging settings. OpenVPM will review and submit it. Hosted sending remains off until the clinic and one location are explicitly approved for the pilot; after approval, validate through a current consented client workflow.")
+            : tx("Complete the US carrier registration form in Messaging settings. Your administrator must finish provider activation before enabling sending; after approval, validate through a current consented client workflow.")}
         </p>
       </div>
     </div>

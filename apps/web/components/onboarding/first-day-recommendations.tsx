@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { FirstGoal } from "@/lib/onboarding/clinic-profile";
+import { tx } from "@/lib/i18n";
 
 type RecommendationTone = "primary" | "violet" | "coral";
 
@@ -34,31 +35,31 @@ const FIRST_GOAL_RECOMMENDATIONS: Record<
   { title: string; body: string; pictureLabel: string; rowLabel: string }
 > = {
   run_visit: {
-    title: "Run one real visit",
+    title: tx("Run one real visit"),
     body: "Add one owner and pet, then work from check-in through the client handoff.",
     pictureLabel: "Your clinic day",
     rowLabel: "New patient",
   },
   import_records: {
-    title: "Plan a safe first import",
+    title: tx("Plan a safe first import"),
     body: "Inventory an export and review one representative chart before anything goes live.",
     pictureLabel: "Migration preview",
     rowLabel: "Review one chart",
   },
   start_fresh: {
-    title: "Build your first real visit",
+    title: tx("Build your first real visit"),
     body: "Set your clinic basics, add one owner and pet, then book the first appointment.",
     pictureLabel: "Your clinic day",
     rowLabel: "First appointment",
   },
   explore_sample: {
-    title: "Explore a ready-made clinic",
+    title: tx("Explore a ready-made clinic"),
     body: "Open a sample schedule and patient timeline without using real clinic data.",
     pictureLabel: "Sample clinic",
     rowLabel: "Guided visit",
   },
   self_host: {
-    title: "Review the self-hosted path",
+    title: tx("Review the self-hosted path"),
     body: "Confirm deployment and data-ownership controls before moving any live work.",
     pictureLabel: "Self-hosted setup",
     rowLabel: "Deployment plan",
@@ -123,7 +124,7 @@ export function FirstDayRecommendations({
 }) {
   const primaryRecommendation = hasImportedData
     ? {
-        title: "Book one real appointment",
+        title: tx("Book one real appointment"),
         body: "Choose a patient from your reviewed records and put one visit on the schedule.",
         pictureLabel: "Your clinic day",
         rowLabel: "First visit",
@@ -131,7 +132,7 @@ export function FirstDayRecommendations({
     : FIRST_GOAL_RECOMMENDATIONS[primaryGoal];
 
   return (
-    <section aria-label="Your first-day recommendations">
+    <section aria-label={tx("Your first-day recommendations")}>
       <ul className="grid gap-6 sm:grid-cols-3 sm:gap-5">
         <RecommendationCard
           title={primaryRecommendation.title}
@@ -156,47 +157,40 @@ export function FirstDayRecommendations({
         </RecommendationCard>
 
         <RecommendationCard
-          title="Make getting paid easy"
+          title={tx("Make getting paid easy")}
           body="Send an online invoice and let clients pay by card from their private link."
           tag="Get paid faster"
           tone="violet"
           tilt="sm:rotate-1"
         >
           <span className="flex items-center gap-2 text-xs font-semibold text-violet-700">
-            <ReceiptText className="h-4 w-4" /> Client billing
-          </span>
+            <ReceiptText className="h-4 w-4" />{" "}{tx("Client billing")}</span>
           <div className="rounded-lg bg-white/90 px-3 py-2.5 shadow-sm">
             <div className="flex items-center justify-between text-xs text-slate-500">
-              <span>Invoice total</span>
+              <span>{tx("Invoice total")}</span>
               <span className="font-semibold text-slate-900">$68.00</span>
             </div>
             <div className="mt-2 flex items-center gap-1.5 text-[11px] font-medium text-violet-700">
-              <CreditCard className="h-3.5 w-3.5" /> Pay securely online
-            </div>
+              <CreditCard className="h-3.5 w-3.5" />{" "}{tx("Pay securely online")}</div>
           </div>
         </RecommendationCard>
 
         <RecommendationCard
-          title="Give clients one simple place"
+          title={tx("Give clients one simple place")}
           body="Share visits, vaccine history, and bills through a private client portal."
           tag="Fewer status calls"
           tone="coral"
           tilt="sm:-rotate-1"
         >
           <span className="flex items-center gap-2 text-xs font-semibold text-orange-700">
-            <Globe2 className="h-4 w-4" /> Client portal
-          </span>
+            <Globe2 className="h-4 w-4" />{" "}{tx("Client portal")}</span>
           <div className="flex items-center gap-2 rounded-lg bg-white/90 px-3 py-2.5 shadow-sm">
             <span className="flex h-8 w-8 items-center justify-center rounded-full bg-orange-100 text-orange-700">
               <PawPrint className="h-4 w-4" />
             </span>
             <div className="min-w-0">
-              <p className="text-xs font-semibold text-slate-900">
-                Everything in one link
-              </p>
-              <p className="text-[10px] text-slate-500">
-                Visits · Vaccines · Bills
-              </p>
+              <p className="text-xs font-semibold text-slate-900">{tx("Everything in one link")}</p>
+              <p className="text-[10px] text-slate-500">{tx("Visits · Vaccines · Bills")}</p>
             </div>
           </div>
         </RecommendationCard>

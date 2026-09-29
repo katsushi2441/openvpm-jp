@@ -25,6 +25,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/common/empty-state";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { tx, uiLocale } from "@/lib/i18n";
 
 type ReminderStatusFilter = "open" | "completed" | "dismissed";
 type ReminderDueFilter = "all" | "overdue" | "upcoming";
@@ -49,7 +50,7 @@ function canManage(role?: string | null): boolean {
 }
 
 function displayDate(value: string): string {
-  return new Date(`${value}T12:00:00Z`).toLocaleDateString("en-US", {
+  return new Date(`${value}T12:00:00Z`).toLocaleDateString(uiLocale(), {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -106,7 +107,7 @@ export default function CareRemindersPage() {
       await utils.careReminders.list.invalidate();
       toast.success(
         variables.dismissed
-          ? `${variables.items.length} invalid reminder${variables.items.length === 1 ? "" : "s"} dismissed`
+          ? `${variables.items.length} invalid reminder${variables.items.length === 1 ? "" : tx("s")} dismissed`
           : "Reminder restored",
       );
     },
@@ -144,7 +145,7 @@ export default function CareRemindersPage() {
       setStatus("open");
       setDue("all");
       await utils.careReminders.list.invalidate();
-      toast.success("Care reminder added");
+      toast.success(tx("Care reminder added"));
     },
     onError: (error) => toast.error(error.message),
   });
@@ -158,8 +159,7 @@ export default function CareRemindersPage() {
   if (query.isLoading) {
     return (
       <div className="flex items-center gap-2 rounded-lg border border-border bg-card p-5 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" /> Loading care reminders...
-      </div>
+        <Loader2 className="h-4 w-4 animate-spin" />{" "}{tx("Loading care reminders...")}</div>
     );
   }
 
@@ -167,11 +167,11 @@ export default function CareRemindersPage() {
     return (
       <EmptyState
         icon={AlertTriangle}
-        title="Could not load care reminders"
+        title={tx("Could not load care reminders")}
         description={
-          query.error?.message ?? "The reminder queue returned no data."
+          query.error?.message ?? tx("The reminder queue returned no data.")
         }
-        action={{ label: "Retry", onClick: () => query.refetch() }}
+        action={{ label: tx("Retry"), onClick: () => query.refetch() }}
       />
     );
   }
@@ -217,24 +217,19 @@ export default function CareRemindersPage() {
     <div className="space-y-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h2 className="font-heading text-xl font-semibold">Care reminders</h2>
-          <p className="mt-1 max-w-3xl text-sm text-muted-foreground">
-            Internal follow-up work for each patient. This queue never sends an
-            email or text automatically; client outreach remains a separate,
-            deliberate action with its own consent checks.
-          </p>
+          <h2 className="font-heading text-xl font-semibold">{tx("Care reminders")}</h2>
+          <p className="mt-1 max-w-3xl text-sm text-muted-foreground">{tx("Internal follow-up work for each patient. This queue never sends an email or text automatically; client outreach remains a separate, deliberate action with its own consent checks.")}</p>
         </div>
         <div className="flex flex-wrap gap-2">
           <Button variant="outline" asChild>
-            <Link href="/recalls">Vaccination recalls</Link>
+            <Link href="/recalls">{tx("Vaccination recalls")}</Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link href="/schedule">Appointment reminders</Link>
+            <Link href="/schedule">{tx("Appointment reminders")}</Link>
           </Button>
           {manageable ? (
             <Button className="gap-2" onClick={() => setShowCreate(true)}>
-              <Plus className="h-4 w-4" /> Add reminder
-            </Button>
+              <Plus className="h-4 w-4" />{" "}{tx("Add reminder")}</Button>
           ) : null}
         </div>
       </div>
@@ -243,16 +238,13 @@ export default function CareRemindersPage() {
         <Card>
           <CardHeader className="flex-row items-start justify-between space-y-0">
             <div>
-              <CardTitle>Add an internal reminder</CardTitle>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Choose an active patient. Saving adds clinic work only and does
-                not contact the client.
-              </p>
+              <CardTitle>{tx("Add an internal reminder")}</CardTitle>
+              <p className="mt-1 text-sm text-muted-foreground">{tx("Choose an active patient. Saving adds clinic work only and does not contact the client.")}</p>
             </div>
             <Button
               variant="ghost"
               size="icon"
-              aria-label="Close reminder form"
+              aria-label={tx("Close reminder form")}
               onClick={() => setShowCreate(false)}
             >
               <X className="h-4 w-4" />
@@ -276,9 +268,7 @@ export default function CareRemindersPage() {
                 <label
                   className="text-sm font-medium"
                   htmlFor="care-reminder-patient"
-                >
-                  Patient
-                </label>
+                >{tx("Patient")}</label>
                 {selectedPatient ? (
                   <div className="flex items-center justify-between rounded-md border border-border px-3 py-2">
                     <div>
@@ -297,9 +287,7 @@ export default function CareRemindersPage() {
                         setSelectedPatient(null);
                         setPatientQuery("");
                       }}
-                    >
-                      Change
-                    </Button>
+                    >{tx("Change")}</Button>
                   </div>
                 ) : (
                   <>
@@ -307,13 +295,11 @@ export default function CareRemindersPage() {
                       id="care-reminder-patient"
                       value={patientQuery}
                       onChange={(event) => setPatientQuery(event.target.value)}
-                      placeholder="Search active patients or owners"
+                      placeholder={tx("Search active patients or owners")}
                       autoComplete="off"
                     />
                     {patientSearch.isFetching ? (
-                      <p className="text-xs text-muted-foreground">
-                        Searching...
-                      </p>
+                      <p className="text-xs text-muted-foreground">{tx("Searching...")}</p>
                     ) : null}
                     {patientSearch.data?.length ? (
                       <div className="max-h-44 overflow-y-auto rounded-md border border-border">
@@ -355,9 +341,7 @@ export default function CareRemindersPage() {
                 <label
                   className="text-sm font-medium"
                   htmlFor="care-reminder-title"
-                >
-                  Reminder
-                </label>
+                >{tx("Reminder")}</label>
                 <Input
                   id="care-reminder-title"
                   value={title}
@@ -370,9 +354,7 @@ export default function CareRemindersPage() {
                 <label
                   className="text-sm font-medium"
                   htmlFor="care-reminder-date"
-                >
-                  Due date
-                </label>
+                >{tx("Due date")}</label>
                 <Input
                   id="care-reminder-date"
                   type="date"
@@ -385,9 +367,7 @@ export default function CareRemindersPage() {
                 <label
                   className="text-sm font-medium"
                   htmlFor="care-reminder-notes"
-                >
-                  Notes (optional)
-                </label>
+                >{tx("Notes (optional)")}</label>
                 <Textarea
                   id="care-reminder-notes"
                   value={notes}
@@ -400,9 +380,7 @@ export default function CareRemindersPage() {
                   type="button"
                   variant="outline"
                   onClick={() => setShowCreate(false)}
-                >
-                  Cancel
-                </Button>
+                >{tx("Cancel")}</Button>
                 <Button
                   type="submit"
                   disabled={
@@ -414,9 +392,7 @@ export default function CareRemindersPage() {
                 >
                   {create.isPending ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : null}
-                  Save reminder
-                </Button>
+                  ) : null}{tx("Save reminder")}</Button>
               </div>
             </form>
           </CardContent>
@@ -427,16 +403,14 @@ export default function CareRemindersPage() {
         <Card>
           <CardHeader className="flex-row items-start justify-between space-y-0">
             <div>
-              <CardTitle>Dismiss invalid reminders</CardTitle>
+              <CardTitle>{tx("Dismiss invalid reminders")}</CardTitle>
               <p className="mt-1 text-sm text-muted-foreground">
-                {selectedItems.length} selected. They will leave the active
-                queue but remain in an auditable dismissed view.
-              </p>
+                {selectedItems.length}{" "}{tx("selected. They will leave the active queue but remain in an auditable dismissed view.")}</p>
             </div>
             <Button
               variant="ghost"
               size="icon"
-              aria-label="Close dismissal form"
+              aria-label={tx("Close dismissal form")}
               onClick={() => setShowDismiss(false)}
             >
               <X className="h-4 w-4" />
@@ -458,15 +432,13 @@ export default function CareRemindersPage() {
                 });
               }}
             >
-              <label className="block space-y-2 text-sm font-medium">
-                Why are these reminders invalid?
-                <Textarea
+              <label className="block space-y-2 text-sm font-medium">{tx("Why are these reminders invalid?")}<Textarea
                   value={dismissalReason}
                   onChange={(event) => setDismissalReason(event.target.value)}
                   minLength={3}
                   maxLength={500}
                   required
-                  placeholder="For example: duplicate reminders from an import"
+                  placeholder={tx("For example: duplicate reminders from an import")}
                 />
               </label>
               <div className="flex justify-end gap-2">
@@ -474,9 +446,7 @@ export default function CareRemindersPage() {
                   type="button"
                   variant="outline"
                   onClick={() => setShowDismiss(false)}
-                >
-                  Cancel
-                </Button>
+                >{tx("Cancel")}</Button>
                 <Button
                   type="submit"
                   variant="destructive"
@@ -488,8 +458,7 @@ export default function CareRemindersPage() {
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   ) : (
                     <Trash2 className="mr-2 h-4 w-4" />
-                  )}
-                  Dismiss {selectedItems.length}
+                  )}{tx("Dismiss")}{" "}{selectedItems.length}
                 </Button>
               </div>
             </form>
@@ -501,17 +470,13 @@ export default function CareRemindersPage() {
         <Card>
           <CardHeader className="flex-row items-start justify-between space-y-0">
             <div>
-              <CardTitle>Contact {outreachTarget.clientName}</CardTitle>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Sending is deliberate and separate from completing the internal
-                reminder. Email suppression, SMS consent, sender, and quiet-hour
-                protections are applied before delivery.
-              </p>
+              <CardTitle>{tx("Contact")}{" "}{outreachTarget.clientName}</CardTitle>
+              <p className="mt-1 text-sm text-muted-foreground">{tx("Sending is deliberate and separate from completing the internal reminder. Email suppression, SMS consent, sender, and quiet-hour protections are applied before delivery.")}</p>
             </div>
             <Button
               variant="ghost"
               size="icon"
-              aria-label="Close outreach composer"
+              aria-label={tx("Close outreach composer")}
               onClick={() => {
                 outreachRequestId.current = null;
                 setOutreachTarget(null);
@@ -545,9 +510,7 @@ export default function CareRemindersPage() {
                     setOutreachChannel("email");
                   }}
                 >
-                  <Mail className="mr-2 h-4 w-4" />
-                  Email
-                </Button>
+                  <Mail className="mr-2 h-4 w-4" />{tx("Email")}</Button>
                 <Button
                   type="button"
                   size="sm"
@@ -561,36 +524,27 @@ export default function CareRemindersPage() {
                     setOutreachChannel("sms");
                   }}
                 >
-                  <MessageSquare className="mr-2 h-4 w-4" />
-                  Text
-                </Button>
+                  <MessageSquare className="mr-2 h-4 w-4" />{tx("Text")}</Button>
               </div>
               {!outreachTarget.clientEmail &&
               (!outreachTarget.clientPhone ||
                 !outreachTarget.clientSmsConsent) ? (
-                <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
-                  This client has no deliverable email and no SMS-consented
-                  phone number. Update the client record before sending
-                  outreach.
-                </p>
+                <p className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">{tx("This client has no deliverable email and no SMS-consented phone number. Update the client record before sending outreach.")}</p>
               ) : null}
               {outreachChannel === "email" ? (
                 <div className="space-y-2 text-sm font-medium">
-                  <p>Subject</p>
+                  <p>{tx("Subject")}</p>
                   <div className="rounded-md border border-border bg-muted/30 px-3 py-2 font-normal">
                     {outreachSubject}
                   </div>
                 </div>
               ) : null}
               <div className="space-y-2 text-sm font-medium">
-                <p>Template preview</p>
+                <p>{tx("Template preview")}</p>
                 <div className="min-h-36 whitespace-pre-wrap rounded-md border border-border bg-muted/30 px-3 py-2 font-normal">
                   {outreachContent}
                 </div>
-                <p className="text-xs font-normal text-muted-foreground">
-                  Reminder wording is generated server-side and cannot be
-                  changed into free-form external email.
-                </p>
+                <p className="text-xs font-normal text-muted-foreground">{tx("Reminder wording is generated server-side and cannot be changed into free-form external email.")}</p>
               </div>
               <div className="flex justify-end">
                 <Button type="submit" disabled={!canSendOutreach}>
@@ -598,8 +552,7 @@ export default function CareRemindersPage() {
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   ) : (
                     <Send className="mr-2 h-4 w-4" />
-                  )}
-                  Send {outreachChannel === "sms" ? "text" : "email"}
+                  )}{tx("Send")}{" "}{outreachChannel === "sms" ? tx("text") : tx("email")}
                 </Button>
               </div>
             </form>
@@ -608,29 +561,24 @@ export default function CareRemindersPage() {
       ) : null}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Metric label="Open" value={counts.open} icon={BellRing} />
-        <Metric label="Due or overdue" value={counts.overdue} icon={Clock3} />
-        <Metric label="Upcoming" value={counts.upcoming} icon={CheckCircle2} />
-        <Metric label="Dismissed" value={counts.dismissed} icon={Trash2} />
+        <Metric label={tx("Open")} value={counts.open} icon={BellRing} />
+        <Metric label={tx("Due or overdue")} value={counts.overdue} icon={Clock3} />
+        <Metric label={tx("Upcoming")} value={counts.upcoming} icon={CheckCircle2} />
+        <Metric label={tx("Dismissed")} value={counts.dismissed} icon={Trash2} />
       </div>
 
       <Card>
         <CardHeader className="gap-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
           <div>
-            <CardTitle>Patient follow-up queue</CardTitle>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Due dates use the practice day. Imported tasks retain source
-              identity so retrying a migration cannot duplicate them.
-            </p>
+            <CardTitle>{tx("Patient follow-up queue")}</CardTitle>
+            <p className="mt-1 text-sm text-muted-foreground">{tx("Due dates use the practice day. Imported tasks retain source identity so retrying a migration cannot duplicate them.")}</p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Button
               size="sm"
               variant={status === "open" ? "default" : "outline"}
               onClick={() => setStatus("open")}
-            >
-              Open
-            </Button>
+            >{tx("Open")}</Button>
             <Button
               size="sm"
               variant={status === "completed" ? "default" : "outline"}
@@ -638,9 +586,7 @@ export default function CareRemindersPage() {
                 setStatus("completed");
                 setDue("all");
               }}
-            >
-              Completed
-            </Button>
+            >{tx("Completed")}</Button>
             <Button
               size="sm"
               variant={status === "dismissed" ? "default" : "outline"}
@@ -648,9 +594,7 @@ export default function CareRemindersPage() {
                 setStatus("dismissed");
                 setDue("all");
               }}
-            >
-              Dismissed
-            </Button>
+            >{tx("Dismissed")}</Button>
             {status === "open" ? (
               <>
                 {(["all", "overdue", "upcoming"] as const).map((value) => (
@@ -673,8 +617,8 @@ export default function CareRemindersPage() {
             <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-md border border-border bg-muted/30 p-3">
               <span className="text-sm text-muted-foreground">
                 {selectedIds.size === 0
-                  ? "Select up to 100 invalid reminders to dismiss them safely."
-                  : `${selectedIds.size} reminder${selectedIds.size === 1 ? "" : "s"} selected`}
+                  ? tx("Select up to 100 invalid reminders to dismiss them safely.")
+                  : `${selectedIds.size} reminder${selectedIds.size === 1 ? "" : tx("s")} selected`}
               </span>
               <Button
                 size="sm"
@@ -682,9 +626,7 @@ export default function CareRemindersPage() {
                 disabled={selectedIds.size === 0}
                 onClick={() => setShowDismiss(true)}
               >
-                <Trash2 className="mr-2 h-4 w-4" />
-                Dismiss selected
-              </Button>
+                <Trash2 className="mr-2 h-4 w-4" />{tx("Dismiss selected")}</Button>
             </div>
           ) : null}
           {items.length === 0 ? (
@@ -698,17 +640,17 @@ export default function CareRemindersPage() {
               }
               title={
                 status === "open"
-                  ? "No reminders in this view"
+                  ? tx("No reminders in this view")
                   : status === "completed"
-                    ? "No completed reminders"
-                    : "No dismissed reminders"
+                    ? tx("No completed reminders")
+                    : tx("No dismissed reminders")
               }
               description={
                 status === "open"
-                  ? "Try another due-date filter, or add a reminder from a patient record."
+                  ? tx("Try another due-date filter, or add a reminder from a patient record.")
                   : status === "completed"
-                    ? "Completed care reminders will remain available here for review."
-                    : "Invalid reminders dismissed from the active queue will remain available here for audit and restoration."
+                    ? tx("Completed care reminders will remain available here for review.")
+                    : tx("Invalid reminders dismissed from the active queue will remain available here for audit and restoration.")
               }
             />
           ) : (
@@ -720,7 +662,7 @@ export default function CareRemindersPage() {
                       <th className="w-10 py-3 pr-3 font-medium">
                         <input
                           type="checkbox"
-                          aria-label="Select all reminders"
+                          aria-label={tx("Select all reminders")}
                           checked={
                             items.length > 0 &&
                             selectedIds.size ===
@@ -741,11 +683,11 @@ export default function CareRemindersPage() {
                         />
                       </th>
                     ) : null}
-                    <th className="py-3 pr-4 font-medium">Due</th>
-                    <th className="py-3 pr-4 font-medium">Patient / client</th>
-                    <th className="py-3 pr-4 font-medium">Reminder</th>
-                    <th className="py-3 pr-4 font-medium">Source</th>
-                    <th className="py-3 text-right font-medium">Action</th>
+                    <th className="py-3 pr-4 font-medium">{tx("Due")}</th>
+                    <th className="py-3 pr-4 font-medium">{tx("Patient / client")}</th>
+                    <th className="py-3 pr-4 font-medium">{tx("Reminder")}</th>
+                    <th className="py-3 pr-4 font-medium">{tx("Source")}</th>
+                    <th className="py-3 text-right font-medium">{tx("Action")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -788,9 +730,7 @@ export default function CareRemindersPage() {
                             {displayDate(item.dueDate)}
                           </span>
                           {overdue ? (
-                            <p className="mt-1 text-xs text-destructive">
-                              Due or overdue
-                            </p>
+                            <p className="mt-1 text-xs text-destructive">{tx("Due or overdue")}</p>
                           ) : null}
                         </td>
                         <td className="py-4 pr-4">
@@ -822,12 +762,10 @@ export default function CareRemindersPage() {
                           {item.status === "dismissed" &&
                           item.dismissalReason ? (
                             <div className="mt-2 rounded-md border border-border bg-muted/40 p-2 text-xs text-muted-foreground">
-                              <span className="font-medium text-foreground">
-                                Dismissed:
-                              </span>{" "}
+                              <span className="font-medium text-foreground">{tx("Dismissed:")}</span>{" "}
                               {item.dismissalReason}
                               <span className="mt-1 block">
-                                {item.dismissedByName ?? "Unknown staff member"}
+                                {item.dismissedByName ?? tx("Unknown staff member")}
                                 {item.dismissedAt
                                   ? ` • ${item.dismissedAt.toLocaleString()}`
                                   : ""}
@@ -839,7 +777,7 @@ export default function CareRemindersPage() {
                           <Badge
                             variant={item.imported ? "secondary" : "outline"}
                           >
-                            {item.imported ? "Imported" : "OpenVPM"}
+                            {item.imported ? tx("Imported") : tx("OpenVPM")}
                           </Badge>
                         </td>
                         <td className="py-4 text-right">
@@ -863,9 +801,7 @@ export default function CareRemindersPage() {
                                     })
                                   }
                                 >
-                                  <RotateCcw className="mr-2 h-4 w-4" />
-                                  Restore
-                                </Button>
+                                  <RotateCcw className="mr-2 h-4 w-4" />{tx("Restore")}</Button>
                               ) : (
                                 <Button
                                   size="sm"
@@ -885,8 +821,8 @@ export default function CareRemindersPage() {
                                   }
                                 >
                                   {item.status === "open"
-                                    ? "Complete"
-                                    : "Reopen"}
+                                    ? tx("Complete")
+                                    : tx("Reopen")}
                                 </Button>
                               )}
                               {item.status === "open" &&
@@ -896,15 +832,11 @@ export default function CareRemindersPage() {
                                   variant="outline"
                                   onClick={() => openOutreach(item)}
                                 >
-                                  <Send className="mr-2 h-4 w-4" />
-                                  Contact client
-                                </Button>
+                                  <Send className="mr-2 h-4 w-4" />{tx("Contact client")}</Button>
                               ) : null}
                             </div>
                           ) : (
-                            <span className="text-xs text-muted-foreground">
-                              Read only
-                            </span>
+                            <span className="text-xs text-muted-foreground">{tx("Read only")}</span>
                           )}
                         </td>
                       </tr>

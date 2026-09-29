@@ -10,6 +10,7 @@ import {
   isClinicalCorrectionReasonValid,
 } from "@/lib/records/clinical-correction-policy";
 import { formatClinicalDateTime } from "@/lib/records/clinical-dates";
+import { tx } from "@/lib/i18n";
 
 type ExistingCorrection = {
   id: string;
@@ -48,14 +49,11 @@ export function ClinicalCorrectionControl({
     return (
       <div className="mt-3 rounded-md border border-destructive/40 bg-destructive/5 p-3 text-sm">
         <div className="flex items-center gap-2 font-medium text-destructive">
-          <AlertTriangle className="h-4 w-4" />
-          Entered in error — retained in chart history
-        </div>
+          <AlertTriangle className="h-4 w-4" />{tx("Entered in error — retained in chart history")}</div>
         <p className="mt-1 whitespace-pre-wrap text-foreground">
           {correction.reason}
         </p>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Corrected by {correction.correctedByName ?? "Unknown user"} ·{" "}
+        <p className="mt-1 text-xs text-muted-foreground">{tx("Corrected by")}{" "}{correction.correctedByName ?? tx("Unknown user")} ·{" "}
           {dateLabel}
         </p>
       </div>
@@ -84,27 +82,23 @@ export function ClinicalCorrectionControl({
             variant="outline"
             className="text-destructive"
           >
-            {triggerLabel ?? "Mark entered in error"}
+            {triggerLabel ?? tx("Mark entered in error")}
           </Button>
         </DialogPrimitive.Trigger>
       </div>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/50" />
         <DialogPrimitive.Content className="fixed left-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-lg border border-border bg-background p-6 shadow-lg">
-          <DialogPrimitive.Title className="text-lg font-semibold">
-            Mark record entered in error?
-          </DialogPrimitive.Title>
+          <DialogPrimitive.Title className="text-lg font-semibold">{tx("Mark record entered in error?")}</DialogPrimitive.Title>
           <DialogPrimitive.Description className="mt-2 text-sm text-muted-foreground">
             {description ??
-              "The original record will remain visible in staff chart history, but it will no longer be used for current clinical summaries, client portal records, reminders, or certificates."}
+              tx("The original record will remain visible in staff chart history, but it will no longer be used for current clinical summaries, client portal records, reminders, or certificates.")}
           </DialogPrimitive.Description>
           <div className="mt-4">
             <label
               htmlFor={reasonId}
               className="block text-sm font-medium text-foreground"
-            >
-              Why is this record incorrect?
-            </label>
+            >{tx("Why is this record incorrect?")}</label>
             <Textarea
               id={reasonId}
               className="mt-1 bg-background"
@@ -112,15 +106,13 @@ export function ClinicalCorrectionControl({
               maxLength={CLINICAL_CORRECTION_REASON_MAX_LENGTH}
               rows={4}
               autoFocus
-              placeholder="Required. Be specific; this reason becomes permanent chart history."
+              placeholder={tx("Required. Be specific; this reason becomes permanent chart history.")}
               onChange={(event) => setReason(event.currentTarget.value)}
             />
           </div>
           <div className="mt-5 flex justify-end gap-2">
             <DialogPrimitive.Close asChild>
-              <Button type="button" variant="ghost" disabled={isPending}>
-                Cancel
-              </Button>
+              <Button type="button" variant="ghost" disabled={isPending}>{tx("Cancel")}</Button>
             </DialogPrimitive.Close>
             <Button
               type="button"
@@ -139,9 +131,7 @@ export function ClinicalCorrectionControl({
             >
               {isPending ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : null}
-              Confirm correction
-            </Button>
+              ) : null}{tx("Confirm correction")}</Button>
           </div>
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>

@@ -40,6 +40,7 @@ import {
   isBillingAmountWithinBalance,
 } from "@/lib/billing/policy";
 import { isSafeCheckoutRedirectUrl } from "@/lib/checkout-redirect";
+import { tx, uiLocale } from "@/lib/i18n";
 
 const STATUS_TABS = [
   { label: "All", value: undefined, isEstimate: false as const },
@@ -89,7 +90,7 @@ function formatBillingDateInput(
       number,
     ];
     return new Date(Date.UTC(year, month - 1, day)).toLocaleDateString(
-      "en-US",
+      uiLocale(),
       { timeZone: "UTC" }
     );
   }
@@ -107,9 +108,9 @@ function formatBillingInstantDate(
   };
 
   try {
-    return new Date(value).toLocaleDateString("en-US", options);
+    return new Date(value).toLocaleDateString(uiLocale(), options);
   } catch {
-    return new Date(value).toLocaleDateString("en-US", {
+    return new Date(value).toLocaleDateString(uiLocale(), {
       ...options,
       timeZone: undefined,
     });
@@ -124,7 +125,7 @@ function getDisplayStatus(invoice: {
   isEstimate: boolean;
 }): { label: string; style: string } {
   if (invoice.isEstimate) {
-    return { label: "estimate", style: STATUS_STYLES.estimate };
+    return { label: tx("estimate"), style: STATUS_STYLES.estimate };
   }
   const paid = Number(invoice.paidAmount ?? 0);
   const adjusted = Number(invoice.adjustedAmount ?? 0);
@@ -136,10 +137,10 @@ function getDisplayStatus(invoice: {
     invoice.status !== "paid" &&
     invoice.status !== "void"
   ) {
-    return { label: "settled", style: STATUS_STYLES.settled };
+    return { label: tx("settled"), style: STATUS_STYLES.settled };
   }
   if (paid + adjusted > 0 && paid + adjusted < total && invoice.status !== "paid") {
-    return { label: "partial", style: STATUS_STYLES.partial };
+    return { label: tx("partial"), style: STATUS_STYLES.partial };
   }
   return {
     label: invoice.status,
@@ -203,7 +204,7 @@ export default function BillingPage() {
 
   const updateStatus = trpc.billing.updateInvoiceStatus.useMutation({
     onSuccess: () => {
-      toast.success("Invoice status updated");
+      toast.success(tx("Invoice status updated"));
       utils.billing.listInvoices.invalidate();
       utils.billing.getInvoice.invalidate();
     },
@@ -214,7 +215,7 @@ export default function BillingPage() {
 
   const convertEstimate = trpc.billing.convertEstimateToInvoice.useMutation({
     onSuccess: () => {
-      toast.success("Estimate converted to invoice");
+      toast.success(tx("Estimate converted to invoice"));
       utils.billing.listInvoices.invalidate();
     },
     onError: (err) => {
@@ -224,7 +225,7 @@ export default function BillingPage() {
 
   const voidInvoice = trpc.billing.voidInvoice.useMutation({
     onSuccess: () => {
-      toast.success("Invoice voided");
+      toast.success(tx("Invoice voided"));
       utils.billing.listInvoices.invalidate();
       utils.billing.getInvoice.invalidate();
       utils.billing.listDispenseChargeQueue.invalidate();
@@ -283,17 +284,13 @@ export default function BillingPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="font-heading text-xl font-semibold">Billing</h2>
-          <p className="text-sm text-muted-foreground">
-            Invoices and payments
-          </p>
+          <h2 className="font-heading text-xl font-semibold">{tx("Billing")}</h2>
+          <p className="text-sm text-muted-foreground">{tx("Invoices and payments")}</p>
         </div>
         {canManageBilling && (
           <Button asChild>
             <Link href="/billing/new">
-              <Plus className="mr-1 h-4 w-4" />
-              New Invoice
-            </Link>
+              <Plus className="mr-1 h-4 w-4" />{tx("New Invoice")}</Link>
           </Button>
         )}
       </div>
@@ -314,7 +311,7 @@ export default function BillingPage() {
       {/* Accounts receivable at a glance */}
       <div className="mt-6 grid gap-4 sm:grid-cols-3">
         <div className="rounded-lg border border-border bg-card p-4">
-          <p className="text-sm text-muted-foreground">Outstanding</p>
+          <p className="text-sm text-muted-foreground">{tx("Outstanding")}</p>
           <p className="mt-1 font-heading text-2xl font-semibold">
             {arSummary.isError
               ? "—"
@@ -324,7 +321,7 @@ export default function BillingPage() {
           </p>
         </div>
         <div className="rounded-lg border border-border bg-card p-4">
-          <p className="text-sm text-muted-foreground">Overdue</p>
+          <p className="text-sm text-muted-foreground">{tx("Overdue")}</p>
           <p
             className={`mt-1 font-heading text-2xl font-semibold ${
               arSummary.data && Number(arSummary.data.overdue) > 0
@@ -340,7 +337,7 @@ export default function BillingPage() {
           </p>
         </div>
         <div className="rounded-lg border border-border bg-card p-4">
-          <p className="text-sm text-muted-foreground">Collected this month</p>
+          <p className="text-sm text-muted-foreground">{tx("Collected this month")}</p>
           <p className="mt-1 font-heading text-2xl font-semibold">
             {arSummary.isError
               ? "—"
@@ -373,7 +370,7 @@ export default function BillingPage() {
 
       {listError || billingListMissing ? (
         <div className="mt-6 rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
-          {listError?.message ?? "Unable to load invoices. Please retry."}
+          {listError?.message ?? tx("Unable to load invoices. Please retry.")}
         </div>
       ) : isListLoading ? (
         <TableSkeleton rows={8} cols={7} />
@@ -384,30 +381,14 @@ export default function BillingPage() {
               <thead>
                 <tr className="border-b border-border bg-muted/50">
                   <th className="w-8 px-2 py-3" />
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Client
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Patient
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Status
-                  </th>
-                  <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-                    Total
-                  </th>
-                  <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-                    Paid
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Due Date
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Created
-                  </th>
-                  <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-                    Actions
-                  </th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Client")}</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Patient")}</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Status")}</th>
+                  <th className="px-4 py-3 text-right font-medium text-muted-foreground">{tx("Total")}</th>
+                  <th className="px-4 py-3 text-right font-medium text-muted-foreground">{tx("Paid")}</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Due Date")}</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Created")}</th>
+                  <th className="px-4 py-3 text-right font-medium text-muted-foreground">{tx("Actions")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -440,8 +421,7 @@ export default function BillingPage() {
 
           {/* Pagination */}
           <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-            <p>
-              Showing {offset + 1}--{Math.min(offset + limit, data.total)} of{" "}
+            <p>{tx("Showing")}{" "}{offset + 1}--{Math.min(offset + limit, data.total)}{" "}{tx("of")}{" "}
               {data.total}
             </p>
             <div className="flex gap-2">
@@ -450,17 +430,13 @@ export default function BillingPage() {
                 size="sm"
                 disabled={offset === 0}
                 onClick={() => setOffset(Math.max(0, offset - limit))}
-              >
-                Previous
-              </Button>
+              >{tx("Previous")}</Button>
               <Button
                 variant="outline"
                 size="sm"
                 disabled={offset + limit >= data.total}
                 onClick={() => setOffset(offset + limit)}
-              >
-                Next
-              </Button>
+              >{tx("Next")}</Button>
             </div>
           </div>
         </>
@@ -470,17 +446,17 @@ export default function BillingPage() {
           icon={FileText}
           title={
             tab.isEstimate
-              ? "No estimates yet"
+              ? tx("No estimates yet")
               : statusFilter
-                ? "No invoices with this status"
-                : "No invoices yet"
+                ? tx("No invoices with this status")
+                : tx("No invoices yet")
           }
           description={
             tab.isEstimate
-              ? "Create an estimate when a client needs approval before services are performed."
+              ? tx("Create an estimate when a client needs approval before services are performed.")
               : statusFilter
-                ? "Choose another status tab or create a new invoice."
-                : "Create invoices from services, products, or treatment templates before recording payments."
+                ? tx("Choose another status tab or create a new invoice.")
+                : tx("Create invoices from services, products, or treatment templates before recording payments.")
           }
           action={
             canManageBilling
@@ -496,16 +472,16 @@ export default function BillingPage() {
 
       <ActionConfirmationDialog
         open={pendingInvoiceVoidId !== null}
-        title="Void invoice?"
-        description="This cannot be undone. Any dispensed medication charges on this invoice will return to the billing work queue; inventory will not move again."
-        confirmLabel="Void invoice"
+        title={tx("Void invoice?")}
+        description={tx("This cannot be undone. Any dispensed medication charges on this invoice will return to the billing work queue; inventory will not move again.")}
+        confirmLabel={tx("Void invoice")}
         confirmVariant="destructive"
         isPending={voidInvoice.isPending}
         reason={{
-          label: "Reason for voiding",
+          label: tx("Reason for voiding"),
           value: invoiceVoidReason,
           onChange: setInvoiceVoidReason,
-          placeholder: "Explain the correction for the audit trail",
+          placeholder: tx("Explain the correction for the audit trail"),
           minLength: BILLING_ACTION_REASON_MIN_LENGTH,
           maxLength: BILLING_ACTION_REASON_MAX_LENGTH,
         }}
@@ -546,7 +522,7 @@ function DispenseChargeQueuePanel({
   );
   const createInvoice = trpc.billing.createDispenseChargeInvoice.useMutation({
     onSuccess: async ({ invoiceId }) => {
-      toast.success("Medication dispense added to a draft invoice");
+      toast.success(tx("Medication dispense added to a draft invoice"));
       onInvoiceCreated(invoiceId);
       await Promise.all([
         utils.billing.listDispenseChargeQueue.invalidate(),
@@ -558,14 +534,14 @@ function DispenseChargeQueuePanel({
   });
   const waiveCharge = trpc.billing.waiveDispenseCharge.useMutation({
     onSuccess: async () => {
-      toast.success("Medication charge waived with an audit record");
+      toast.success(tx("Medication charge waived with an audit record"));
       await utils.billing.listDispenseChargeQueue.invalidate();
     },
     onError: (error) => toast.error(error.message),
   });
   const reopenCharge = trpc.billing.reopenDispenseCharge.useMutation({
     onSuccess: async () => {
-      toast.success("Medication charge returned to the work queue");
+      toast.success(tx("Medication charge returned to the work queue"));
       await utils.billing.listDispenseChargeQueue.invalidate();
     },
     onError: (error) => toast.error(error.message),
@@ -633,9 +609,7 @@ function DispenseChargeQueuePanel({
         <div>
           <div className="flex items-center gap-2">
             <Pill className="h-4 w-4 text-primary" />
-            <h3 className="font-heading font-semibold">
-              Unbilled medication dispenses
-            </h3>
+            <h3 className="font-heading font-semibold">{tx("Unbilled medication dispenses")}</h3>
             {pending.data ? (
               <Badge
                 variant={pending.data.total > 0 ? "destructive" : "secondary"}
@@ -644,22 +618,15 @@ function DispenseChargeQueuePanel({
               </Badge>
             ) : null}
           </div>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Every clinic-stock fill stays here until billing creates a draft
-            invoice or an admin records why it is no-charge. Inventory has
-            already been deducted and will not move again.
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground">{tx("Every clinic-stock fill stays here until billing creates a draft invoice or an admin records why it is no-charge. Inventory has already been deducted and will not move again.")}</p>
         </div>
       </div>
       {pending.isError ? (
-        <div className="p-4 text-sm text-destructive">
-          Unable to load medication billing work. {pending.error.message}
+        <div className="p-4 text-sm text-destructive">{tx("Unable to load medication billing work.")}{" "}{pending.error.message}
         </div>
       ) : pending.isLoading ? (
         <div className="flex items-center gap-2 p-4 text-sm text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          Loading medication billing work...
-        </div>
+          <Loader2 className="h-4 w-4 animate-spin" />{tx("Loading medication billing work...")}</div>
       ) : pending.data && pending.data.items.length > 0 ? (
         <div className="divide-y divide-border">
           {pending.data.items.map((item) => (
@@ -671,13 +638,13 @@ function DispenseChargeQueuePanel({
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="font-medium">{item.description}</p>
                   {item.legacyReview ? (
-                    <Badge variant="outline">Legacy review</Badge>
+                    <Badge variant="outline">{tx("Legacy review")}</Badge>
                   ) : null}
                 </div>
                 <p className="text-sm text-muted-foreground">
                   {item.patientName} · {item.clientFirstName}{" "}
-                  {item.clientLastName} · Qty {item.quantity} at{" "}
-                  {formatCurrency(item.unitPrice)} · dispensed{" "}
+                  {item.clientLastName}{" "}{tx("· Qty")}{" "}{item.quantity}{" "}{tx("at")}{" "}
+                  {formatCurrency(item.unitPrice)}{" "}{tx("· dispensed")}{" "}
                   {formatBillingInstantDate(item.createdAt, billingTimeZone)}
                   {item.appointmentId ? (
                     <>
@@ -685,12 +652,10 @@ function DispenseChargeQueuePanel({
                       <Link
                         href={`/encounters/${item.appointmentId}#charge-capture`}
                         className="underline underline-offset-2"
-                      >
-                        Open visit
-                      </Link>
+                      >{tx("Open visit")}</Link>
                     </>
                   ) : (
-                    <> · Standalone refill</>
+                    <>{" "}{tx("· Standalone refill")}</>
                   )}
                 </p>
               </div>
@@ -701,7 +666,7 @@ function DispenseChargeQueuePanel({
                     disabled={isMutating}
                     onClick={() => createDraftForDispense(item)}
                   >
-                    {item.legacyReview ? "Review & create" : "Create draft"}
+                    {item.legacyReview ? tx("Review & create") : tx("Create draft")}
                   </Button>
                   {canWaive ? (
                     <Button
@@ -709,9 +674,7 @@ function DispenseChargeQueuePanel({
                       variant="outline"
                       disabled={isMutating}
                       onClick={() => openWaiveDialog(item.id)}
-                    >
-                      Waive
-                    </Button>
+                    >{tx("Waive")}</Button>
                   ) : null}
                 </div>
               ) : null}
@@ -720,14 +683,11 @@ function DispenseChargeQueuePanel({
         </div>
       ) : (
         <div className="flex items-center gap-2 p-4 text-sm text-muted-foreground">
-          <CheckCircle className="h-4 w-4 text-green-600" />
-          No clinic-stock dispenses are waiting for billing.
-        </div>
+          <CheckCircle className="h-4 w-4 text-green-600" />{tx("No clinic-stock dispenses are waiting for billing.")}</div>
       )}
       {canWaive && waived.data && waived.data.items.length > 0 ? (
         <details className="border-t border-border p-4">
-          <summary className="cursor-pointer text-sm font-medium">
-            Recently waived ({waived.data.total})
+          <summary className="cursor-pointer text-sm font-medium">{tx("Recently waived (")}{waived.data.total})
           </summary>
           <div className="mt-3 space-y-3">
             {waived.data.items.map((item) => (
@@ -747,9 +707,7 @@ function DispenseChargeQueuePanel({
                   disabled={isMutating}
                   onClick={() => reopenCharge.mutate({ id: item.id })}
                 >
-                  <Undo2 className="mr-1 h-3.5 w-3.5" />
-                  Reopen
-                </Button>
+                  <Undo2 className="mr-1 h-3.5 w-3.5" />{tx("Reopen")}</Button>
               </div>
             ))}
           </div>
@@ -757,9 +715,9 @@ function DispenseChargeQueuePanel({
       ) : null}
       <ActionConfirmationDialog
         open={legacyReviewTargetId !== null}
-        title="Review legacy dispense"
-        description="This dispense predates the billing ledger. Verify it was not already billed before creating a draft invoice."
-        confirmLabel="Verified — create draft"
+        title={tx("Review legacy dispense")}
+        description={tx("This dispense predates the billing ledger. Verify it was not already billed before creating a draft invoice.")}
+        confirmLabel={tx("Verified — create draft")}
         isPending={createInvoice.isPending}
         onCancel={closeLegacyReviewDialog}
         onConfirm={confirmLegacyReview}
@@ -767,16 +725,16 @@ function DispenseChargeQueuePanel({
 
       <ActionConfirmationDialog
         open={waiveTargetId !== null}
-        title="Waive medication charge?"
-        description="No invoice will be created. Inventory remains deducted, and the reason is saved to the audit trail so an admin can review or reopen this charge later."
-        confirmLabel="Waive charge"
+        title={tx("Waive medication charge?")}
+        description={tx("No invoice will be created. Inventory remains deducted, and the reason is saved to the audit trail so an admin can review or reopen this charge later.")}
+        confirmLabel={tx("Waive charge")}
         confirmVariant="destructive"
         isPending={waiveCharge.isPending}
         reason={{
-          label: "Reason for no charge",
+          label: tx("Reason for no charge"),
           value: waiveReason,
           onChange: setWaiveReason,
-          placeholder: "Explain why this dispense should not be billed",
+          placeholder: tx("Explain why this dispense should not be billed"),
           minLength: BILLING_ACTION_REASON_MIN_LENGTH,
           maxLength: BILLING_ACTION_REASON_MAX_LENGTH,
         }}
@@ -854,8 +812,8 @@ function WellnessBillingPanel({
           <CalendarClock className="mt-0.5 h-5 w-5 text-primary" />
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="font-medium">Wellness invoices due</h3>
-              <Badge variant="secondary">Invoice schedule</Badge>
+              <h3 className="font-medium">{tx("Wellness invoices due")}</h3>
+              <Badge variant="secondary">{tx("Invoice schedule")}</Badge>
             </div>
             <p
               className={`text-sm ${
@@ -865,20 +823,17 @@ function WellnessBillingPanel({
               }`}
             >
               {dueQuery.isLoading
-                ? "Checking due memberships..."
+                ? tx("Checking due memberships...")
                 : dueQuery.error
                 ? dueQuery.error.message
                 : dueMembershipsMissing
-                ? "Unable to load due wellness memberships. Please retry."
+                ? tx("Unable to load due wellness memberships. Please retry.")
                 : `${dueMemberships.length} scheduled invoice${
-                    dueMemberships.length === 1 ? "" : "s"
+                    dueMemberships.length === 1 ? "" : tx("s")
                   } due, ${formatCurrency(totalDue)} before tax`}
             </p>
             {!dueMembershipsUnavailable && !dueQuery.isLoading && (
-              <p className="mt-1 text-xs text-muted-foreground">
-                OpenVPM generates invoices for each billing date; staff still
-                collect payment on each invoice.
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground">{tx("OpenVPM generates invoices for each billing date; staff still collect payment on each invoice.")}</p>
             )}
           </div>
         </div>
@@ -901,9 +856,7 @@ function WellnessBillingPanel({
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
               <FileText className="mr-2 h-4 w-4" />
-            )}
-            Generate invoices
-          </Button>
+            )}{tx("Generate invoices")}</Button>
         )}
       </div>
       {dueMemberships.length > 0 && (
@@ -911,21 +864,11 @@ function WellnessBillingPanel({
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-muted/40">
-                <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                  Client
-                </th>
-                <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                  Patient
-                </th>
-                <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                  Plan
-                </th>
-                <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                  Due
-                </th>
-                <th className="px-4 py-3 text-right font-medium text-muted-foreground">
-                  Amount
-                </th>
+                <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Client")}</th>
+                <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Patient")}</th>
+                <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Plan")}</th>
+                <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Due")}</th>
+                <th className="px-4 py-3 text-right font-medium text-muted-foreground">{tx("Amount")}</th>
               </tr>
             </thead>
             <tbody>
@@ -1045,8 +988,7 @@ function InvoiceRow({
         <td className="px-4 py-3 text-right tabular-nums">
           <span>{formatCurrency(invoice.paidAmount)}</span>
           {adjustedAmount > 0 && (
-            <span className="block text-xs text-muted-foreground">
-              Adj {formatCurrency(adjustedAmount)}
+            <span className="block text-xs text-muted-foreground">{tx("Adj")}{" "}{formatCurrency(adjustedAmount)}
             </span>
           )}
         </td>
@@ -1068,7 +1010,7 @@ function InvoiceRow({
                 size="sm"
                 disabled={isMutating}
                 onClick={(e) => onConvertEstimate(e, invoice.id)}
-                title="Convert to Invoice"
+                title={tx("Convert to Invoice")}
               >
                 <ArrowRightLeft className="h-3.5 w-3.5" />
               </Button>
@@ -1081,7 +1023,7 @@ function InvoiceRow({
                 size="sm"
                 disabled={isMutating}
                 onClick={(e) => onStatusChange(e, invoice.id, "sent")}
-                title="Mark as Sent"
+                title={tx("Mark as Sent")}
               >
                 <Send className="h-3.5 w-3.5" />
               </Button>
@@ -1096,7 +1038,7 @@ function InvoiceRow({
                       size="sm"
                       disabled={isMutating}
                       onClick={(e) => onStatusChange(e, invoice.id, "sent")}
-                      title="Mark as Sent"
+                      title={tx("Mark as Sent")}
                     >
                       <Send className="h-3.5 w-3.5" />
                     </Button>
@@ -1111,7 +1053,7 @@ function InvoiceRow({
                   size="sm"
                   disabled={isMutating}
                   onClick={(e) => onVoidInvoice(e, invoice.id)}
-                  title="Void Invoice"
+                  title={tx("Void Invoice")}
                 >
                   <Ban className="h-3.5 w-3.5" />
                 </Button>
@@ -1124,18 +1066,14 @@ function InvoiceRow({
           <td colSpan={9} className="bg-muted/20 px-8 py-4" data-tour="invoice-detail">
             {detail.isLoading ? (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Loading invoice details...
-              </div>
+                <Loader2 className="h-4 w-4 animate-spin" />{tx("Loading invoice details...")}</div>
             ) : detail.data ? (
               <div className="space-y-4">
                 {detail.data.appointmentId ? (
                   <Button variant="outline" size="sm" asChild>
                     <Link
                       href={`/encounters/${encodeURIComponent(detail.data.appointmentId)}#charge-capture`}
-                    >
-                      Back to visit
-                    </Link>
+                    >{tx("Back to visit")}</Link>
                   </Button>
                 ) : null}
 
@@ -1144,9 +1082,7 @@ function InvoiceRow({
                   <div className="flex items-center justify-between rounded-lg border border-purple-200 bg-purple-50 p-4 dark:border-purple-900 dark:bg-purple-950/30">
                     <div className="flex items-center gap-2">
                       <FileText className="h-5 w-5 text-purple-600 dark:text-purple-400" />
-                      <span className="text-sm font-medium text-purple-800 dark:text-purple-300">
-                        This is an estimate
-                      </span>
+                      <span className="text-sm font-medium text-purple-800 dark:text-purple-300">{tx("This is an estimate")}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Button
@@ -1194,26 +1130,21 @@ function InvoiceRow({
                           }).save(`estimate-${clientName || "unknown"}.pdf`);
                         }}
                       >
-                        <Download className="mr-1 h-3.5 w-3.5" />
-                        Present to Client
-                      </Button>
+                        <Download className="mr-1 h-3.5 w-3.5" />{tx("Present to Client")}</Button>
                       {canManageBilling && (
                         <Button
                           size="sm"
                           disabled={isMutating}
                           onClick={(e) => onConvertEstimate(e, invoice.id)}
                         >
-                          <CheckCircle className="mr-1 h-3.5 w-3.5" />
-                          Approve &amp; Convert
-                        </Button>
+                          <CheckCircle className="mr-1 h-3.5 w-3.5" />{tx("Approve & Convert")}</Button>
                       )}
                     </div>
                   </div>
                 )}
 
                 <div className="flex items-center gap-6 text-sm">
-                  <span className="text-muted-foreground">
-                    Client:{" "}
+                  <span className="text-muted-foreground">{tx("Client:")}{" "}
                     <span className="text-foreground font-medium">
                       {detail.data.clientFirstName}{" "}
                       {detail.data.clientLastName}
@@ -1230,21 +1161,11 @@ function InvoiceRow({
                     <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-border">
-                        <th className="py-2 text-left font-medium text-muted-foreground">
-                          Description
-                        </th>
-                        <th className="py-2 text-left font-medium text-muted-foreground">
-                          Type
-                        </th>
-                        <th className="py-2 text-right font-medium text-muted-foreground">
-                          Qty
-                        </th>
-                        <th className="py-2 text-right font-medium text-muted-foreground">
-                          Unit Price
-                        </th>
-                        <th className="py-2 text-right font-medium text-muted-foreground">
-                          Total
-                        </th>
+                        <th className="py-2 text-left font-medium text-muted-foreground">{tx("Description")}</th>
+                        <th className="py-2 text-left font-medium text-muted-foreground">{tx("Type")}</th>
+                        <th className="py-2 text-right font-medium text-muted-foreground">{tx("Qty")}</th>
+                        <th className="py-2 text-right font-medium text-muted-foreground">{tx("Unit Price")}</th>
+                        <th className="py-2 text-right font-medium text-muted-foreground">{tx("Total")}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1255,7 +1176,7 @@ function InvoiceRow({
                         >
                           <td className="py-2">{item.description}</td>
                           <td className="py-2 capitalize text-muted-foreground">
-                            {item.itemType} · {item.taxable ? "taxable" : "not taxable"}
+                            {item.itemType} · {item.taxable ? tx("taxable") : tx("not taxable")}
                           </td>
                           <td className="py-2 text-right tabular-nums">
                             {item.quantity}
@@ -1271,25 +1192,19 @@ function InvoiceRow({
                     </tbody>
                     <tfoot>
                       <tr className="border-t border-border">
-                        <td colSpan={4} className="py-2 text-right font-medium">
-                          Subtotal
-                        </td>
+                        <td colSpan={4} className="py-2 text-right font-medium">{tx("Subtotal")}</td>
                         <td className="py-2 text-right tabular-nums">
                           {formatCurrency(detail.data.subtotal)}
                         </td>
                       </tr>
                       <tr>
-                        <td colSpan={4} className="py-1 text-right text-muted-foreground">
-                          Tax
-                        </td>
+                        <td colSpan={4} className="py-1 text-right text-muted-foreground">{tx("Tax")}</td>
                         <td className="py-1 text-right tabular-nums text-muted-foreground">
                           {formatCurrency(detail.data.tax)}
                         </td>
                       </tr>
                       <tr className="font-semibold">
-                        <td colSpan={4} className="py-2 text-right">
-                          Total
-                        </td>
+                        <td colSpan={4} className="py-2 text-right">{tx("Total")}</td>
                         <td className="py-2 text-right tabular-nums">
                           {formatCurrency(detail.data.total)}
                         </td>
@@ -1298,37 +1213,31 @@ function InvoiceRow({
                     </table>
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground">
-                    No line items on this invoice.
-                  </p>
+                  <p className="text-sm text-muted-foreground">{tx("No line items on this invoice.")}</p>
                 )}
 
                 {/* Balance Summary */}
                 {!invoice.isEstimate && (
                   <div className="flex items-center justify-between rounded-lg border border-border bg-background p-3 text-sm">
                     <div className="flex items-center gap-6">
-                      <span>
-                        Total:{" "}
+                      <span>{tx("Total:")}{" "}
                         <span className="font-semibold">
                           {formatCurrency(detail.data.total)}
                         </span>
                       </span>
-                      <span>
-                        Paid:{" "}
+                      <span>{tx("Paid:")}{" "}
                         <span className="font-semibold text-green-600">
                           {formatCurrency(detail.data.paidAmount)}
                         </span>
                       </span>
                       {Number(detail.data.adjustedAmount ?? 0) > 0 && (
-                        <span>
-                          Adjusted:{" "}
+                        <span>{tx("Adjusted:")}{" "}
                           <span className="font-semibold text-teal-600">
                             {formatCurrency(detail.data.adjustedAmount)}
                           </span>
                         </span>
                       )}
-                      <span>
-                        Balance:{" "}
+                      <span>{tx("Balance:")}{" "}
                         <span className="font-semibold text-red-600">
                           {formatCurrency(detail.data.balanceDue)}
                         </span>
@@ -1380,9 +1289,7 @@ function InvoiceRow({
                           }).save(`invoice-${clientName || "unknown"}.pdf`);
                         }}
                       >
-                        <Download className="mr-1 h-3.5 w-3.5" />
-                        Download PDF
-                      </Button>
+                        <Download className="mr-1 h-3.5 w-3.5" />{tx("Download PDF")}</Button>
                       {canManageBilling &&
                         (invoice.status === "sent" ||
                           invoice.status === "overdue") && (
@@ -1407,9 +1314,7 @@ function InvoiceRow({
                 )}
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">
-                Failed to load invoice details.
-              </p>
+              <p className="text-sm text-muted-foreground">{tx("Failed to load invoice details.")}</p>
             )}
           </td>
         </tr>
@@ -1421,7 +1326,7 @@ function InvoiceRow({
 function EmailInvoiceButton({ invoiceId }: { invoiceId: string }) {
   const sendInvoiceEmail = trpc.notifications.sendInvoiceEmail.useMutation({
     onSuccess: () => {
-      toast.success("Invoice emailed");
+      toast.success(tx("Invoice emailed"));
     },
     onError: (err) => {
       toast.error(err.message);
@@ -1442,9 +1347,7 @@ function EmailInvoiceButton({ invoiceId }: { invoiceId: string }) {
         <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />
       ) : (
         <Mail className="mr-1 h-3.5 w-3.5" />
-      )}
-      Email Invoice
-    </Button>
+      )}{tx("Email Invoice")}</Button>
   );
 }
 
@@ -1498,7 +1401,7 @@ function PaymentSection({
 
   const recordPayment = trpc.billing.recordPayment.useMutation({
     onSuccess: () => {
-      toast.success("Payment recorded");
+      toast.success(tx("Payment recorded"));
       utils.billing.listPayments.invalidate({ invoiceId });
       utils.billing.listInvoices.invalidate();
       utils.billing.getInvoice.invalidate({ id: invoiceId });
@@ -1515,7 +1418,7 @@ function PaymentSection({
 
   const applyAdjustment = trpc.billing.applyInvoiceAdjustment.useMutation({
     onSuccess: () => {
-      toast.success("Invoice adjustment applied");
+      toast.success(tx("Invoice adjustment applied"));
       utils.billing.listAdjustments.invalidate({ invoiceId });
       utils.billing.listInvoices.invalidate();
       utils.billing.getInvoice.invalidate({ id: invoiceId });
@@ -1533,7 +1436,7 @@ function PaymentSection({
   const cardCheckout = trpc.billing.createCardPaymentCheckout.useMutation({
     onSuccess: ({ url }) => {
       if (!isSafeCheckoutRedirectUrl(url)) {
-        toast.error("Card checkout is unavailable. Please try again.");
+        toast.error(tx("Card checkout is unavailable. Please try again."));
         return;
       }
       window.location.href = url;
@@ -1545,7 +1448,7 @@ function PaymentSection({
 
   const refundPayment = trpc.billing.refundPayment.useMutation({
     onSuccess: () => {
-      toast.success("Payment refunded");
+      toast.success(tx("Payment refunded"));
       setRefundTarget(null);
       setRefundReason("");
       setRefundDueDate("");
@@ -1657,7 +1560,7 @@ function PaymentSection({
   return (
     <div className="space-y-3">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h4 className="text-sm font-medium">Payments &amp; Adjustments</h4>
+        <h4 className="text-sm font-medium">{tx("Payments & Adjustments")}</h4>
         {canCollect && (
           <div className="grid w-full grid-cols-1 gap-2 sm:w-auto sm:grid-cols-3">
             <Button
@@ -1666,9 +1569,7 @@ function PaymentSection({
               className="w-full sm:w-auto"
               onClick={handleOpenForm}
             >
-              <DollarSign className="mr-1 h-3.5 w-3.5" />
-              Record Payment
-            </Button>
+              <DollarSign className="mr-1 h-3.5 w-3.5" />{tx("Record Payment")}</Button>
             <Button
               variant="outline"
               size="sm"
@@ -1681,40 +1582,34 @@ function PaymentSection({
               onClick={() => cardCheckout.mutate({ invoiceId })}
               title={
                 cardPaymentsUnavailable
-                  ? "Card payments are not configured"
-                  : "Take card payment"
+                  ? tx("Card payments are not configured")
+                  : tx("Take card payment")
               }
             >
               {cardCheckout.isPending ? (
                 <Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" />
               ) : (
                 <CreditCard className="mr-1 h-3.5 w-3.5" />
-              )}
-              Take Card
-            </Button>
+              )}{tx("Take Card")}</Button>
             <Button
               variant="outline"
               size="sm"
               className="w-full sm:w-auto"
               onClick={handleOpenAdjustmentForm}
             >
-              <DollarSign className="mr-1 h-3.5 w-3.5" />
-              Credit / Write Off
-            </Button>
+              <DollarSign className="mr-1 h-3.5 w-3.5" />{tx("Credit / Write Off")}</Button>
           </div>
         )}
       </div>
 
       {canCollect && cardPaymentsUnavailable && (
-        <p className="text-xs text-muted-foreground">
-          Card payments are not configured.
-        </p>
+        <p className="text-xs text-muted-foreground">{tx("Card payments are not configured.")}</p>
       )}
 
       <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
-        <span>Paid {formatCurrency(invoicePaidAmount)}</span>
-        <span>Adjusted {formatCurrency(invoiceAdjustedAmount)}</span>
-        <span>Balance {formatCurrency(invoiceBalanceDue)}</span>
+        <span>{tx("Paid")}{" "}{formatCurrency(invoicePaidAmount)}</span>
+        <span>{tx("Adjusted")}{" "}{formatCurrency(invoiceAdjustedAmount)}</span>
+        <span>{tx("Balance")}{" "}{formatCurrency(invoiceBalanceDue)}</span>
       </div>
 
       {/* Payment form */}
@@ -1722,9 +1617,7 @@ function PaymentSection({
         <div className="rounded-lg border border-border bg-background p-4 space-y-3">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">
-                Amount
-              </label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Amount")}</label>
               <Input
                 type="number"
                 step="0.01"
@@ -1736,9 +1629,7 @@ function PaymentSection({
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">
-                Method
-              </label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Method")}</label>
               <select
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 value={paymentMethod}
@@ -1752,14 +1643,12 @@ function PaymentSection({
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">
-                Notes (optional)
-              </label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Notes (optional)")}</label>
               <Input
                 value={paymentNotes}
                 maxLength={BILLING_NOTES_MAX_LENGTH}
                 onChange={(e) => setPaymentNotes(e.target.value)}
-                placeholder="Reference, check #, etc."
+                placeholder={tx("Reference, check #, etc.")}
               />
             </div>
           </div>
@@ -1770,7 +1659,7 @@ function PaymentSection({
               onClick={handleRecordPayment}
               disabled={!canRecordPayment}
             >
-              {recordPayment.isPending ? "Recording..." : "Record Payment"}
+              {recordPayment.isPending ? tx("Recording...") : tx("Record Payment")}
             </Button>
             <Button
               variant="ghost"
@@ -1780,9 +1669,7 @@ function PaymentSection({
                 paymentOperationId.current = null;
                 setShowPaymentForm(false);
               }}
-            >
-              Cancel
-            </Button>
+            >{tx("Cancel")}</Button>
           </div>
           {recordPayment.isError && (
             <p className="text-xs text-destructive">
@@ -1796,9 +1683,7 @@ function PaymentSection({
         <div className="space-y-3 rounded-lg border border-border bg-background p-4">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">
-                Type
-              </label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Type")}</label>
               <select
                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 value={adjustmentType}
@@ -1806,14 +1691,12 @@ function PaymentSection({
                   setAdjustmentType(e.target.value as "credit" | "write_off")
                 }
               >
-                <option value="credit">Credit</option>
-                <option value="write_off">Write-off</option>
+                <option value="credit">{tx("Credit")}</option>
+                <option value="write_off">{tx("Write-off")}</option>
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">
-                Amount
-              </label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Amount")}</label>
               <Input
                 type="number"
                 step="0.01"
@@ -1825,14 +1708,12 @@ function PaymentSection({
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-muted-foreground mb-1">
-                Reason
-              </label>
+              <label className="block text-xs font-medium text-muted-foreground mb-1">{tx("Reason")}</label>
               <Input
                 value={adjustmentReason}
                 maxLength={BILLING_ADJUSTMENT_REASON_MAX_LENGTH}
                 onChange={(e) => setAdjustmentReason(e.target.value)}
-                placeholder="Discount, courtesy, bad debt"
+                placeholder={tx("Discount, courtesy, bad debt")}
               />
             </div>
           </div>
@@ -1843,7 +1724,7 @@ function PaymentSection({
               onClick={handleApplyAdjustment}
               disabled={!canApplyAdjustment}
             >
-              {applyAdjustment.isPending ? "Applying..." : "Apply Adjustment"}
+              {applyAdjustment.isPending ? tx("Applying...") : tx("Apply Adjustment")}
             </Button>
             <Button
               variant="ghost"
@@ -1853,9 +1734,7 @@ function PaymentSection({
                 adjustmentOperationId.current = null;
                 setShowAdjustmentForm(false);
               }}
-            >
-              Cancel
-            </Button>
+            >{tx("Cancel")}</Button>
           </div>
           {applyAdjustment.isError && (
             <p className="text-xs text-destructive">
@@ -1867,27 +1746,17 @@ function PaymentSection({
 
       {/* Payment list */}
       {paymentsQuery.isLoading ? (
-        <p className="text-xs text-muted-foreground">Loading payments...</p>
+        <p className="text-xs text-muted-foreground">{tx("Loading payments...")}</p>
       ) : paymentsQuery.data && paymentsQuery.data.length > 0 ? (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border">
-              <th className="py-2 text-left font-medium text-muted-foreground">
-                Date
-              </th>
-              <th className="py-2 text-right font-medium text-muted-foreground">
-                Amount
-              </th>
-              <th className="py-2 text-left font-medium text-muted-foreground">
-                Method
-              </th>
-              <th className="py-2 text-left font-medium text-muted-foreground">
-                Received By
-              </th>
-              <th className="py-2 text-left font-medium text-muted-foreground">
-                Notes
-              </th>
+              <th className="py-2 text-left font-medium text-muted-foreground">{tx("Date")}</th>
+              <th className="py-2 text-right font-medium text-muted-foreground">{tx("Amount")}</th>
+              <th className="py-2 text-left font-medium text-muted-foreground">{tx("Method")}</th>
+              <th className="py-2 text-left font-medium text-muted-foreground">{tx("Received By")}</th>
+              <th className="py-2 text-left font-medium text-muted-foreground">{tx("Notes")}</th>
               {canRefund && <th className="py-2" />}
             </tr>
           </thead>
@@ -1939,9 +1808,7 @@ function PaymentSection({
                             amount: payment.amount,
                           });
                         }}
-                      >
-                        Refund
-                      </Button>
+                      >{tx("Refund")}</Button>
                     )}
                   </td>
                 )}
@@ -1951,31 +1818,21 @@ function PaymentSection({
           </table>
         </div>
       ) : (
-        <p className="text-xs text-muted-foreground">No payments recorded.</p>
+        <p className="text-xs text-muted-foreground">{tx("No payments recorded.")}</p>
       )}
 
       {adjustmentsQuery.isLoading ? (
-        <p className="text-xs text-muted-foreground">Loading adjustments...</p>
+        <p className="text-xs text-muted-foreground">{tx("Loading adjustments...")}</p>
       ) : adjustmentsQuery.data && adjustmentsQuery.data.length > 0 ? (
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border">
-              <th className="py-2 text-left font-medium text-muted-foreground">
-                Date
-              </th>
-              <th className="py-2 text-left font-medium text-muted-foreground">
-                Type
-              </th>
-              <th className="py-2 text-right font-medium text-muted-foreground">
-                Amount
-              </th>
-              <th className="py-2 text-left font-medium text-muted-foreground">
-                Created By
-              </th>
-              <th className="py-2 text-left font-medium text-muted-foreground">
-                Reason
-              </th>
+              <th className="py-2 text-left font-medium text-muted-foreground">{tx("Date")}</th>
+              <th className="py-2 text-left font-medium text-muted-foreground">{tx("Type")}</th>
+              <th className="py-2 text-right font-medium text-muted-foreground">{tx("Amount")}</th>
+              <th className="py-2 text-left font-medium text-muted-foreground">{tx("Created By")}</th>
+              <th className="py-2 text-left font-medium text-muted-foreground">{tx("Reason")}</th>
             </tr>
           </thead>
           <tbody>
@@ -2010,22 +1867,20 @@ function PaymentSection({
           </table>
         </div>
       ) : (
-        <p className="text-xs text-muted-foreground">
-          No credits or write-offs recorded.
-        </p>
+        <p className="text-xs text-muted-foreground">{tx("No credits or write-offs recorded.")}</p>
       )}
       <ActionConfirmationDialog
         open={refundTarget !== null}
-        title="Refund payment?"
+        title={tx("Refund payment?")}
         description={`Refund ${formatCurrency(refundTarget?.amount ?? "0")}? Card payments are refunded through Stripe.`}
-        confirmLabel="Refund payment"
+        confirmLabel={tx("Refund payment")}
         confirmVariant="destructive"
         isPending={refundPayment.isPending}
         reason={{
-          label: "Reason for refund",
+          label: tx("Reason for refund"),
           value: refundReason,
           onChange: setRefundReason,
-          placeholder: "Explain the refund for the audit trail",
+          placeholder: tx("Explain the refund for the audit trail"),
           minLength: BILLING_ACTION_REASON_MIN_LENGTH,
           maxLength: BILLING_ACTION_REASON_MAX_LENGTH,
         }}
@@ -2035,9 +1890,7 @@ function PaymentSection({
         <label
           htmlFor={`refund-due-date-${invoiceId}`}
           className="text-sm font-medium"
-        >
-          Due date if this refund reopens the visit balance
-        </label>
+        >{tx("Due date if this refund reopens the visit balance")}</label>
         <Input
           id={`refund-due-date-${invoiceId}`}
           type="date"
@@ -2046,9 +1899,7 @@ function PaymentSection({
           disabled={refundPayment.isPending || Boolean(invoiceDueDate)}
           onChange={(event) => setRefundDueDate(event.target.value)}
         />
-        <p className="mt-1 text-xs text-muted-foreground">
-          Required when a completed, paid visit becomes accounts receivable.
-        </p>
+        <p className="mt-1 text-xs text-muted-foreground">{tx("Required when a completed, paid visit becomes accounts receivable.")}</p>
       </ActionConfirmationDialog>
     </div>
   );

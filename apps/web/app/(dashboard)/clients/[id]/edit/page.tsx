@@ -27,13 +27,12 @@ import {
   phoneNumbersMatchForConsent,
   SMS_CONSENT_DISCLOSURE,
 } from "@/lib/messaging/consent";
+import { tx } from "@/lib/i18n";
 
 function EditClientLoadingPanel() {
   return (
     <div className="flex items-center justify-center gap-2 rounded-lg border border-border bg-card p-8 text-sm text-muted-foreground">
-      <Loader2 className="h-4 w-4 animate-spin" />
-      Loading client...
-    </div>
+      <Loader2 className="h-4 w-4 animate-spin" />{tx("Loading client...")}</div>
   );
 }
 
@@ -45,9 +44,7 @@ export default function EditClientPage() {
   if (status === "loading") {
     return (
       <div className="flex items-center justify-center gap-2 rounded-lg border border-border bg-card p-8 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" />
-        Checking client access...
-      </div>
+        <Loader2 className="h-4 w-4 animate-spin" />{tx("Checking client access...")}</div>
     );
   }
 
@@ -60,15 +57,13 @@ export default function EditClientPage() {
           onClick={() => router.push(`/clients/${params.id}`)}
           className="mb-4"
         >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Client
-        </Button>
+          <ArrowLeft className="mr-2 h-4 w-4" />{tx("Back to Client")}</Button>
         <EmptyState
           icon={AlertCircle}
-          title="Client actions are read-only"
-          description="Only staff roles with client write access can edit clients."
+          title={tx("Client actions are read-only")}
+          description={tx("Only staff roles with client write access can edit clients.")}
           action={{
-            label: "Back to Client",
+            label: tx("Back to Client"),
             onClick: () => router.push(`/clients/${params.id}`),
           }}
         />
@@ -139,7 +134,7 @@ function EditClientForm() {
 
   const updateClient = trpc.clients.update.useMutation({
     onSuccess: () => {
-      toast.success("Client updated");
+      toast.success(tx("Client updated"));
       router.push(`/clients/${params.id}`);
     },
     onError: (err) => {
@@ -261,13 +256,13 @@ function EditClientForm() {
     return (
       <EmptyState
         icon={AlertCircle}
-        title="Unable to load client"
+        title={tx("Unable to load client")}
         description={
           loadError?.message ??
-          "Choose a client from the Clients list before editing."
+          tx("Choose a client from the Clients list before editing.")
         }
         action={{
-          label: "Back to Clients",
+          label: tx("Back to Clients"),
           onClick: () => router.push("/clients"),
           icon: ArrowLeft,
         }}
@@ -283,14 +278,10 @@ function EditClientForm() {
         onClick={() => router.push(`/clients/${params.id}`)}
         className="mb-4"
       >
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Client
-      </Button>
+        <ArrowLeft className="mr-2 h-4 w-4" />{tx("Back to Client")}</Button>
 
-      <h2 className="font-heading text-xl font-semibold">Edit Client</h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Update client information
-      </p>
+      <h2 className="font-heading text-xl font-semibold">{tx("Edit Client")}</h2>
+      <p className="mt-1 text-sm text-muted-foreground">{tx("Update client information")}</p>
 
       {error && (
         <div className="mt-4 rounded-lg border border-destructive bg-destructive/10 p-3 text-sm text-destructive">
@@ -301,28 +292,24 @@ function EditClientForm() {
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="text-sm font-medium" htmlFor="firstName">
-              First Name *
-            </label>
+            <label className="text-sm font-medium" htmlFor="firstName">{tx("First Name *")}</label>
             <Input
               id="firstName"
               value={form.firstName}
               onChange={(e) => updateField("firstName", e.target.value)}
-              placeholder="First name"
+              placeholder={tx("First name")}
               className="mt-1"
               maxLength={CLIENT_NAME_MAX_LENGTH}
               required
             />
           </div>
           <div>
-            <label className="text-sm font-medium" htmlFor="lastName">
-              Last Name *
-            </label>
+            <label className="text-sm font-medium" htmlFor="lastName">{tx("Last Name *")}</label>
             <Input
               id="lastName"
               value={form.lastName}
               onChange={(e) => updateField("lastName", e.target.value)}
-              placeholder="Last name"
+              placeholder={tx("Last name")}
               className="mt-1"
               maxLength={CLIENT_NAME_MAX_LENGTH}
               required
@@ -332,9 +319,7 @@ function EditClientForm() {
 
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="text-sm font-medium" htmlFor="email">
-              Email
-            </label>
+            <label className="text-sm font-medium" htmlFor="email">{tx("Email")}</label>
             <Input
               id="email"
               type="email"
@@ -346,9 +331,7 @@ function EditClientForm() {
             />
           </div>
           <div>
-            <label className="text-sm font-medium" htmlFor="phone">
-              Phone
-            </label>
+            <label className="text-sm font-medium" htmlFor="phone">{tx("Phone")}</label>
             <Input
               id="phone"
               value={form.phone}
@@ -364,9 +347,7 @@ function EditClientForm() {
           <label
             className="text-sm font-medium"
             htmlFor="preferredContactMethod"
-          >
-            Preferred contact for reminders
-          </label>
+          >{tx("Preferred contact for reminders")}</label>
           <select
             id="preferredContactMethod"
             value={preferredContactMethod}
@@ -378,21 +359,17 @@ function EditClientForm() {
             }}
             className="mt-2 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
           >
-            <option value="phone">Phone call</option>
-            <option value="email">Email</option>
-            <option value="sms">Text message</option>
-            <option value="portal">Client portal</option>
+            <option value="phone">{tx("Phone call")}</option>
+            <option value="email">{tx("Email")}</option>
+            <option value="sms">{tx("Text message")}</option>
+            <option value="portal">{tx("Client portal")}</option>
           </select>
-          <p className="mt-2 text-xs text-muted-foreground">
-            Text message uses SMS for appointment and vaccination reminders when
-            clinic texting is active. Current permission and a valid mobile
-            number are required.
-          </p>
+          <p className="mt-2 text-xs text-muted-foreground">{tx("Text message uses SMS for appointment and vaccination reminders when clinic texting is active. Current permission and a valid mobile number are required.")}</p>
           {preferredContactMethod === "sms" && !smsPreferenceReady ? (
             <p className="mt-2 text-xs font-medium text-amber-700">
               {smsPreferenceNeedsValidation
-                ? "Reconfirm the disclosure below before saving text reminders as the preference."
-                : "Text reminders are paused until the client has current SMS consent."}
+                ? tx("Reconfirm the disclosure below before saving text reminders as the preference.")
+                : tx("Text reminders are paused until the client has current SMS consent.")}
             </p>
           ) : null}
         </div>
@@ -412,33 +389,23 @@ function EditClientForm() {
             className="mt-0.5"
           />
           <span>
-            <span className="font-medium">
-              I confirm the client explicitly consented to SMS
-            </span>
+            <span className="font-medium">{tx("I confirm the client explicitly consented to SMS")}</span>
             <span className="block text-xs text-muted-foreground">
               {SMS_CONSENT_DISCLOSURE.snapshot}
             </span>
-            <span className="mt-1 block text-xs text-muted-foreground">
-              Saving other details does not renew consent. Only check this after
-              the client has read this disclosure or you have read it to them.
-              {phoneChanged
-                ? " The phone number changed, so prior SMS consent will be removed unless the client explicitly re-consents."
+            <span className="mt-1 block text-xs text-muted-foreground">{tx("Saving other details does not renew consent. Only check this after the client has read this disclosure or you have read it to them.")}{phoneChanged
+                ? tx(" The phone number changed, so prior SMS consent will be removed unless the client explicitly re-consents.")
                 : !smsPhoneValid && !smsConsent
-                  ? " Enter a valid mobile phone number to record consent."
+                  ? tx(" Enter a valid mobile phone number to record consent.")
                   : ""}
             </span>
           </span>
         </label>
 
         <div className="rounded-md border border-border p-3">
-          <p className="text-sm font-medium">Practice-wide do-not-text</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Use this when the client asks staff to stop texts. It immediately
-            suppresses this phone number and clears SMS consent on every active
-            client record that shares it. Saving the client or checking consent
-            later will not silently remove the manual suppression.
-            {phoneChanged
-              ? " Save or discard the unsaved phone change before using this action."
+          <p className="text-sm font-medium">{tx("Practice-wide do-not-text")}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{tx("Use this when the client asks staff to stop texts. It immediately suppresses this phone number and clears SMS consent on every active client record that shares it. Saving the client or checking consent later will not silently remove the manual suppression.")}{phoneChanged
+              ? tx(" Save or discard the unsaved phone change before using this action.")
               : ""}
           </p>
           <Button
@@ -465,21 +432,14 @@ function EditClientForm() {
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
               <Ban className="mr-2 h-4 w-4" />
-            )}
-            Do not text this number
-          </Button>
+            )}{tx("Do not text this number")}</Button>
         </div>
 
         <div className="rounded-md border border-border p-3">
-          <p className="text-sm font-medium">SMS consent history</p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Append-only evidence for this client. Destination-wide events may
-            affect other client records that share the same phone number.
-          </p>
+          <p className="text-sm font-medium">{tx("SMS consent history")}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{tx("Append-only evidence for this client. Destination-wide events may affect other client records that share the same phone number.")}</p>
           {client.smsConsentHistory.length === 0 ? (
-            <p className="mt-3 text-xs text-muted-foreground">
-              No consent events have been recorded yet.
-            </p>
+            <p className="mt-3 text-xs text-muted-foreground">{tx("No consent events have been recorded yet.")}</p>
           ) : (
             <ol className="mt-3 space-y-2">
               {client.smsConsentHistory.map((event) => (
@@ -489,8 +449,8 @@ function EditClientForm() {
                 >
                   <p className="font-medium">
                     {event.action === "granted"
-                      ? "Consent granted"
-                      : "Consent revoked"}
+                      ? tx("Consent granted")
+                      : tx("Consent revoked")}
                     {` · ${event.destinationE164}`}
                   </p>
                   <p className="mt-0.5 text-muted-foreground">
@@ -500,7 +460,7 @@ function EditClientForm() {
                       ? ` · ${event.actorName}`
                       : event.provider
                         ? ` · ${event.provider}`
-                        : " · system"}
+                        : tx(" · system")}
                   </p>
                   {event.detail ? (
                     <p className="mt-1 text-muted-foreground">{event.detail}</p>
@@ -512,14 +472,12 @@ function EditClientForm() {
         </div>
 
         <div>
-          <label className="text-sm font-medium" htmlFor="address">
-            Address
-          </label>
+          <label className="text-sm font-medium" htmlFor="address">{tx("Address")}</label>
           <Input
             id="address"
             value={form.address}
             onChange={(e) => updateField("address", e.target.value)}
-            placeholder="Street address"
+            placeholder={tx("Street address")}
             className="mt-1"
             maxLength={CLIENT_ADDRESS_MAX_LENGTH}
           />
@@ -527,40 +485,34 @@ function EditClientForm() {
 
         <div className="grid gap-4 sm:grid-cols-3">
           <div>
-            <label className="text-sm font-medium" htmlFor="city">
-              City
-            </label>
+            <label className="text-sm font-medium" htmlFor="city">{tx("City")}</label>
             <Input
               id="city"
               value={form.city}
               onChange={(e) => updateField("city", e.target.value)}
-              placeholder="City"
+              placeholder={tx("City")}
               className="mt-1"
               maxLength={CLIENT_CITY_MAX_LENGTH}
             />
           </div>
           <div>
-            <label className="text-sm font-medium" htmlFor="state">
-              State
-            </label>
+            <label className="text-sm font-medium" htmlFor="state">{tx("State")}</label>
             <Input
               id="state"
               value={form.state}
               onChange={(e) => updateField("state", e.target.value)}
-              placeholder="State"
+              placeholder={tx("State")}
               className="mt-1"
               maxLength={CLIENT_STATE_MAX_LENGTH}
             />
           </div>
           <div>
-            <label className="text-sm font-medium" htmlFor="zip">
-              Zip
-            </label>
+            <label className="text-sm font-medium" htmlFor="zip">{tx("Zip")}</label>
             <Input
               id="zip"
               value={form.zip}
               onChange={(e) => updateField("zip", e.target.value)}
-              placeholder="Zip code"
+              placeholder={tx("Zip code")}
               className="mt-1"
               maxLength={CLIENT_ZIP_MAX_LENGTH}
             />
@@ -569,15 +521,13 @@ function EditClientForm() {
 
         <div className="flex gap-3 pt-4">
           <Button type="submit" disabled={!canSubmit || updateClient.isPending}>
-            {updateClient.isPending ? "Saving..." : "Save Changes"}
+            {updateClient.isPending ? tx("Saving...") : tx("Save Changes")}
           </Button>
           <Button
             type="button"
             variant="outline"
             onClick={() => router.push(`/clients/${params.id}`)}
-          >
-            Cancel
-          </Button>
+          >{tx("Cancel")}</Button>
         </div>
       </form>
     </div>

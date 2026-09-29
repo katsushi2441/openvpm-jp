@@ -12,15 +12,16 @@ import {
 import { isValidEmail } from "@/lib/utils";
 import { toast } from "sonner";
 import type { StepHandle } from "../journey-types";
+import { tx } from "@/lib/i18n";
 
 type Role = "admin" | "veterinarian" | "technician" | "front_desk" | "viewer";
 
 const ROLES: { value: Role; label: string }[] = [
-  { value: "front_desk", label: "Front desk" },
-  { value: "veterinarian", label: "Veterinarian" },
-  { value: "technician", label: "Technician" },
-  { value: "viewer", label: "Viewer (read only)" },
-  { value: "admin", label: "Admin" },
+  { value: "front_desk", label: tx("Front desk") },
+  { value: "veterinarian", label: tx("Veterinarian") },
+  { value: "technician", label: tx("Technician") },
+  { value: "viewer", label: tx("Viewer (read only)") },
+  { value: "admin", label: tx("Admin") },
 ];
 
 const MAX_ROWS = 10;
@@ -70,7 +71,7 @@ export function InviteTeamStep({
       async onContinue() {
         const invalidRows = rows.filter((r) => getInviteEmailError(r.email));
         if (invalidRows.length > 0) {
-          toast.error("Fix invalid teammate emails before continuing.");
+          toast.error(tx("Fix invalid teammate emails before continuing."));
           return false;
         }
 
@@ -120,10 +121,7 @@ export function InviteTeamStep({
 
   return (
     <div className="space-y-5">
-      <p className="text-sm leading-6 text-slate-600">
-        Add the people you work with. We will email them a link to set up their
-        own login. Every plan includes unlimited staff.
-      </p>
+      <p className="text-sm leading-6 text-slate-600">{tx("Add the people you work with. We will email them a link to set up their own login. Every plan includes unlimited staff.")}</p>
 
       <div className="space-y-3">
         {rows.map((row, i) => {
@@ -137,7 +135,7 @@ export function InviteTeamStep({
                   value={row.name}
                   maxLength={STAFF_NAME_MAX_LENGTH}
                   onChange={(e) => update(i, { name: e.target.value })}
-                  placeholder="Name"
+                  placeholder={tx("Name")}
                   aria-label={`Teammate name ${i + 1}`}
                 />
                 <Input
@@ -184,9 +182,7 @@ export function InviteTeamStep({
 
       {rows.length < MAX_ROWS ? (
         <Button type="button" variant="outline" size="sm" onClick={addRow}>
-          <Plus className="mr-1.5 h-4 w-4" />
-          Add another
-        </Button>
+          <Plus className="mr-1.5 h-4 w-4" />{tx("Add another")}</Button>
       ) : null}
     </div>
   );

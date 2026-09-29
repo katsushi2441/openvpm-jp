@@ -28,7 +28,7 @@ describe("patient history search UI", () => {
     expect(component).toContain("onSearchModeChange(true)");
     expect(component).toContain("onSearchModeChange(false)");
     expect(component).toContain(
-      "The complete SOAP\n          timeline remains below.",
+      "The complete SOAP timeline remains below.",
     );
   });
 

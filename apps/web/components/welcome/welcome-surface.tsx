@@ -11,6 +11,7 @@ import {
   DayVignette,
   PortalVignette,
 } from "./vignettes/static-vignettes";
+import { tx } from "@/lib/i18n";
 
 const TILTS = [-3, 2, -2, 3];
 
@@ -52,7 +53,7 @@ export function WelcomeSurface({
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Welcome to OpenVPM"
+      aria-label={tx("Welcome to OpenVPM")}
       className="fixed inset-0 z-[80] overflow-y-auto"
       style={{
         background:
@@ -62,7 +63,7 @@ export function WelcomeSurface({
       <button
         type="button"
         onClick={onSkip}
-        aria-label="Skip the welcome"
+        aria-label={tx("Skip the welcome")}
         className="absolute right-4 top-4 rounded-full p-2 text-slate-500 transition-colors hover:bg-white/70 hover:text-slate-800"
       >
         <X className="h-5 w-5" />
@@ -71,9 +72,7 @@ export function WelcomeSurface({
       <div className="mx-auto flex min-h-full max-w-5xl flex-col items-center justify-center px-6 pb-32 pt-14 text-center">
         <div className="flex items-center gap-2 text-emerald-700">
           <PawPrint className="h-5 w-5" aria-hidden="true" />
-          <span className="text-sm font-semibold uppercase tracking-wide">
-            OpenVPM
-          </span>
+          <span className="text-sm font-semibold uppercase tracking-wide">{tx("OpenVPM")}</span>
         </div>
         <h1 className="mt-3 font-heading text-3xl font-bold text-slate-900 sm:text-4xl">
           {headline}

@@ -14,6 +14,7 @@ import {
   settleManagedUploadAttempt,
   type ManagedUploadAttempt,
 } from "@/lib/managed-upload-attempt";
+import { tx } from "@/lib/i18n";
 
 type DocumentCategory = "documents" | "lab-results";
 type DocumentAttempt = ManagedUploadAttempt & { category: DocumentCategory };
@@ -76,26 +77,24 @@ export function PatientDocumentUpload({ patientId }: { patientId: string }) {
 
   return (
     <div className="rounded-lg border border-border bg-card p-4">
-      <h3 className="text-sm font-medium">Add a patient document</h3>
-      <p className="mt-1 text-xs text-muted-foreground">
-        Attach previous records, referrals, scans, or external lab reports. PDF, JPG, PNG, or WebP; up to 4 MB per file. Compress or split larger files.
-      </p>
+      <h3 className="text-sm font-medium">{tx("Add a patient document")}</h3>
+      <p className="mt-1 text-xs text-muted-foreground">{tx("Attach previous records, referrals, scans, or external lab reports. PDF, JPG, PNG, or WebP; up to 4 MB per file. Compress or split larger files.")}</p>
       <div className="mt-3 flex flex-wrap items-end gap-3">
         <label className="space-y-1 text-xs font-medium">
-          <span className="block">Document category</span>
+          <span className="block">{tx("Document category")}</span>
           <select
-            aria-label="Document category"
+            aria-label={tx("Document category")}
             className="h-9 rounded-md border border-input bg-background px-3 text-sm"
             value={category}
             disabled={uploading || !!attempt}
             onChange={(event) => setCategory(event.target.value as DocumentCategory)}
           >
-            <option value="documents">External record</option>
-            <option value="lab-results">Lab report</option>
+            <option value="documents">{tx("External record")}</option>
+            <option value="lab-results">{tx("Lab report")}</option>
           </select>
         </label>
         <label className="min-w-0 flex-1 space-y-1 text-xs font-medium">
-          <span className="block">File</span>
+          <span className="block">{tx("File")}</span>
           <input
             ref={inputRef}
             type="file"
@@ -107,10 +106,10 @@ export function PatientDocumentUpload({ patientId }: { patientId: string }) {
         </label>
         <Button type="button" size="sm" onClick={() => void upload()} disabled={!file || uploading}>
           {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
-          {uploading ? "Uploading…" : attempt ? "Retry upload" : "Upload document"}
+          {uploading ? tx("Uploading…") : attempt ? tx("Retry upload") : tx("Upload document")}
         </Button>
       </div>
-      {category === "lab-results" && <p className="mt-2 text-xs text-muted-foreground">The original report is saved in Documents. Results are not automatically entered into lab values.</p>}
+      {category === "lab-results" && <p className="mt-2 text-xs text-muted-foreground">{tx("The original report is saved in Documents. Results are not automatically entered into lab values.")}</p>}
       {error && <p role="alert" className="mt-2 text-sm text-destructive">{error}</p>}
     </div>
   );

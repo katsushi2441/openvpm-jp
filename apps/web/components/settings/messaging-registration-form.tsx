@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "sonner";
+import { tx } from "@/lib/i18n";
 
 type FormState = {
   entityType: "PRIVATE_PROFIT" | "NON_PROFIT";
@@ -106,7 +107,7 @@ export function MessagingRegistrationForm() {
   const save = trpc.messaging.saveRegistration.useMutation({
     onSuccess: () => {
       toast.success(
-        "Carrier registration details saved for administrator review.",
+        tx("Carrier registration details saved for administrator review."),
       );
       setForm((current) => ({ ...current, taxId: "" }));
       setAttested(false);
@@ -122,9 +123,7 @@ export function MessagingRegistrationForm() {
   if (registrationQuery.isLoading || defaultsQuery.isLoading) {
     return (
       <div className="flex items-center gap-2 rounded-lg border border-border p-5 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin" /> Loading carrier
-        registration…
-      </div>
+        <Loader2 className="h-4 w-4 animate-spin" />{" "}{tx("Loading carrier registration…")}</div>
     );
   }
   const queryError = registrationQuery.error || defaultsQuery.error;
@@ -141,13 +140,8 @@ export function MessagingRegistrationForm() {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 className="flex items-center gap-2 font-medium">
-            <ShieldCheck className="h-4 w-4" /> US carrier registration
-          </h3>
-          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-            US carriers verify the clinic and its texting use case before
-            messages can send. Saving this form does not submit or charge
-            anything; your messaging administrator reviews it first.
-          </p>
+            <ShieldCheck className="h-4 w-4" />{" "}{tx("US carrier registration")}</h3>
+          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">{tx("US carriers verify the clinic and its texting use case before messages can send. Saving this form does not submit or charge anything; your messaging administrator reviews it first.")}</p>
         </div>
         {data ? (
           <Badge
@@ -180,45 +174,36 @@ export function MessagingRegistrationForm() {
 
       {defaults ? (
         <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
-          <p className="text-sm font-medium text-foreground">
-            Your clinic&apos;s SMS policies are ready
-          </p>
-          <p className="mt-1 text-xs leading-5 text-muted-foreground">
-            OpenVPM hosts the privacy policy, messaging terms, and exact consent
-            disclosure carriers need to review. You can use these links now or
-            replace them with your own public HTTPS pages.
-          </p>
+          <p className="text-sm font-medium text-foreground">{tx("Your clinic's SMS policies are ready")}</p>
+          <p className="mt-1 text-xs leading-5 text-muted-foreground">{tx("OpenVPM hosts the privacy policy, messaging terms, and exact consent disclosure carriers need to review. You can use these links now or replace them with your own public HTTPS pages.")}</p>
           <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2 text-xs">
             <a
               href={defaults.privacyPolicyUrl}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-1 text-primary hover:underline"
-            >
-              Privacy policy <ExternalLink className="h-3 w-3" />
+            >{tx("Privacy policy")}{" "}<ExternalLink className="h-3 w-3" />
             </a>
             <a
               href={defaults.termsUrl}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-1 text-primary hover:underline"
-            >
-              Messaging terms <ExternalLink className="h-3 w-3" />
+            >{tx("Messaging terms")}{" "}<ExternalLink className="h-3 w-3" />
             </a>
             <a
               href={defaults.optInUrl}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-1 text-primary hover:underline"
-            >
-              Consent disclosure <ExternalLink className="h-3 w-3" />
+            >{tx("Consent disclosure")}{" "}<ExternalLink className="h-3 w-3" />
             </a>
           </div>
         </div>
       ) : null}
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Organization type">
+        <Field label={tx("Organization type")}>
           <select
             value={form.entityType}
             onChange={(event) =>
@@ -230,20 +215,18 @@ export function MessagingRegistrationForm() {
             disabled={submitted}
             className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm disabled:opacity-50"
           >
-            <option value="PRIVATE_PROFIT">
-              Private practice / for-profit
-            </option>
-            <option value="NON_PROFIT">Non-profit</option>
+            <option value="PRIVATE_PROFIT">{tx("Private practice / for-profit")}</option>
+            <option value="NON_PROFIT">{tx("Non-profit")}</option>
           </select>
         </Field>
         <TextField
-          label="Clinic name clients know"
+          label={tx("Clinic name clients know")}
           value={form.displayName}
           onChange={(v) => update("displayName", v)}
           disabled={submitted}
         />
         <TextField
-          label="Legal business name"
+          label={tx("Legal business name")}
           value={form.legalName}
           onChange={(v) => update("legalName", v)}
           disabled={submitted}
@@ -257,84 +240,84 @@ export function MessagingRegistrationForm() {
             value={form.taxId}
             onChange={(event) => update("taxId", event.target.value)}
             placeholder={
-              data?.hasTaxId ? "Leave blank to keep saved value" : "12-3456789"
+              data?.hasTaxId ? tx("Leave blank to keep saved value") : "12-3456789"
             }
             disabled={submitted}
           />
         </Field>
         <TextField
-          label="Contact first name"
+          label={tx("Contact first name")}
           value={form.contactFirstName}
           onChange={(v) => update("contactFirstName", v)}
           disabled={submitted}
         />
         <TextField
-          label="Contact last name"
+          label={tx("Contact last name")}
           value={form.contactLastName}
           onChange={(v) => update("contactLastName", v)}
           disabled={submitted}
         />
         <TextField
-          label="Contact email"
+          label={tx("Contact email")}
           type="email"
           value={form.contactEmail}
           onChange={(v) => update("contactEmail", v)}
           disabled={submitted}
         />
         <TextField
-          label="Business phone"
+          label={tx("Business phone")}
           type="tel"
           value={form.businessPhone}
           onChange={(v) => update("businessPhone", v)}
           disabled={submitted}
         />
         <TextField
-          label="Street address"
+          label={tx("Street address")}
           value={form.street}
           onChange={(v) => update("street", v)}
           disabled={submitted}
         />
         <TextField
-          label="City"
+          label={tx("City")}
           value={form.city}
           onChange={(v) => update("city", v)}
           disabled={submitted}
         />
         <TextField
-          label="State"
+          label={tx("State")}
           value={form.state}
           onChange={(v) => update("state", v.toUpperCase().slice(0, 2))}
           disabled={submitted}
         />
         <TextField
-          label="ZIP code"
+          label={tx("ZIP code")}
           value={form.postalCode}
           onChange={(v) => update("postalCode", v)}
           disabled={submitted}
         />
         <TextField
-          label="Clinic website or professional profile (HTTPS)"
+          label={tx("Clinic website or professional profile (HTTPS)")}
           type="url"
           value={form.website}
           onChange={(v) => update("website", v)}
           disabled={submitted}
-          description="A public clinic website, Google Business short link, or professional profile (100 characters max)."
+          description={tx("A public clinic website, Google Business short link, or professional profile (100 characters max).")}
         />
         <TextField
-          label="SMS privacy policy URL (optional)"
+          label={tx("SMS privacy policy URL (optional)")}
           type="url"
           value={form.privacyPolicyUrl}
           onChange={(v) => update("privacyPolicyUrl", v)}
           disabled={submitted}
-          description="Leave blank to use the OpenVPM-hosted clinic policy."
+          description={tx("Leave blank to use the OpenVPM-hosted clinic policy.")}
         />
         <TextField
-          label="SMS terms URL (optional)"
+          label={tx("SMS terms URL (optional)")}
           type="url"
           value={form.termsUrl}
           onChange={(v) => update("termsUrl", v)}
           disabled={submitted}
-          description="Leave blank to use the OpenVPM-hosted clinic terms."
+          description={tx("Leave blank to use the OpenVPM-hosted clinic terms.")}
         />
       </div>
 
@@ -347,16 +330,9 @@ export function MessagingRegistrationForm() {
               disabled={submitted}
               className="mt-0.5"
             />
-            <span>
-              I certify these details are accurate, clients consent before any
-              SMS is sent, SMS opt-in data is not sold or shared for third-party
-              marketing, and the linked policies explain message frequency,
-              message/data rates, HELP, and STOP opt-out.
-            </span>
+            <span>{tx("I certify these details are accurate, clients consent before any SMS is sent, SMS opt-in data is not sold or shared for third-party marketing, and the linked policies explain message frequency, message/data rates, HELP, and STOP opt-out.")}</span>
           </label>
-          <p className="text-xs text-muted-foreground">
-            Tax IDs are encrypted before storage and are never shown again.
-          </p>
+          <p className="text-xs text-muted-foreground">{tx("Tax IDs are encrypted before storage and are never shown again.")}</p>
         </div>
         <Button
           type="button"
@@ -372,7 +348,7 @@ export function MessagingRegistrationForm() {
           {save.isPending ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : null}
-          {data ? "Save changes" : "Save for review"}
+          {data ? tx("Save changes") : tx("Save for review")}
         </Button>
       </div>
     </section>

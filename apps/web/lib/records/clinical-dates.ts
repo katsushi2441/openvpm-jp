@@ -1,6 +1,7 @@
 import { formatDateInputForTimeZone } from "@/lib/date-input";
 import { isValidClinicalDateInput } from "@/lib/records/date-input";
 
+import { uiLocale } from "@/lib/i18n";
 const DATE_ONLY_RE = /^\d{4}-\d{2}-\d{2}$/;
 
 const CLINICAL_DATE_FORMAT: Intl.DateTimeFormatOptions = {
@@ -41,12 +42,12 @@ function formatWithTimeZone(
   timeZone?: string | null
 ): string {
   try {
-    return date.toLocaleDateString("en-US", {
+    return date.toLocaleDateString(uiLocale(), {
       ...options,
       timeZone: timeZone ?? undefined,
     });
   } catch {
-    return date.toLocaleDateString("en-US", options);
+    return date.toLocaleDateString(uiLocale(), options);
   }
 }
 
@@ -85,12 +86,12 @@ export function formatClinicalDateTime(
   if (!date) return fallback;
 
   try {
-    return date.toLocaleString("en-US", {
+    return date.toLocaleString(uiLocale(), {
       ...CLINICAL_DATE_TIME_FORMAT,
       timeZone: timeZone ?? undefined,
     });
   } catch {
-    return date.toLocaleString("en-US", CLINICAL_DATE_TIME_FORMAT);
+    return date.toLocaleString(uiLocale(), CLINICAL_DATE_TIME_FORMAT);
   }
 }
 

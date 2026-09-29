@@ -15,13 +15,14 @@ import {
   PATIENT_SPECIES_OPTIONS,
   type PatientSpecies,
 } from "@/lib/patients/species";
+import { tx } from "@/lib/i18n";
 
 const speciesEmoji: Record<string, string> = PATIENT_SPECIES_EMOJI;
 
 type SpeciesFilter = "" | PatientSpecies;
 
 const speciesOptions: Array<{ value: SpeciesFilter; label: string }> = [
-  { value: "", label: "All Species" },
+  { value: "", label: tx("All Species") },
   ...PATIENT_SPECIES_OPTIONS,
 ];
 
@@ -68,10 +69,8 @@ export default function PatientsPage() {
     <div>
       <div className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="font-heading text-xl font-semibold">Patients</h2>
-          <p className="text-sm text-muted-foreground">
-            Manage patient records
-          </p>
+          <h2 className="font-heading text-xl font-semibold">{tx("Patients")}</h2>
+          <p className="text-sm text-muted-foreground">{tx("Manage patient records")}</p>
         </div>
         <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
           {canReviewDuplicates ? (
@@ -80,18 +79,14 @@ export default function PatientsPage() {
               onClick={() => router.push("/patients/duplicates")}
               className="h-11 w-full sm:h-10 sm:w-auto"
             >
-              <GitMerge className="mr-2 h-4 w-4" />
-              Review duplicates
-            </Button>
+              <GitMerge className="mr-2 h-4 w-4" />{tx("Review duplicates")}</Button>
           ) : null}
           {canManagePatients && (
             <Button
               onClick={() => router.push("/patients/new")}
               className="h-11 w-full sm:h-10 sm:w-auto"
             >
-              <Plus className="mr-2 h-4 w-4" />
-              New Patient
-            </Button>
+              <Plus className="mr-2 h-4 w-4" />{tx("New Patient")}</Button>
           )}
         </div>
       </div>
@@ -100,7 +95,7 @@ export default function PatientsPage() {
         <div className="relative w-full min-w-0 sm:max-w-sm sm:flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search patients or owners..."
+            placeholder={tx("Search patients or owners...")}
             value={search}
             maxLength={PATIENT_SEARCH_MAX_LENGTH}
             onChange={(e) => setSearch(e.target.value)}
@@ -120,14 +115,14 @@ export default function PatientsPage() {
         </select>
         {data && (
           <p className="text-sm text-muted-foreground sm:shrink-0">
-            {data.total} patient{data.total !== 1 ? "s" : ""}
+            {data.total}{" "}{tx("patient")}{data.total !== 1 ? tx("s") : ""}
           </p>
         )}
       </div>
 
       {error || patientsMissing ? (
         <div className="mt-6 rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
-          {error?.message ?? "Unable to load patients. Please retry."}
+          {error?.message ?? tx("Unable to load patients. Please retry.")}
         </div>
       ) : isLoading ? (
         <TableSkeleton rows={8} cols={5} />
@@ -164,18 +159,17 @@ export default function PatientsPage() {
                             : "bg-amber-100 text-amber-700"
                       }`}
                     >
-                      {patient.status ?? "active"}
+                      {patient.status ?? tx("active")}
                     </span>
                   </span>
                   <span className="mt-2 block min-w-0 space-y-1 text-sm text-muted-foreground">
                     <span className="block truncate">
                       {[patient.breed, patient.species]
                         .filter(Boolean)
-                        .join(" · ") || "Breed and species not listed"}
+                        .join(" · ") || tx("Breed and species not listed")}
                     </span>
-                    <span className="block truncate">Owner: {ownerName}</span>
-                    <span className="block text-xs">
-                      Sex: {formatSex(patient.sex)}
+                    <span className="block truncate">{tx("Owner:")}{" "}{ownerName}</span>
+                    <span className="block text-xs">{tx("Sex:")}{" "}{formatSex(patient.sex)}
                     </span>
                   </span>
                 </button>
@@ -187,21 +181,11 @@ export default function PatientsPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-border bg-muted/50">
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Name
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Breed
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Owner
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Sex
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">
-                    Status
-                  </th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Name")}</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Breed")}</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Owner")}</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Sex")}</th>
+                  <th className="px-4 py-3 text-left font-medium text-muted-foreground">{tx("Status")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -239,7 +223,7 @@ export default function PatientsPage() {
                               : "bg-amber-100 text-amber-700"
                         }`}
                       >
-                        {patient.status ?? "active"}
+                        {patient.status ?? tx("active")}
                       </span>
                     </td>
                   </tr>
@@ -253,17 +237,17 @@ export default function PatientsPage() {
           className="mt-6"
           icon={PawPrint}
           title={
-            hasFilters ? "No patients match your filters" : "No patients yet"
+            hasFilters ? tx("No patients match your filters") : tx("No patients yet")
           }
           description={
             hasFilters
-              ? "Clear the search or species filter to broaden the list."
-              : "Create a patient record once the owner client is in OpenVPM."
+              ? tx("Clear the search or species filter to broaden the list.")
+              : tx("Create a patient record once the owner client is in OpenVPM.")
           }
           action={
             !hasFilters && canManagePatients
               ? {
-                  label: "Add your first patient",
+                  label: tx("Add your first patient"),
                   onClick: () => router.push("/patients/new"),
                   icon: Plus,
                 }

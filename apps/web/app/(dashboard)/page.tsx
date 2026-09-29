@@ -21,6 +21,7 @@ import { cn } from "@/lib/utils";
 import { trpc } from "@/lib/trpc";
 import { formatCurrency } from "@/lib/locale/format";
 import { formatDateInputForTimeZone } from "@/lib/date-input";
+import { tx, uiLocale } from "@/lib/i18n";
 
 function DashboardChartsChunkLoading() {
   return (
@@ -67,9 +68,9 @@ function formatTime(date: Date | string, timeZone?: string | null) {
     timeZone: timeZone ?? undefined,
   };
   try {
-    return new Date(date).toLocaleTimeString("en-US", options);
+    return new Date(date).toLocaleTimeString(uiLocale(), options);
   } catch {
-    return new Date(date).toLocaleTimeString("en-US", {
+    return new Date(date).toLocaleTimeString(uiLocale(), {
       ...options,
       timeZone: undefined,
     });
@@ -79,7 +80,7 @@ function formatTime(date: Date | string, timeZone?: string | null) {
 function formatDueDate(dateInput: string) {
   const [year, month, day] = dateInput.split("-").map(Number);
   return new Date(Date.UTC(year!, month! - 1, day!)).toLocaleDateString(
-    "en-US",
+    uiLocale(),
     {
       year: "numeric",
       month: "short",
@@ -105,29 +106,29 @@ function addDateInputDays(dateInput: string, days: number): string {
 const kpiConfig = [
   {
     key: "todayAppointments" as const,
-    label: "Today's Appointments",
-    description: "Scheduled for today",
+    label: tx("Today's Appointments"),
+    description: tx("Scheduled for today"),
     icon: Calendar,
     isCurrency: false,
   },
   {
     key: "patientsSeen" as const,
-    label: "Patients Seen Today",
-    description: "Checked out today",
+    label: tx("Patients Seen Today"),
+    description: tx("Checked out today"),
     icon: PawPrint,
     isCurrency: false,
   },
   {
     key: "revenueMtd" as const,
-    label: "Revenue (MTD)",
-    description: "Paid invoices this month",
+    label: tx("Revenue (MTD)"),
+    description: tx("Paid invoices this month"),
     icon: DollarSign,
     isCurrency: true,
   },
   {
     key: "pendingInvoices" as const,
-    label: "Pending Invoices",
-    description: "Sent or overdue",
+    label: tx("Pending Invoices"),
+    description: tx("Sent or overdue"),
     icon: FileText,
     isCurrency: false,
   },
@@ -269,9 +270,7 @@ export default function DashboardPage() {
       <UnfinishedFieldVisits />
       {/* KPI Cards */}
       {statsError || statsDisplayMissing ? (
-        <div className="rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
-          Unable to load dashboard metrics.
-          {statsError ? ` ${statsError.message}` : " Please retry."}
+        <div className="rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">{tx("Unable to load dashboard metrics.")}{statsError ? ` ${statsError.message}` : tx(" Please retry.")}
         </div>
       ) : isStatsLoading ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -318,25 +317,17 @@ export default function DashboardPage() {
             <h2
               id="pending-follow-ups-heading"
               className="font-heading text-lg font-semibold"
-            >
-              Follow-up work queue
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Signed visit obligations that still need an owner.
-            </p>
+            >{tx("Follow-up work queue")}</h2>
+            <p className="text-sm text-muted-foreground">{tx("Signed visit obligations that still need an owner.")}</p>
           </div>
           {pendingFollowUps.data?.length ? (
             <span className="rounded-full bg-amber-500/15 px-2.5 py-1 text-xs font-medium text-amber-700 dark:text-amber-300">
-              {pendingFollowUps.data.length} open
-            </span>
+              {pendingFollowUps.data.length}{" "}{tx("open")}</span>
           ) : null}
         </div>
         <div className="space-y-2 p-4">
           {pendingFollowUps.error ? (
-            <div className="rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
-              Follow-up obligations could not be loaded. Refresh before ending
-              the shift.
-            </div>
+            <div className="rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">{tx("Follow-up obligations could not be loaded. Refresh before ending the shift.")}</div>
           ) : pendingFollowUps.isLoading ? (
             Array.from({ length: 2 }).map((_, index) => (
               <AppointmentRowSkeleton key={index} />
@@ -359,10 +350,9 @@ export default function DashboardPage() {
                     />
                     <div className="min-w-0">
                       <p className="font-medium">
-                        {followUp.patientName} · due {formatDueDate(dueDate)}
+                        {followUp.patientName}{" "}{tx("· due")}{" "}{formatDueDate(dueDate)}
                       </p>
-                      <p className="text-sm text-muted-foreground">
-                        Owner: {followUp.clientFirstName}{" "}
+                      <p className="text-sm text-muted-foreground">{tx("Owner:")}{" "}{followUp.clientFirstName}{" "}
                         {followUp.clientLastName}
                         {followUp.assigneeName
                           ? ` · Assigned to ${followUp.assigneeName}`
@@ -378,17 +368,13 @@ export default function DashboardPage() {
                   <Link
                     href={`/encounters/${followUp.appointmentId}#visit-closeout`}
                     className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-primary hover:underline"
-                  >
-                    Resolve follow-up
-                    <ArrowRight className="h-4 w-4" />
+                  >{tx("Resolve follow-up")}<ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
               );
             })
           ) : (
-            <p className="py-4 text-center text-sm text-muted-foreground">
-              No pending follow-up obligations.
-            </p>
+            <p className="py-4 text-center text-sm text-muted-foreground">{tx("No pending follow-up obligations.")}</p>
           )}
         </div>
       </section>
@@ -396,15 +382,11 @@ export default function DashboardPage() {
       {/* Recent Appointments */}
       <div className="rounded-lg border border-border bg-card">
         <div className="border-b border-border px-6 py-4">
-          <h2 className="font-heading text-lg font-semibold">
-            Upcoming Appointments
-          </h2>
+          <h2 className="font-heading text-lg font-semibold">{tx("Upcoming Appointments")}</h2>
         </div>
         <div className="space-y-2 p-4">
           {upcomingError || isUpcomingMissing ? (
-            <div className="rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
-              Unable to load upcoming appointments.
-              {upcomingError ? ` ${upcomingError.message}` : " Please retry."}
+            <div className="rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">{tx("Unable to load upcoming appointments.")}{upcomingError ? ` ${upcomingError.message}` : tx(" Please retry.")}
             </div>
           ) : isUpcomingLoading ? (
             Array.from({ length: 3 }).map((_, i) => (
@@ -414,10 +396,10 @@ export default function DashboardPage() {
             <EmptyState
               className="border-0 bg-transparent py-8"
               icon={Calendar}
-              title="No visits booked yet"
-              description="Book your first visit and it shows up here."
+              title={tx("No visits booked yet")}
+              description={tx("Book your first visit and it shows up here.")}
               action={{
-                label: "Book your first visit",
+                label: tx("Book your first visit"),
                 onClick: () => router.push("/schedule"),
                 icon: CalendarPlus,
               }}
@@ -434,7 +416,7 @@ export default function DashboardPage() {
                 </div>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium">
-                    {appt.patientName ?? "Unknown Patient"}
+                    {appt.patientName ?? tx("Unknown Patient")}
                     {appt.clientLastName && (
                       <span className="ml-1 font-normal text-muted-foreground">
                         ({appt.clientFirstName} {appt.clientLastName})
@@ -470,9 +452,7 @@ export default function DashboardPage() {
 
       {/* Charts */}
       {chartsError || chartsDisplayMissing ? (
-        <div className="rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
-          Unable to load dashboard charts.
-          {chartsError ? ` ${chartsError.message}` : " Please retry."}
+        <div className="rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">{tx("Unable to load dashboard charts.")}{chartsError ? ` ${chartsError.message}` : tx(" Please retry.")}
         </div>
       ) : isChartsLoading ? (
         <>
@@ -488,8 +468,8 @@ export default function DashboardPage() {
       ) : chartData && !hasChartData ? (
         <EmptyState
           icon={TrendingUp}
-          title="Your charts show up once you start"
-          description="As you book visits and send bills, your trends and totals fill in here."
+          title={tx("Your charts show up once you start")}
+          description={tx("As you book visits and send bills, your trends and totals fill in here.")}
         />
       ) : chartData ? (
         <DashboardCharts

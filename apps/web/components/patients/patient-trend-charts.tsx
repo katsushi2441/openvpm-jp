@@ -16,6 +16,7 @@ import {
   type VitalTrendPoint,
   type WeightTrendPoint,
 } from "@/lib/records/clinical-trends";
+import { tx } from "@/lib/i18n";
 
 function ChartTooltip({
   active,
@@ -57,9 +58,7 @@ export function WeightTrendChart({ data }: { data: WeightTrendPoint[] }) {
     return (
       <div className="rounded-lg border border-dashed border-border bg-card p-6 text-center">
         <Activity className="mx-auto h-8 w-8 text-muted-foreground/50" />
-        <p className="mt-2 text-sm text-muted-foreground">
-          Not enough weight history for a trend yet.
-        </p>
+        <p className="mt-2 text-sm text-muted-foreground">{tx("Not enough weight history for a trend yet.")}</p>
       </div>
     );
   }
@@ -68,10 +67,9 @@ export function WeightTrendChart({ data }: { data: WeightTrendPoint[] }) {
     <div className="rounded-lg border border-border bg-card p-4">
       <div className="mb-3 flex items-center justify-between">
         <div>
-          <h3 className="font-heading text-base font-semibold">Weight Trend</h3>
+          <h3 className="font-heading text-base font-semibold">{tx("Weight Trend")}</h3>
           <p className="text-sm text-muted-foreground">
-            {data[0]!.weightKg} kg to {data[data.length - 1]!.weightKg} kg
-          </p>
+            {data[0]!.weightKg}{" "}{tx("kg to")}{" "}{data[data.length - 1]!.weightKg}{" "}{tx("kg")}</p>
         </div>
       </div>
       <div className="h-64">
@@ -118,9 +116,7 @@ export function VitalsTrendChart({ data }: { data: VitalTrendPoint[] }) {
     return (
       <div className="rounded-lg border border-dashed border-border bg-card p-6 text-center">
         <Activity className="mx-auto h-8 w-8 text-muted-foreground/50" />
-        <p className="mt-2 text-sm text-muted-foreground">
-          Not enough vitals history for trends yet.
-        </p>
+        <p className="mt-2 text-sm text-muted-foreground">{tx("Not enough vitals history for trends yet.")}</p>
       </div>
     );
   }
@@ -129,7 +125,7 @@ export function VitalsTrendChart({ data }: { data: VitalTrendPoint[] }) {
     <div className="grid gap-4 lg:grid-cols-2">
       {hasTemp && (
         <div className="rounded-lg border border-border bg-card p-4">
-          <h3 className="font-heading text-base font-semibold">Temperature</h3>
+          <h3 className="font-heading text-base font-semibold">{tx("Temperature")}</h3>
           <div className="mt-3 h-56">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
@@ -146,7 +142,7 @@ export function VitalsTrendChart({ data }: { data: VitalTrendPoint[] }) {
 
       {hasRates && (
         <div className="rounded-lg border border-border bg-card p-4">
-          <h3 className="font-heading text-base font-semibold">Heart / Respiratory Rate</h3>
+          <h3 className="font-heading text-base font-semibold">{tx("Heart / Respiratory Rate")}</h3>
           <div className="mt-3 h-56">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
@@ -164,7 +160,7 @@ export function VitalsTrendChart({ data }: { data: VitalTrendPoint[] }) {
 
       {hasScores && (
         <div className="rounded-lg border border-border bg-card p-4 lg:col-span-2">
-          <h3 className="font-heading text-base font-semibold">Body / Pain Scores</h3>
+          <h3 className="font-heading text-base font-semibold">{tx("Body / Pain Scores")}</h3>
           <div className="mt-3 h-56">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>

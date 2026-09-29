@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { PawMark } from "@/components/brand/paw-mark";
+import { tx } from "@/lib/i18n";
 
 export const metadata: Metadata = {
-  title: "Sign Consent - OpenVPM",
-  description: "Review and sign a consent form",
+  title: tx("Sign Consent - OpenVPM"),
+  description: tx("Review and sign a consent form"),
   referrer: "no-referrer",
   robots: { index: false, follow: false, nocache: true },
 };
@@ -27,21 +28,15 @@ export default function SignLayout({
               <PawMark className="h-4 w-4 text-white" />
             </div>
             <div>
-              <span className="font-semibold text-gray-900 text-sm">
-                OpenVPM
-              </span>
-              <span className="text-teal-600 text-sm ml-1.5 font-medium">
-                Consent Form
-              </span>
+              <span className="font-semibold text-gray-900 text-sm">{tx("OpenVPM")}</span>
+              <span className="text-teal-600 text-sm ml-1.5 font-medium">{tx("Consent Form")}</span>
             </div>
           </div>
         </div>
       </header>
       <main className="mx-auto max-w-lg px-4 py-6">{children}</main>
       <footer className="border-t border-gray-100 mt-12">
-        <div className="mx-auto max-w-lg px-4 py-6 text-center text-sm text-gray-400">
-          Powered by OpenVPM
-        </div>
+        <div className="mx-auto max-w-lg px-4 py-6 text-center text-sm text-gray-400">{tx("Powered by OpenVPM")}</div>
       </footer>
     </div>
   );
