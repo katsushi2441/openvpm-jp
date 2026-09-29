@@ -20,7 +20,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 SRC = os.path.join(ROOT, 'packages', 'db', 'seed.ts')
 DST = os.path.join(ROOT, 'packages', 'db', 'seed-ja.ts')
 CACHE = os.path.join(ROOT, 'jp', 'seed_ja_strings.json')
-OLLAMA = os.environ.get('OLLAMA_URL', 'http://192.168.0.3:11434') + '/api/chat'
+OLLAMA = os.environ.get('OLLAMA_URL', 'http://127.0.0.1:11434') + '/api/chat'
 MODEL = os.environ.get('OLLAMA_MODEL', 'gemma4:12b-it-qat')
 YEN_PER_USD = 150
 

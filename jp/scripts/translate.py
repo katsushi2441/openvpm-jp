@@ -20,7 +20,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)
 SRC = os.path.join(ROOT, 'jp', 'messages_en.json')
 DST = os.path.join(ROOT, 'apps', 'web', 'lib', 'i18n', 'messages', 'ja.json')
 REJ = os.path.join(ROOT, 'outputs', 'translate_rejects.json')
-OLLAMA = os.environ.get('OLLAMA_URL', 'http://192.168.0.3:11434') + '/api/chat'
+OLLAMA = os.environ.get('OLLAMA_URL', 'http://127.0.0.1:11434') + '/api/chat'
 MODEL = os.environ.get('OLLAMA_MODEL', 'gemma4:12b-it-qat')
 
 GLOSSARY = """\
