@@ -42,7 +42,7 @@ import {
 } from "@/lib/communications/policy";
 import { communicationStatusLabel } from "@/lib/communications/status";
 import { toast } from "sonner";
-import { tx, uiLocale, txv } from "@/lib/i18n";
+import { tx, uiLocale, txv, personName } from "@/lib/i18n";
 
 type FilterTab = "all" | "unread" | "sent";
 type Channel = "phone" | "sms" | "email" | "portal";
@@ -423,7 +423,7 @@ export default function InboxPage() {
         clientId: item.clientId,
         clientName:
           item.clientFirstName && item.clientLastName
-            ? `${item.clientFirstName} ${item.clientLastName}`
+            ? `${personName(item.clientFirstName, item.clientLastName)}`
             : "Unknown Client",
         latest: item,
         unreadCount,
@@ -539,7 +539,7 @@ export default function InboxPage() {
 
   function handleLinkUnmatchedClient(client: ClientSearchResult) {
     if (!canMutateInbox || !selectedUnmatched) return;
-    const clientName = `${client.firstName} ${client.lastName}`;
+    const clientName = `${personName(client.firstName, client.lastName)}`;
 
     linkCommunicationMutation.mutate(
       {
@@ -837,13 +837,13 @@ export default function InboxPage() {
                       onClick={() =>
                         handleSelectClient(
                           client.id,
-                          `${client.firstName} ${client.lastName}`,
+                          `${personName(client.firstName, client.lastName)}`,
                         )
                       }
                       className="w-full text-left px-3 py-2 rounded-md hover:bg-accent transition-colors"
                     >
                       <div className="text-sm font-medium">
-                        {client.firstName} {client.lastName}
+                        {personName(client.firstName, client.lastName)}
                       </div>
                       <div className="text-xs text-muted-foreground">
                         {client.email || client.phone || tx("No contact info")}
@@ -916,7 +916,7 @@ export default function InboxPage() {
                       </span>
                       {selectedUnmatched.status ? (
                         <span className="text-[10px] ml-1 capitalize">
-                          {selectedUnmatched.status}
+                          {txv(selectedUnmatched.status)}
                         </span>
                       ) : null}
                     </div>
@@ -964,7 +964,7 @@ export default function InboxPage() {
                           >
                             <div className="min-w-0">
                               <div className="truncate text-sm font-medium">
-                                {client.firstName} {client.lastName}
+                                {personName(client.firstName, client.lastName)}
                               </div>
                               <div className="truncate text-xs text-muted-foreground">
                                 {client.email ||

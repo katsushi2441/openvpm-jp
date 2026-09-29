@@ -59,6 +59,7 @@ import {
 } from "@/lib/recovery-hold";
 import { assertOutboundEmailAllowed } from "@/lib/outbound-email-security";
 
+import { personName } from "@/lib/i18n";
 const DEFAULT_PRACTICE_NAME = "your clinic";
 
 function assertStaffOutboundEmailAllowed(
@@ -448,7 +449,7 @@ export const notificationsRouter = createRouter({
         await assertStaffOutboundEmailAllowed(ctx, "appointment_reminder");
         const result = await sendAppointmentReminder({
           to: clientEmail,
-          clientName: `${appt.clientFirstName} ${appt.clientLastName}`,
+          clientName: `${personName(appt.clientFirstName, appt.clientLastName)}`,
           patientName: appt.patientName ?? "Unknown",
           appointmentDate: formatDate(appt.startTime, appt.practiceTimezone),
           appointmentTime: formatTime(appt.startTime, appt.practiceTimezone),
@@ -715,7 +716,7 @@ export const notificationsRouter = createRouter({
       await assertStaffOutboundEmailAllowed(ctx, "invoice");
       const emailResult = await sendInvoiceEmail({
         to: clientEmail,
-        clientName: `${invoice.clientFirstName} ${invoice.clientLastName}`,
+        clientName: `${personName(invoice.clientFirstName, invoice.clientLastName)}`,
         invoiceTotal: totalFormatted,
         dueDate: invoice.dueDate
           ? formatClinicalDate(
@@ -991,7 +992,7 @@ export const notificationsRouter = createRouter({
             );
             const result = await sendAppointmentReminder({
               to: clientEmail,
-              clientName: `${appt.clientFirstName} ${appt.clientLastName}`,
+              clientName: `${personName(appt.clientFirstName, appt.clientLastName)}`,
               patientName: appt.patientName ?? "Unknown",
               appointmentDate,
               appointmentTime,

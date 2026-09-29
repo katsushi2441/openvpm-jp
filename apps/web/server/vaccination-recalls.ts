@@ -33,6 +33,7 @@ import {
   type VaccinationRecallRecipient,
 } from "@/lib/vaccination-recalls";
 
+import { personName } from "@/lib/i18n";
 const DEFAULT_PRACTICE_NAME = "your clinic";
 
 function activePracticePredicate(practiceId: string) {
@@ -171,7 +172,7 @@ function groupRows(rows: VaccinationRecallRow[]): VaccinationRecallCandidate[] {
       patientId: row.patientId,
       patientName: row.patientName,
       clientId: row.clientId,
-      clientName: `${row.clientFirstName} ${row.clientLastName}`.trim(),
+      clientName: `${personName(row.clientFirstName, row.clientLastName)}`.trim(),
       clientEmail: row.clientEmail,
       clientPhone: row.clientPhone,
       preferredContactMethod: row.preferredContactMethod,

@@ -24,7 +24,7 @@ import {
 } from "@/lib/clients/policy";
 import { normalizeE164 } from "@/lib/messaging/phone";
 import { SMS_CONSENT_DISCLOSURE } from "@/lib/messaging/consent";
-import { tx } from "@/lib/i18n";
+import { tx, personName } from "@/lib/i18n";
 
 function canManageClientFormRole(role?: string | null): boolean {
   return (
@@ -109,7 +109,7 @@ function NewClientForm({ firstClinicDay }: { firstClinicDay: boolean }) {
       await utils.clients.list.invalidate();
       toast.success(tx("Client created"));
       if (firstClinicDay) {
-        const ownerName = `${client.firstName} ${client.lastName}`;
+        const ownerName = `${personName(client.firstName, client.lastName)}`;
         router.push(
           `/patients/new?clientId=${encodeURIComponent(client.id)}&clientName=${encodeURIComponent(ownerName)}&setup=first-visit`,
         );

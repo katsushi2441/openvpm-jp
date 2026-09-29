@@ -15,7 +15,7 @@ import {
   PATIENT_SPECIES_OPTIONS,
   type PatientSpecies,
 } from "@/lib/patients/species";
-import { tx, txv } from "@/lib/i18n";
+import { tx, txv, personName } from "@/lib/i18n";
 
 const speciesEmoji: Record<string, string> = PATIENT_SPECIES_EMOJI;
 
@@ -132,7 +132,7 @@ export default function PatientsPage() {
             {data.items.map((patient) => {
               const ownerName =
                 patient.clientFirstName && patient.clientLastName
-                  ? `${patient.clientFirstName} ${patient.clientLastName}`
+                  ? `${personName(patient.clientFirstName, patient.clientLastName)}`
                   : "Owner not listed";
 
               return (
@@ -159,7 +159,7 @@ export default function PatientsPage() {
                             : "bg-amber-100 text-amber-700"
                       }`}
                     >
-                      {patient.status ?? tx("active")}
+                      {txv(patient.status) ?? tx("active")}
                     </span>
                   </span>
                   <span className="mt-2 block min-w-0 space-y-1 text-sm text-muted-foreground">
@@ -207,7 +207,7 @@ export default function PatientsPage() {
                     </td>
                     <td className="px-4 py-3 text-muted-foreground">
                       {patient.clientFirstName && patient.clientLastName
-                        ? `${patient.clientFirstName} ${patient.clientLastName}`
+                        ? `${personName(patient.clientFirstName, patient.clientLastName)}`
                         : "\u2014"}
                     </td>
                     <td className="px-4 py-3 text-muted-foreground">
@@ -223,7 +223,7 @@ export default function PatientsPage() {
                               : "bg-amber-100 text-amber-700"
                         }`}
                       >
-                        {patient.status ?? tx("active")}
+                        {txv(patient.status) ?? tx("active")}
                       </span>
                     </td>
                   </tr>

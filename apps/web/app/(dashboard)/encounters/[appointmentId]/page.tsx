@@ -3116,7 +3116,7 @@ function OperationalCloseoutForm({
         </div>
       ) : null}
       {activeInvoice ? (
-        <div className="rounded-md border border-border bg-muted/20 p-3 text-sm">{tx("Invoice is")}{" "}<strong>{activeInvoice.status}</strong>{tx(", has")}{" "}
+        <div className="rounded-md border border-border bg-muted/20 p-3 text-sm">{tx("Invoice is")}{" "}<strong>{txv(activeInvoice.status)}</strong>{tx(", has")}{" "}
           {activeInvoice.itemCount}{" "}{tx("line")}{activeInvoice.itemCount === 1 ? "" : tx("s")}{tx(", and a balance of")}{" "}
           {formatCurrency(activeInvoice.balanceDueCents / 100)}.{" "}
           {paidReady
@@ -3219,7 +3219,7 @@ function EncounterInvoices({
                           invoice.status === "paid" ? "success" : "outline"
                         }
                       >
-                        {invoice.status}
+                        {txv(invoice.status)}
                       </Badge>
                     </div>
                     <p className="mt-1 text-sm text-muted-foreground">{tx("Total")}{" "}{fmt(invoice.total)}{" "}{tx("· Balance")}{" "}{fmt(balance)}
@@ -3869,7 +3869,7 @@ function ChargeCapture({
         ) : !invoiceStateReady ? (
           <div className="rounded-md border border-destructive bg-destructive/10 p-4 text-sm text-destructive">{tx("Charge capture is locked because invoice state could not be confirmed. Refresh before creating charges.")}</div>
         ) : activeInvoice && !activeInvoiceIsDraft ? (
-          <div className="rounded-md border border-border bg-muted/30 p-4 text-sm text-muted-foreground">{tx("This visit invoice is already")}{" "}{activeInvoice.status}{tx(". Open it from Invoice state to collect payment or review the balance. Only unpaid draft charges can be edited.")}</div>
+          <div className="rounded-md border border-border bg-muted/30 p-4 text-sm text-muted-foreground">{tx("This visit invoice is already")}{" "}{txv(activeInvoice.status)}{tx(". Open it from Invoice state to collect payment or review the balance. Only unpaid draft charges can be edited.")}</div>
         ) : activeInvoiceIsDraft && invoiceDetailQuery.isLoading ? (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" />{tx("Loading existing visit charges...")}</div>

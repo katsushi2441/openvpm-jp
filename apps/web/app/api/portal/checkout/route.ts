@@ -45,6 +45,7 @@ import { isSameOriginRequest } from "@/lib/request-origin";
 import { readJsonRequestBody } from "@/lib/request-json";
 import { assertVisitInvoiceReadyForFinancialAction } from "@/server/visit-billing-integrity";
 
+import { personName } from "@/lib/i18n";
 const portalCheckoutInput = z.union([
   z.object({
     invoiceId: z.string().uuid(),
@@ -435,7 +436,7 @@ export async function POST(req: NextRequest) {
         invoiceId: invoice.id,
         amount: amountCents,
         clientEmail: client.email ?? "",
-        clientName: `${client.firstName} ${client.lastName}`,
+        clientName: `${personName(client.firstName, client.lastName)}`,
         description,
         currency: practice.currency ?? "usd",
         connectedAccountId: connectedAccountId ?? undefined,

@@ -40,7 +40,7 @@ import {
   isBillingAmountWithinBalance,
 } from "@/lib/billing/policy";
 import { isSafeCheckoutRedirectUrl } from "@/lib/checkout-redirect";
-import { tx, uiLocale, txv } from "@/lib/i18n";
+import { tx, uiLocale, txv, personName } from "@/lib/i18n";
 
 const STATUS_TABS = [
   { label: "All", value: undefined, isEstimate: false as const },
@@ -878,7 +878,7 @@ function WellnessBillingPanel({
                   className="border-b border-border last:border-0"
                 >
                   <td className="px-4 py-3 font-medium">
-                    {row.clientFirstName} {row.clientLastName}
+                    {personName(row.clientFirstName, row.clientLastName)}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {row.patientName || "\u2014"}
@@ -970,7 +970,7 @@ function InvoiceRow({
           )}
         </td>
         <td className="px-4 py-3 font-medium">
-          {invoice.clientFirstName} {invoice.clientLastName}
+          {personName(invoice.clientFirstName, invoice.clientLastName)}
         </td>
         <td className="px-4 py-3 text-muted-foreground">
           {invoice.patientName || "\u2014"}

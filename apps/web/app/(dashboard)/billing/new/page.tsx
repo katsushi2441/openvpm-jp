@@ -31,7 +31,7 @@ import {
 } from "@/lib/billing/policy";
 import { centsToMoney, moneyToCents } from "@/lib/billing/invoice-balance";
 import { tryCalculateInvoiceTaxTotals } from "@/lib/billing/invoice-tax";
-import { tx } from "@/lib/i18n";
+import { tx, personName, txv } from "@/lib/i18n";
 
 interface LineItem {
   id: string;
@@ -351,7 +351,7 @@ function NewInvoiceForm() {
           {selectedClient ? (
             <div className="flex items-center gap-2">
               <span className="text-sm font-medium">
-                {selectedClient.firstName} {selectedClient.lastName}
+                {personName(selectedClient.firstName, selectedClient.lastName)}
               </span>
               <Button
                 variant="ghost"
@@ -403,7 +403,7 @@ function NewInvoiceForm() {
                         }}
                       >
                         <span className="font-medium">
-                          {client.firstName} {client.lastName}
+                          {personName(client.firstName, client.lastName)}
                         </span>
                         {client.email && (
                           <span className="ml-2 text-muted-foreground">
@@ -431,7 +431,7 @@ function NewInvoiceForm() {
               <option value="">{tx("-- No patient --")}</option>
               {patientOptions.map((patient) => (
                 <option key={patient.id} value={patient.id}>
-                  {patient.name} ({patient.species})
+                  {patient.name} ({txv(patient.species)})
                 </option>
               ))}
             </select>

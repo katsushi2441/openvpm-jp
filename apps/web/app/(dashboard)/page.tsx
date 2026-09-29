@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { trpc } from "@/lib/trpc";
 import { formatCurrency } from "@/lib/locale/format";
 import { formatDateInputForTimeZone } from "@/lib/date-input";
-import { tx, uiLocale, txv } from "@/lib/i18n";
+import { tx, uiLocale, txv, personName } from "@/lib/i18n";
 
 function DashboardChartsChunkLoading() {
   return (
@@ -419,7 +419,7 @@ export default function DashboardPage() {
                     {appt.patientName ?? tx("Unknown Patient")}
                     {appt.clientLastName && (
                       <span className="ml-1 font-normal text-muted-foreground">
-                        ({appt.clientFirstName} {appt.clientLastName})
+                        ({personName(appt.clientFirstName, appt.clientLastName)})
                       </span>
                     )}
                   </p>

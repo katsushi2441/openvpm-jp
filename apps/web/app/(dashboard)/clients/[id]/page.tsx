@@ -38,7 +38,7 @@ import {
   formatClinicalDateTime,
 } from "@/lib/records/clinical-dates";
 import { communicationStatusLabel } from "@/lib/communications/status";
-import { tx } from "@/lib/i18n";
+import { tx, personName, txv } from "@/lib/i18n";
 
 const speciesEmoji: Record<string, string> = PATIENT_SPECIES_EMOJI;
 
@@ -182,7 +182,7 @@ export default function ClientDetailPage() {
         <div className="flex items-start justify-between">
           <div>
             <h2 className="font-heading text-xl font-semibold">
-              {client.firstName} {client.lastName}
+              {personName(client.firstName, client.lastName)}
             </h2>
             <div className="mt-2 flex flex-col gap-1 text-sm text-muted-foreground">
               {client.email && (
@@ -334,7 +334,7 @@ export default function ClientDetailPage() {
                           : "bg-amber-100 text-amber-700"
                     }`}
                   >
-                    {patient.status ?? tx("active")}
+                    {txv(patient.status) ?? tx("active")}
                   </span>
                 </div>
               </div>
@@ -349,7 +349,7 @@ export default function ClientDetailPage() {
                 ? {
                     label: tx("Add patient"),
                     onClick: () => {
-                      const ownerName = `${client.firstName} ${client.lastName}`;
+                      const ownerName = `${personName(client.firstName, client.lastName)}`;
                       router.push(
                         `/patients/new?clientId=${encodeURIComponent(client.id)}&clientName=${encodeURIComponent(ownerName)}`
                       );

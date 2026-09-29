@@ -35,6 +35,7 @@ import {
 } from "@/lib/messaging/appointment-reminder";
 import { lockPracticeForExternalSideEffects } from "@/lib/recovery-hold";
 
+import { personName } from "@/lib/i18n";
 type ReminderChannel = "sms" | "email";
 
 function formatAppointmentReminderDateTime(
@@ -411,7 +412,7 @@ export async function GET(request: Request) {
             try {
               const result = await sendAppointmentReminder({
                 to: clientEmail,
-                clientName: `${currentRecipient.clientFirstName} ${currentRecipient.clientLastName}`,
+                clientName: `${personName(currentRecipient.clientFirstName, currentRecipient.clientLastName)}`,
                 patientName: currentRecipient.patientName ?? "Unknown",
                 appointmentDate,
                 appointmentTime,

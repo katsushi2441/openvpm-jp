@@ -22,7 +22,7 @@ import {
   isRequiredPatientTextValid,
 } from "@/lib/patients/policy";
 import { PATIENT_SPECIES_OPTIONS } from "@/lib/patients/species";
-import { tx, txv } from "@/lib/i18n";
+import { tx, txv, personName } from "@/lib/i18n";
 
 const speciesOptions = PATIENT_SPECIES_OPTIONS;
 
@@ -214,7 +214,7 @@ function NewPatientForm() {
     lastName: string;
   }) => {
     setForm((prev) => ({ ...prev, clientId: client.id }));
-    setSelectedClientName(`${client.firstName} ${client.lastName}`);
+    setSelectedClientName(`${personName(client.firstName, client.lastName)}`);
     setClientSearch("");
     setShowClientDropdown(false);
   };
@@ -298,7 +298,7 @@ function NewPatientForm() {
                         onClick={() => selectClient(client)}
                       >
                         <span className="font-medium">
-                          {client.firstName} {client.lastName}
+                          {personName(client.firstName, client.lastName)}
                         </span>
                         <span className="text-muted-foreground">
                           {client.email || client.phone || ""}

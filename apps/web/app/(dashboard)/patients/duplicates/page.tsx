@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { EmptyState } from "@/components/common/empty-state";
 import { TableSkeleton } from "@/components/common/loading";
-import { tx } from "@/lib/i18n";
+import { tx, personName, txv } from "@/lib/i18n";
 
 const EMPTY_UUID = "00000000-0000-0000-0000-000000000000";
 const MERGE_REASON_MIN_LENGTH = 5;
@@ -78,7 +78,7 @@ function DuplicateGroupCard({
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 className="font-heading font-semibold">
-            {group.clientFirstName} {group.clientLastName}
+            {personName(group.clientFirstName, group.clientLastName)}
           </h3>
           <p className="text-sm text-muted-foreground">
             {group.patients.length}{" "}{tx("same-owner charts need review")}</p>
@@ -193,7 +193,7 @@ function IdentitySummary({
       </p>
       <p className="mt-2 font-medium">{patient.name}</p>
       <p className="text-sm text-muted-foreground">
-        {patient.species} · {patient.breed || tx("Unknown breed")}
+        {txv(patient.species)} · {patient.breed || tx("Unknown breed")}
       </p>
       <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-xs">
         <dt className="text-muted-foreground">DOB</dt>

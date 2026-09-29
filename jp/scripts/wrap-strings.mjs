@@ -185,11 +185,14 @@ function processFile(file) {
       note(node.initializer.text, node);
     }
     // 8) {tab.label} / {item.title} をそのまま表示している所（as const の配列など）→ {txv(tab.label)}
-    if (ts.isJsxExpression(node) && node.expression && ts.isPropertyAccessExpression(node.expression)
-        && ["label", "title"].includes(node.expression.name.text)
+    //    状態・役割・動物種・性別の値も同じ（{patient.status ?? "active"} の左側を含む）
+    if (ts.isJsxExpression(node) && node.expression
         && node.parent && (ts.isJsxElement(node.parent) || ts.isJsxFragment(node.parent))) {
-      const e = node.expression;
-      edits.push({ start: e.getStart(), end: e.getEnd(), text: `txv(${e.getText()})`, needsTxv: true });
+      let e = node.expression;
+      if (ts.isBinaryExpression(e) && [ts.SyntaxKind.QuestionQuestionToken, ts.SyntaxKind.BarBarToken].includes(e.operatorToken.kind)) e = e.left;
+      if (ts.isPropertyAccessExpression(e) && ["label", "title", "status", "role", "species", "sex"].includes(e.name.text)) {
+        edits.push({ start: e.getStart(), end: e.getEnd(), text: `txv(${e.getText()})`, needsTxv: true });
+      }
     }
     // 4) { label: "..." } など表示用のキー
     if (ts.isPropertyAssignment(node) && (ts.isIdentifier(node.name) || ts.isStringLiteral(node.name))

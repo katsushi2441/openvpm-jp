@@ -115,7 +115,7 @@ import {
   type BodyConditionScale,
   type MeasurementSystem,
 } from "@/lib/ambulatory-workspace";
-import { tx, txv } from "@/lib/i18n";
+import { tx, txv, personName } from "@/lib/i18n";
 
 function PatientChartChunkLoading() {
   return (
@@ -1007,7 +1007,7 @@ export default function PatientDetailPage() {
                   className="mt-2 inline-flex items-center gap-1 text-sm text-primary hover:underline"
                 >
                   <User className="h-3.5 w-3.5" />
-                  {patient.clientFirstName} {patient.clientLastName}
+                  {personName(patient.clientFirstName, patient.clientLastName)}
                 </button>
               )}
             </div>
@@ -1438,14 +1438,14 @@ export default function PatientDetailPage() {
               <div>
                 <dt className="text-sm text-muted-foreground">{tx("Status")}</dt>
                 <dd className="mt-0.5 text-sm font-medium capitalize">
-                  {patient.status ?? tx("active")}
+                  {txv(patient.status) ?? tx("active")}
                 </dd>
               </div>
               <div>
                 <dt className="text-sm text-muted-foreground">{tx("Owner")}</dt>
                 <dd className="mt-0.5 text-sm font-medium">
                   {patient.clientFirstName
-                    ? `${patient.clientFirstName} ${patient.clientLastName}`
+                    ? `${personName(patient.clientFirstName, patient.clientLastName)}`
                     : "\u2014"}
                 </dd>
               </div>

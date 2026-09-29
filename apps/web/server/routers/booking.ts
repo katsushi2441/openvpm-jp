@@ -55,6 +55,7 @@ import {
   takeAppointmentSchedulingLock,
 } from "@/lib/scheduling/location";
 
+import { personName } from "@/lib/i18n";
 const bookingSlugInput = z
   .string()
   .trim()
@@ -776,7 +777,7 @@ export const bookingRouter = createRouter({
         direction: "inbound",
         subject: `New appointment request for ${petName}`,
         content: [
-          `Client: ${input.contact.firstName} ${input.contact.lastName}${isNewClient ? " (new client)" : ""}`,
+          `Client: ${personName(input.contact.firstName, input.contact.lastName)}${isNewClient ? " (new client)" : ""}`,
           `Pet: ${petName}`,
           `Requested: ${input.date} ${input.time}`,
           `Location: ${selectedLocation.name}`,

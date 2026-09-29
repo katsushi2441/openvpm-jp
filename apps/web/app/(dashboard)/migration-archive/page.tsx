@@ -552,7 +552,7 @@ function ArchiveDetail({
       <div className="space-y-4 text-sm">
         <div>
           <p className="font-medium">
-            {data.record.title ?? tx("Imported lab report")}
+            {txv(data.record.title) ?? tx("Imported lab report")}
           </p>
           <p className="text-muted-foreground">
             {data.record.patientName ?? tx("Patient match needs review")}

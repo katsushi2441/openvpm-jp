@@ -156,6 +156,7 @@ import {
 } from "../patient-history";
 import { effectiveAmbulatoryWorkspaceSettings } from "@/server/ambulatory-rollout";
 
+import { personName } from "@/lib/i18n";
 export { PRESCRIPTION_INSTRUCTIONS_MAX_LENGTH } from "@/lib/records/prescription-policy";
 export {
   PROCEDURE_ANESTHESIA_MAX_LENGTH,
@@ -2354,7 +2355,7 @@ export const recordsRouter = createRouter({
           timezone: identity.practiceTimezone,
         },
         owner: {
-          name: `${identity.clientFirstName} ${identity.clientLastName}`.trim(),
+          name: `${personName(identity.clientFirstName, identity.clientLastName)}`.trim(),
           address: ownerAddress || null,
           phone: identity.clientPhone,
         },

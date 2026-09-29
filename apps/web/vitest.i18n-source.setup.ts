@@ -18,7 +18,10 @@ export function unwrapCatalogCalls(source: string): string {
     .replace(new RegExp(String.raw`\{` + CALL + String.raw`\}\{" "\}`, "g"), (_m, lit: string) => `${JSON.parse(lit)} `)
     .replace(new RegExp(String.raw`\{` + CALL + String.raw`\}`, "g"), (_m, lit: string) => JSON.parse(lit))
     .replace(new RegExp(CALL, "g"), (_m, lit: string) => lit)
-    .replace(/\btxv\(([\w.?]+)\)/g, "$1");
+    .replace(/\btxv\(([\w.?]+)\)/g, "$1")
+    .replace(/\$\{personName\(([\w.?]+), ([\w.?]+)\)\}/g, "${$1} ${$2}")
+    .replace(/\{personName\(([\w.?]+), ([\w.?]+)\)\}/g, "{$1} {$2}")
+    .replace(/\bsqlPersonName\((\w+)\.firstName, \1\.lastName\)/g, "sql`concat_ws(' ', ${$1.firstName}, ${$1.lastName})`");
 }
 
 const original = fs.readFileSync;
@@ -27,7 +30,7 @@ const original = fs.readFileSync;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const out = (original as any).call(this, file, ...rest);
   const name = typeof file === "string" ? file : file instanceof URL ? file.pathname : "";
-  if (typeof out === "string" && name.endsWith(".tsx")) {
+  if (typeof out === "string" && /\.(tsx|ts)$/.test(name) && !name.includes("__tests__")) {
     return unwrapCatalogCalls(out);
   }
   return out;

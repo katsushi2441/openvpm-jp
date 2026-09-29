@@ -2587,7 +2587,7 @@ function RecordsPageContent() {
                                   : "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400"
                             )}
                           >
-                            {problem.status ?? tx("active")}
+                            {txv(problem.status) ?? tx("active")}
                           </span>
                           {canManageProblems && (
                             <div className="flex flex-wrap gap-1">
@@ -3019,7 +3019,7 @@ function RecordsPageContent() {
                                         getLabStatusBadge(lab.status)
                                       )}
                                     >
-                                      {lab.status}
+                                      {txv(lab.status)}
                                     </span>
                                     {lab.resultFlag !== "unknown" ? (
                                       <span className={cn(

@@ -58,6 +58,7 @@ import {
 import { recordActivationAfterClientCreated } from "@/lib/funnel-events-server";
 import { clientSearchContainsPattern } from "@/lib/clients/search";
 
+import { sqlPersonName } from "@/server/person-name-sql";
 const clientNameInput = z.string().trim().min(1).max(CLIENT_NAME_MAX_LENGTH);
 const clientEmailInput = z
   .string()
@@ -216,7 +217,7 @@ export const clientsRouter = createRouter({
             literalClientSearchMatch(clients.firstName, input.search),
             literalClientSearchMatch(clients.lastName, input.search),
             literalClientSearchMatch(
-              sql`concat_ws(' ', ${clients.firstName}, ${clients.lastName})`,
+              sqlPersonName(clients.firstName, clients.lastName),
               input.search,
             ),
             literalClientSearchMatch(clients.email, input.search),
@@ -281,7 +282,7 @@ export const clientsRouter = createRouter({
               literalClientSearchMatch(clients.firstName, input.query),
               literalClientSearchMatch(clients.lastName, input.query),
               literalClientSearchMatch(
-                sql`concat_ws(' ', ${clients.firstName}, ${clients.lastName})`,
+                sqlPersonName(clients.firstName, clients.lastName),
                 input.query,
               ),
               literalClientSearchMatch(clients.email, input.query),

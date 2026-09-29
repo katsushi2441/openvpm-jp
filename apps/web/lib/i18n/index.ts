@@ -58,3 +58,12 @@ export function tx(message: string, vars?: Record<string, string | number>): str
 export function txv<T>(value: T): T | string {
   return typeof value === "string" ? tx(value) : value;
 }
+
+/**
+ * A person's display name in the order the UI language uses:
+ * "Given Family" in English, "Family Given" in Japanese.
+ */
+export function personName(first?: string | null, last?: string | null): string {
+  const parts = UI_LANGUAGE === "ja" ? [last, first] : [first, last];
+  return parts.filter((p) => p && p.trim().length > 0).join(" ");
+}

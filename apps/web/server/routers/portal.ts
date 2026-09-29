@@ -69,6 +69,7 @@ import {
 } from "@/lib/scheduling/location";
 import { normalizePortalBrandColor } from "@/lib/portal/branding";
 
+import { personName } from "@/lib/i18n";
 const portalBookingDateInput = clinicalDateInput("Booking date");
 const portalBookingTimeInput = z.string().regex(/^([01]\d|2[0-3]):[0-5]\d$/, {
   message: "Booking time must be in 24-hour HH:MM format.",
@@ -564,7 +565,7 @@ export const portalRouter = createRouter({
 
       return {
         ...patient,
-        clientName: `${client.firstName} ${client.lastName}`,
+        clientName: `${personName(client.firstName, client.lastName)}`,
         timezone: practice.timezone,
         practice,
         weights,
@@ -644,7 +645,7 @@ export const portalRouter = createRouter({
 
       return {
         practice,
-        clientName: `${client.firstName} ${client.lastName}`.trim(),
+        clientName: `${personName(client.firstName, client.lastName)}`.trim(),
         patient: {
           name: record.patientName,
           species: record.species,
@@ -805,7 +806,7 @@ export const portalRouter = createRouter({
           clientId: client.id,
           channel: "portal",
           direction: "inbound",
-          subject: `Portal message from ${client.firstName} ${client.lastName}`,
+          subject: `Portal message from ${personName(client.firstName, client.lastName)}`,
           content: input.content,
           status: "pending",
           assignedTo: latestAssignedToForClient(client.practiceId, client.id),

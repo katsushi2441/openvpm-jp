@@ -11,7 +11,7 @@ import { EmptyState } from "@/components/common/empty-state";
 import { TableSkeleton } from "@/components/common/loading";
 import { CLIENT_SEARCH_MAX_LENGTH } from "@/lib/clients/policy";
 import { formatClinicalDate } from "@/lib/records/clinical-dates";
-import { tx } from "@/lib/i18n";
+import { tx, personName } from "@/lib/i18n";
 
 function canManageClientsRole(role?: string | null): boolean {
   return (
@@ -85,7 +85,7 @@ export default function ClientsPage() {
         <>
           <div className="mt-6 space-y-3 sm:hidden">
             {verifiedClientList.items.map((client) => {
-              const fullName = `${client.firstName} ${client.lastName}`;
+              const fullName = `${personName(client.firstName, client.lastName)}`;
 
               return (
                 <button
@@ -142,7 +142,7 @@ export default function ClientsPage() {
                   className="cursor-pointer border-b border-border last:border-0 hover:bg-muted/30 transition-colors"
                 >
                   <td className="px-4 py-3 font-medium">
-                    {client.firstName} {client.lastName}
+                    {personName(client.firstName, client.lastName)}
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {client.email || "\u2014"}

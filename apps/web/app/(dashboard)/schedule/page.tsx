@@ -2081,7 +2081,7 @@ function BookingForm({
                 <span className="flex-1">
                   {selectedPatient.name}
                   {selectedPatient.species && (
-                    <span className="text-muted-foreground"> ({selectedPatient.species})</span>
+                    <span className="text-muted-foreground"> ({txv(selectedPatient.species)})</span>
                   )}
                 </span>
                 <button
@@ -2138,7 +2138,7 @@ function BookingForm({
                         >
                           <div className="font-medium">{p.name}</div>
                           <div className="text-xs text-muted-foreground">
-                            {p.species}
+                            {txv(p.species)}
                             {(p.clientFirstName || p.clientLastName) && (
                               <>{" "}{tx("· Owner:")}{" "}{[p.clientFirstName, p.clientLastName].filter(Boolean).join(" ")}</>
                             )}

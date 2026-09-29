@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { PATIENT_SPECIES_EMOJI } from "@/lib/patients/species";
-import { tx } from "@/lib/i18n";
+import { tx, personName } from "@/lib/i18n";
 
 const speciesEmoji: Record<string, string> = PATIENT_SPECIES_EMOJI;
 
@@ -297,7 +297,7 @@ export function CommandSearch({
                   >
                     <Users className="h-4 w-4 text-muted-foreground" />
                     <span className="font-medium">
-                      {client.firstName} {client.lastName}
+                      {personName(client.firstName, client.lastName)}
                     </span>
                     {client.email && (
                       <span className="text-muted-foreground">
