@@ -43,6 +43,7 @@ import { cn } from "@/lib/utils";
 import type { StepProps } from "../journey-types";
 import { MigrationHelpRequest } from "../migration-help-request";
 import { tx, txv } from "@/lib/i18n";
+import { readCsvAsText } from "@/lib/csv/read-file";
 
 type Choice = "import" | "api" | "keep";
 type CsvPreview = {
@@ -100,7 +101,7 @@ function readFileText(file: File): Promise<string> {
     const reader = new FileReader();
     reader.onload = () => resolve(String(reader.result ?? ""));
     reader.onerror = () => reject(new Error("Could not read the file"));
-    reader.readAsText(file);
+    readCsvAsText(reader, file);
   });
 }
 

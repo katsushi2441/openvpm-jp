@@ -140,6 +140,7 @@ import {
   isSupportedPracticeTimezone,
 } from "@/lib/settings-policy";
 import { tx, uiLocale, txv } from "@/lib/i18n";
+import { readCsvAsText } from "@/lib/csv/read-file";
 
 // ── Types ───────────────────────────────────────────────────
 type Tab =
@@ -3496,7 +3497,7 @@ function DataTab() {
         setCsvFileName("");
         toast.error(tx("Could not read CSV file"));
       };
-      reader.readAsText(file);
+      readCsvAsText(reader, file);
     },
     [importMode, migrationSource, runImportPreview],
   );

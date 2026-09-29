@@ -22,6 +22,10 @@ COPY --from=deps /app/packages/db/node_modules ./packages/db/node_modules
 COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
+# UI language is inlined at build time (NEXT_PUBLIC_*). Build with
+#   --build-arg NEXT_PUBLIC_OPENVPM_LANGUAGE=ja  for the Japanese UI.
+ARG NEXT_PUBLIC_OPENVPM_LANGUAGE=en
+ENV NEXT_PUBLIC_OPENVPM_LANGUAGE=$NEXT_PUBLIC_OPENVPM_LANGUAGE
 RUN pnpm build --filter=@openpims/web
 
 # --- Runner ---
