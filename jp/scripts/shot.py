@@ -20,7 +20,7 @@ with sync_playwright() as p:
     print('after login:', pg.url)
     for path in PAGES:
         pg.goto(base + path, wait_until='domcontentloaded', timeout=120000)
-        pg.wait_for_timeout(6000)
+        pg.wait_for_timeout(12000)
         name = path.strip('/').replace('/', '_') or 'home'
         pg.screenshot(path=os.path.join(out, f'{name}.png'))
         print(path, '->', pg.url, pg.title())
