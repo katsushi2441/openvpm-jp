@@ -50,7 +50,7 @@ import {
   isInventoryStockQuantityInputValid,
   isInventoryRequiredTextInputValid,
 } from "@/lib/inventory/policy";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 const CATEGORIES = [
   { label: "All Categories", value: "" },
@@ -210,7 +210,7 @@ function AddProductForm({ onClose }: { onClose: () => void }) {
           <option value="">{tx("Category")}</option>
           {CATEGORIES.slice(1).map((c) => (
             <option key={c.value} value={c.value}>
-              {c.label}
+              {txv(c.label)}
             </option>
           ))}
         </select>
@@ -422,7 +422,7 @@ function EditProductRow({
             )}
           {CATEGORIES.slice(1).map((c) => (
             <option key={c.value} value={c.value}>
-              {c.label}
+              {txv(c.label)}
             </option>
           ))}
         </select>
@@ -1067,7 +1067,7 @@ export default function InventoryPage() {
             >
               {CATEGORIES.map((cat) => (
                 <option key={cat.value} value={cat.value}>
-                  {cat.label}
+                  {txv(cat.label)}
                 </option>
               ))}
             </select>
@@ -1078,7 +1078,7 @@ export default function InventoryPage() {
             >
               {ALERT_FILTERS.map((filter) => (
                 <option key={filter.value} value={filter.value}>
-                  {filter.label}
+                  {txv(filter.label)}
                 </option>
               ))}
             </select>
@@ -1256,7 +1256,7 @@ export default function InventoryPage() {
                                 stock.className
                               )}
                             >
-                              {stock.label}
+                              {txv(stock.label)}
                             </span>
                             {expiration && (
                               <span
@@ -1265,7 +1265,7 @@ export default function InventoryPage() {
                                   expiration.className
                                 )}
                               >
-                                {expiration.label}
+                                {txv(expiration.label)}
                               </span>
                             )}
                           </div>

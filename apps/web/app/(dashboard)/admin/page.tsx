@@ -17,7 +17,7 @@ import { EmptyState } from "@/components/common/empty-state";
 import { PageLoading } from "@/components/common/loading";
 import { SmsRecoveryConsole } from "@/components/admin/sms-recovery-console";
 import { ClinicPilotConsole } from "@/components/admin/clinic-pilot-console";
-import { tx, uiLocale } from "@/lib/i18n";
+import { tx, uiLocale, txv } from "@/lib/i18n";
 
 const EMPTY_UUID = "00000000-0000-4000-8000-000000000000";
 const MESSAGING_HISTORY_LIMIT = 50;
@@ -285,7 +285,7 @@ export default function AdminPage() {
             >
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Icon className="h-4 w-4" />
-                <span className="text-sm">{k.label}</span>
+                <span className="text-sm">{txv(k.label)}</span>
               </div>
               <p className="mt-2 font-heading text-2xl font-bold">{k.value}</p>
             </div>

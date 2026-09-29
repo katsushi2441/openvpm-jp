@@ -13,7 +13,7 @@ import {
   type PatientHistoryStateFilter,
 } from "@/lib/records/patient-history";
 import { trpc } from "@/lib/trpc";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 type HistoryCursor = {
   occurredAt: string;
@@ -369,7 +369,7 @@ export function PatientHistorySearch({
                     >
                       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                         <div>
-                          <p className="font-medium">{item.title}</p>
+                          <p className="font-medium">{txv(item.title)}</p>
                           <p className="text-xs text-muted-foreground">
                             {recordTypeLabels[item.recordType]} ·{" "}
                             {formatClinicalDate(item.occurredAt, timeZone)}

@@ -17,7 +17,8 @@ export function unwrapCatalogCalls(source: string): string {
     .replace(new RegExp(String.raw`\{" "\}\{` + CALL + String.raw`\}`, "g"), (_m, lit: string) => ` ${JSON.parse(lit)}`)
     .replace(new RegExp(String.raw`\{` + CALL + String.raw`\}\{" "\}`, "g"), (_m, lit: string) => `${JSON.parse(lit)} `)
     .replace(new RegExp(String.raw`\{` + CALL + String.raw`\}`, "g"), (_m, lit: string) => JSON.parse(lit))
-    .replace(new RegExp(CALL, "g"), (_m, lit: string) => lit);
+    .replace(new RegExp(CALL, "g"), (_m, lit: string) => lit)
+    .replace(/\btxv\(([\w.?]+)\)/g, "$1");
 }
 
 const original = fs.readFileSync;

@@ -32,7 +32,7 @@ import {
   type ClinicModel,
   type FirstGoal,
 } from "@/lib/onboarding/clinic-profile";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 const modelIcons = {
   companion: Dog,
@@ -143,7 +143,7 @@ export function ClinicIntentBuilder({
                       <Icon className="h-5 w-5" strokeWidth={1.8} />
                     </span>
                     <span className="mt-2.5 block max-w-[10rem] text-[13px] font-semibold leading-[1.3] text-slate-900 sm:text-sm">
-                      {option.label}
+                      {txv(option.label)}
                     </span>
                     {active ? (
                       <span className="absolute right-2.5 top-2.5 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
@@ -194,7 +194,7 @@ export function ClinicIntentBuilder({
                       <Icon className="h-[18px] w-[18px]" strokeWidth={1.8} />
                     </span>
                     <span className="min-w-0 flex-1 text-[13px] font-medium leading-5 text-slate-800 sm:text-sm">
-                      {option.label}
+                      {txv(option.label)}
                     </span>
                     <span
                       className={cn(

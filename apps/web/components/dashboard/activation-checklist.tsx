@@ -24,7 +24,7 @@ import {
   DEFAULT_ONBOARDING_INTENT,
   getOnboardingIntentOption,
 } from "@/lib/onboarding/intent";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 type Milestone = {
   key: string;
@@ -444,7 +444,7 @@ export function ActivationChecklist() {
                     m.done && "text-zinc-400 line-through",
                   )}
                 >
-                  {m.label}
+                  {txv(m.label)}
                 </p>
                 {!m.done ? (
                   <ArrowRight className="h-3.5 w-3.5 shrink-0 text-zinc-500 transition-transform group-hover:translate-x-0.5 group-hover:text-emerald-400" />

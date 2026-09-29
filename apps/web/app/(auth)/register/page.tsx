@@ -59,7 +59,7 @@ import {
   type ClinicModel,
   type FirstGoal,
 } from "@/lib/onboarding/clinic-profile";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 type RegistrationCountry = ClinicRegionCode | "OTHER" | "";
 type RegistrationStage = "profile" | "workflow" | "preview" | "account";
@@ -861,7 +861,7 @@ function PlatformPreview({ practiceName }: { practiceName: string }) {
                       style={{ backgroundColor: a.color }}
                     />
                     <span className="text-xs font-medium text-slate-900">
-                      {a.title}
+                      {txv(a.title)}
                     </span>
                     <span className="ml-auto text-[11px] text-slate-500">
                       {a.pet}

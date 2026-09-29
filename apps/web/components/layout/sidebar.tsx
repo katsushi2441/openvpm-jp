@@ -29,7 +29,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { PawMark } from "@/components/brand/paw-mark";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 type UserRole =
   | "admin"
@@ -218,7 +218,7 @@ export function Sidebar({
                     ) : null}
                   </span>
                   {!isCollapsed && (
-                    <span className="truncate">{item.label}</span>
+                    <span className="truncate">{txv(item.label)}</span>
                   )}
                   {!isCollapsed &&
                   item.href === "/inbox" &&

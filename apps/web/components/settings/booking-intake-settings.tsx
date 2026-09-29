@@ -4,7 +4,7 @@ import {
   PREVISIT_INTAKE_FIELD_DEFINITIONS,
   type PrevisitIntakeFieldKey,
 } from "@/lib/booking/previsit-intake";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 export type BookingIntakeSettingsProps = {
   selectedFieldKeys: readonly PrevisitIntakeFieldKey[];
@@ -64,7 +64,7 @@ export function BookingIntakeSettings({
               />
               <label htmlFor={inputId} className="min-w-0 text-sm">
                 <span className="block font-medium text-gray-800">
-                  {field.label}
+                  {txv(field.label)}
                 </span>
                 <span className="block text-gray-500">{field.placeholder}</span>
               </label>

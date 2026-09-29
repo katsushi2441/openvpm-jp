@@ -110,7 +110,7 @@ function processFile(file) {
   };
 
   function visit(node) {
-    if (ts.isCallExpression(node) && ts.isIdentifier(node.expression) && (node.expression.text === "tx" || node.expression.text === "txUi")) return;
+    if (ts.isCallExpression(node) && ts.isIdentifier(node.expression) && ["tx", "txUi", "txv"].includes(node.expression.text)) return;
     // 1) JSX テキスト
     if (ts.isJsxText(node) && !insideSkippedTag(node)) {
       const raw = node.getFullText();
@@ -184,6 +184,13 @@ function processFile(file) {
       edits.push({ start: node.initializer.getStart(), end: node.initializer.getEnd(), text: call(node.initializer.text) });
       note(node.initializer.text, node);
     }
+    // 8) {tab.label} / {item.title} をそのまま表示している所（as const の配列など）→ {txv(tab.label)}
+    if (ts.isJsxExpression(node) && node.expression && ts.isPropertyAccessExpression(node.expression)
+        && ["label", "title"].includes(node.expression.name.text)
+        && node.parent && (ts.isJsxElement(node.parent) || ts.isJsxFragment(node.parent))) {
+      const e = node.expression;
+      edits.push({ start: e.getStart(), end: e.getEnd(), text: `txv(${e.getText()})`, needsTxv: true });
+    }
     // 4) { label: "..." } など表示用のキー
     if (ts.isPropertyAssignment(node) && (ts.isIdentifier(node.name) || ts.isStringLiteral(node.name))
         && PROP_KEYS.has(node.name.text) && ts.isStringLiteral(node.initializer) && isProse(node.initializer.text)) {
@@ -208,13 +215,18 @@ function processFile(file) {
     if (ts.isImportDeclaration(st)) insertAt = st.getEnd();
     else if (ts.isExpressionStatement(st) && ts.isStringLiteral(st.expression) && insertAt === 0) insertAt = st.getEnd();
   }
-  const imp = fn === "tx" ? `import { tx } from "@/lib/i18n";` : `import { tx as txUi } from "@/lib/i18n";`;
+  const wantTxv = edits.some((e) => e.needsTxv);
+  const names = [fn === "tx" ? "tx" : "tx as txUi"].concat(wantTxv ? ["txv"] : []);
+  const imp = `import { ${names.join(", ")} } from "@/lib/i18n";`;
   const already = /from "@\/lib\/i18n"/.test(src);
 
   edits.sort((a, b) => b.start - a.start);
   let out = src;
   for (const e of edits) out = out.slice(0, e.start) + e.text + out.slice(e.end);
   if (!already) out = out.slice(0, insertAt) + (insertAt ? "\n" : "") + imp + (insertAt ? "" : "\n") + out.slice(insertAt);
+  else if (wantTxv && !/import \{[^}]*\btxv\b[^}]*\} from "@\/lib\/i18n"/.test(out)) {
+    out = out.replace(/import \{([^}]*)\} from "@\/lib\/i18n";/, (m, inner) => `import {${inner.trimEnd()}, txv } from "@/lib/i18n";`);
+  }
   if (!DRY) fs.writeFileSync(file, out);
   return edits.length;
 }

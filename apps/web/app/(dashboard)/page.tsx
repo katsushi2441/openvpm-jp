@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils";
 import { trpc } from "@/lib/trpc";
 import { formatCurrency } from "@/lib/locale/format";
 import { formatDateInputForTimeZone } from "@/lib/date-input";
-import { tx, uiLocale } from "@/lib/i18n";
+import { tx, uiLocale, txv } from "@/lib/i18n";
 
 function DashboardChartsChunkLoading() {
   return (
@@ -293,7 +293,7 @@ export default function DashboardPage() {
                     <Icon className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-sm text-muted-foreground">{kpi.label}</p>
+                    <p className="text-sm text-muted-foreground">{txv(kpi.label)}</p>
                     <p className="font-heading text-2xl font-bold">
                       {kpi.isCurrency ? fmtMoney(value) : String(value)}
                     </p>

@@ -115,7 +115,7 @@ import {
   type BodyConditionScale,
   type MeasurementSystem,
 } from "@/lib/ambulatory-workspace";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 function PatientChartChunkLoading() {
   return (
@@ -1366,7 +1366,7 @@ export default function PatientDetailPage() {
                   : "text-muted-foreground hover:text-foreground",
               )}
             >
-              {tab.label}
+              {txv(tab.label)}
               {activeTab === tab.id && (
                 <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
               )}
@@ -3222,7 +3222,7 @@ function DocumentsTab({
                 : "border-border text-muted-foreground hover:text-foreground",
             )}
           >
-            {option.label} ({counts[option.id]})
+            {txv(option.label)} ({counts[option.id]})
           </button>
         ))}
       </div>

@@ -30,7 +30,7 @@ import {
   isControlledSubstanceQuantityInputValid,
   isControlledSubstanceRequiredTextInputValid,
 } from "@/lib/controlled-substances/policy";
-import { tx, uiLocale } from "@/lib/i18n";
+import { tx, uiLocale, txv } from "@/lib/i18n";
 
 const DEA_SCHEDULES = [
   { label: "Schedule II", value: "II" },
@@ -240,7 +240,7 @@ function LogEntryForm({ onClose }: { onClose: () => void }) {
           >
             {DEA_SCHEDULES.map((s) => (
               <option key={s.value} value={s.value}>
-                {s.label}
+                {txv(s.label)}
               </option>
             ))}
           </select>
@@ -254,7 +254,7 @@ function LogEntryForm({ onClose }: { onClose: () => void }) {
           >
             {ACTIONS.map((a) => (
               <option key={a.value} value={a.value}>
-                {a.label}
+                {txv(a.label)}
               </option>
             ))}
           </select>
@@ -282,7 +282,7 @@ function LogEntryForm({ onClose }: { onClose: () => void }) {
             >
               {UNITS.map((u) => (
                 <option key={u.value} value={u.value}>
-                  {u.label}
+                  {txv(u.label)}
                 </option>
               ))}
             </select>

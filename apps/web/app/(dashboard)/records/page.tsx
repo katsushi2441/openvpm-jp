@@ -96,7 +96,7 @@ import {
   isProcedureOptionalTextInputValid,
   isProcedureRequiredTextInputValid,
 } from "@/lib/records/procedure-policy";
-import { tx, uiLocale } from "@/lib/i18n";
+import { tx, uiLocale, txv } from "@/lib/i18n";
 
 type Tab = "soap" | "vaccinations" | "prescriptions" | "problems" | "labResults" | "procedures";
 
@@ -452,7 +452,7 @@ function PrescriptionSafetyPanel({
             className="rounded-md border border-border/60 bg-background px-3 py-2"
           >
             <div className="flex flex-wrap items-center gap-2">
-              <p className="text-sm font-medium">{warning.title}</p>
+              <p className="text-sm font-medium">{txv(warning.title)}</p>
               <Badge variant={safetyBadgeVariant(warning)} className="capitalize">
                 {warning.severity}
               </Badge>
@@ -1410,7 +1410,7 @@ function RecordsPageContent() {
                     )}
                   >
                     <Icon className="h-4 w-4" />
-                    {tab.label}
+                    {txv(tab.label)}
                     {currentTab === tab.id && (
                       <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
                     )}
@@ -1921,7 +1921,7 @@ function RecordsPageContent() {
                                           dueStatus.className,
                                         )}
                                       >
-                                        {dueStatus.label}
+                                        {txv(dueStatus.label)}
                                       </span>
                                     )}
                                     <ClinicalCorrectionControl

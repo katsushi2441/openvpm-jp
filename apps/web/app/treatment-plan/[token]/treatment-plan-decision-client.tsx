@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 type OfferedLine = {
   id: string;
@@ -190,7 +190,7 @@ export function TreatmentPlanDecisionClient({ token }: { token: string }) {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-semibold text-gray-950">{plan.title}</h1>
+        <h1 className="text-xl font-semibold text-gray-950">{txv(plan.title)}</h1>
         <p className="mt-1 text-sm text-gray-600">{tx("For")}{" "}{plan.patientName}{" "}{tx("· Revision")}{" "}{plan.revisionNumber}
         </p>
       </div>

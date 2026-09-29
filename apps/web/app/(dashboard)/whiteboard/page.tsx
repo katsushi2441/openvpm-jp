@@ -19,7 +19,7 @@ import { PATIENT_SPECIES_EMOJI } from "@/lib/patients/species";
 import { EmptyState } from "@/components/common/empty-state";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { tx, uiLocale } from "@/lib/i18n";
+import { tx, uiLocale, txv } from "@/lib/i18n";
 
 // --- Types ---
 
@@ -559,7 +559,7 @@ function AppointmentDetailModal({
                 {isUpdating ? (
                   <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
                 ) : null}
-                {action.label}
+                {txv(action.label)}
               </Button>
             ))}
           </div>
@@ -727,7 +727,7 @@ export default function WhiteboardPage() {
                       col.headerText
                     )}
                   >
-                    {col.label}
+                    {txv(col.label)}
                   </h3>
                 </div>
                 <span

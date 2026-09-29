@@ -24,7 +24,7 @@ import {
 } from "@/lib/messaging/policy";
 import { toast } from "sonner";
 import { MessagingRegistrationForm } from "@/components/settings/messaging-registration-form";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 const REGISTRATION_BADGE: Record<
   NonNullable<MessagingSetupLocation["messaging"]>["registrationStatus"],
@@ -354,7 +354,7 @@ function LocationCard({
               REGISTRATION_BADGE[loc.messaging.registrationStatus].variant
             }
           >
-            {REGISTRATION_BADGE[loc.messaging.registrationStatus].label}
+            {txv(REGISTRATION_BADGE[loc.messaging.registrationStatus].label)}
           </Badge>
         )}
       </div>

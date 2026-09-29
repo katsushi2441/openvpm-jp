@@ -18,7 +18,7 @@ import {
   isRequiredPatientTextValid,
 } from "@/lib/patients/policy";
 import { PATIENT_SPECIES_OPTIONS } from "@/lib/patients/species";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 function EditPatientLoadingPanel() {
   return (
@@ -258,7 +258,7 @@ function EditPatientForm() {
             >
               {speciesOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
-                  {opt.label}
+                  {txv(opt.label)}
                 </option>
               ))}
             </select>
@@ -288,7 +288,7 @@ function EditPatientForm() {
               <option value="">{tx("Select sex...")}</option>
               {sexOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
-                  {opt.label}
+                  {txv(opt.label)}
                 </option>
               ))}
             </select>
@@ -341,7 +341,7 @@ function EditPatientForm() {
           >
             {statusOptions.map((opt) => (
               <option key={opt.value} value={opt.value}>
-                {opt.label}
+                {txv(opt.label)}
               </option>
             ))}
           </select>

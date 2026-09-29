@@ -42,7 +42,7 @@ import {
 } from "@/lib/communications/policy";
 import { communicationStatusLabel } from "@/lib/communications/status";
 import { toast } from "sonner";
-import { tx, uiLocale } from "@/lib/i18n";
+import { tx, uiLocale, txv } from "@/lib/i18n";
 
 type FilterTab = "all" | "unread" | "sent";
 type Channel = "phone" | "sms" | "email" | "portal";
@@ -617,10 +617,10 @@ export default function InboxPage() {
             <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <h3 className="font-heading text-base font-semibold">
-                  {smsSummary.title}
+                  {txv(smsSummary.title)}
                 </h3>
                 <Badge variant={smsSummary.badge.variant}>
-                  {smsSummary.badge.label}
+                  {txv(smsSummary.badge.label)}
                 </Badge>
               </div>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -676,7 +676,7 @@ export default function InboxPage() {
                     : "text-muted-foreground hover:text-foreground",
                 )}
               >
-                {tab.label}
+                {txv(tab.label)}
               </button>
             ))}
           </div>

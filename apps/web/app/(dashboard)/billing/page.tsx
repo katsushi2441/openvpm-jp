@@ -40,7 +40,7 @@ import {
   isBillingAmountWithinBalance,
 } from "@/lib/billing/policy";
 import { isSafeCheckoutRedirectUrl } from "@/lib/checkout-redirect";
-import { tx, uiLocale } from "@/lib/i18n";
+import { tx, uiLocale, txv } from "@/lib/i18n";
 
 const STATUS_TABS = [
   { label: "All", value: undefined, isEstimate: false as const },
@@ -363,7 +363,7 @@ export default function BillingPage() {
                 : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
-            {t.label}
+            {txv(t.label)}
           </button>
         ))}
       </div>
@@ -979,7 +979,7 @@ function InvoiceRow({
           <span
             className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium capitalize ${displayStatus.style}`}
           >
-            {displayStatus.label}
+            {txv(displayStatus.label)}
           </span>
         </td>
         <td className="px-4 py-3 text-right tabular-nums">
@@ -1637,7 +1637,7 @@ function PaymentSection({
               >
                 {PAYMENT_METHODS.map((m) => (
                   <option key={m.value} value={m.value}>
-                    {m.label}
+                    {txv(m.label)}
                   </option>
                 ))}
               </select>

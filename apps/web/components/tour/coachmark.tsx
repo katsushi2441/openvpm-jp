@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import type { TourStep } from "./tour-steps";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 const CARD_W = 320;
 const CARD_H = 260; // placement estimate, matches the viewport clamp below
@@ -167,7 +167,7 @@ export function Coachmark({
           <X className="h-4 w-4" />
         </button>
 
-        <h3 className="pr-6 font-heading text-base font-semibold">{step.title}</h3>
+        <h3 className="pr-6 font-heading text-base font-semibold">{txv(step.title)}</h3>
         <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
           {step.body}
         </p>

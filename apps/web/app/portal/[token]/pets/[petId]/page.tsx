@@ -12,7 +12,7 @@ import {
   formatPortalDate,
   portalCalendarDayDifference,
 } from "@/lib/portal/date";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 const speciesEmoji: Record<string, string> = PATIENT_SPECIES_EMOJI;
 
@@ -242,7 +242,7 @@ export default function PetDetailPage() {
                   : "border-transparent text-gray-500 hover:text-gray-700"
               }`}
             >
-              {tab.label}
+              {txv(tab.label)}
               {tab.count > 0 && (
                 <span className="ml-1.5 rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
                   {tab.count}
@@ -296,7 +296,7 @@ export default function PetDetailPage() {
                         </td>
                         <td className="py-3">
                           <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${status.className}`}>
-                            {status.label}
+                            {txv(status.label)}
                           </span>
                         </td>
                         <td className="py-3">

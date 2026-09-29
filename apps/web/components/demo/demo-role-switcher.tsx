@@ -14,7 +14,7 @@ import {
   requestDemoRoleSwitch,
   shouldShowDemoRoleSwitcher,
 } from "@/lib/demo-role-switcher";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE?.trim() === "true";
 
@@ -59,7 +59,7 @@ export function DemoRoleSwitcherView({
           >
             {DEMO_ROLE_OPTIONS.map((role) => (
               <option key={role.value} value={role.value}>
-                {role.label}
+                {txv(role.label)}
               </option>
             ))}
           </select>

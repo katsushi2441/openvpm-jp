@@ -139,7 +139,7 @@ import {
   isValidSettingsTaxRate,
   isSupportedPracticeTimezone,
 } from "@/lib/settings-policy";
-import { tx, uiLocale } from "@/lib/i18n";
+import { tx, uiLocale, txv } from "@/lib/i18n";
 
 // ── Types ───────────────────────────────────────────────────
 type Tab =
@@ -387,7 +387,7 @@ function SettingsPageInner() {
                   )}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
-                  {tab.label}
+                  {txv(tab.label)}
                 </button>
               );
             })}

@@ -16,7 +16,7 @@ import {
   PATIENT_SPECIES_OPTIONS,
   type PatientSpecies,
 } from "@/lib/patients/species";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 function dateInputValue(d: Date): string {
   return d.toISOString().slice(0, 10);
@@ -497,7 +497,7 @@ export default function PublicBookingPage() {
               >
                 {PATIENT_SPECIES_OPTIONS.map((s) => (
                   <option key={s.value} value={s.value}>
-                    {s.label}
+                    {txv(s.label)}
                   </option>
                 ))}
               </select>

@@ -1,6 +1,7 @@
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { tx, txv } from "@/lib/i18n";
 
 interface EmptyStateProps {
   icon: LucideIcon;
@@ -39,7 +40,7 @@ export function EmptyState({
       {action && (
         <Button size="sm" className="mt-4" onClick={action.onClick}>
           {ActionIcon ? <ActionIcon className="mr-2 h-4 w-4" /> : null}
-          {action.label}
+          {txv(action.label)}
         </Button>
       )}
     </div>

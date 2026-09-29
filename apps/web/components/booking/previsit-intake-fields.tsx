@@ -8,7 +8,7 @@ import {
   type PrevisitIntakeFieldKey,
 } from "@/lib/booking/previsit-intake";
 import { cn } from "@/lib/utils";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 export interface PrevisitIntakeFieldsProps {
   enabledFieldKeys: readonly PrevisitIntakeFieldKey[];
@@ -56,7 +56,7 @@ export function PrevisitIntakeFields({
                 htmlFor={fieldId}
                 className="mb-1.5 block text-sm font-medium text-gray-700"
               >
-                {field.label}
+                {txv(field.label)}
               </label>
               <textarea
                 id={fieldId}

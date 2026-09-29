@@ -27,7 +27,7 @@ import {
   MESSAGING_AREA_CODE_LENGTH,
 } from "@/lib/messaging/policy";
 import { toast } from "sonner";
-import { tx, uiLocale } from "@/lib/i18n";
+import { tx, uiLocale, txv } from "@/lib/i18n";
 
 export type MessagingSetupLocation = {
   locationId: string;
@@ -251,7 +251,7 @@ export function MessagingWizard({
               <div className="inline-flex items-center gap-2 text-sm font-medium text-emerald-700">
                 <MessageSquare className="h-4 w-4" />{tx("Texting setup")}</div>
               <h2 className="mt-4 font-heading text-2xl font-bold tracking-tight text-slate-950">
-                {STEPS[currentIndex]?.title}
+                {txv(STEPS[currentIndex]?.title)}
               </h2>
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 {location.name}

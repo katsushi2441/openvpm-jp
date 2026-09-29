@@ -27,7 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { tx, uiLocale } from "@/lib/i18n";
+import { tx, uiLocale, txv } from "@/lib/i18n";
 
 type InboxFilter =
   | "action_required"
@@ -323,7 +323,7 @@ function LabResultsInboxContent() {
               onClick={() => setFilter(item.value)}
               className="shrink-0"
             >
-              {item.label}
+              {txv(item.label)}
             </Button>
           ))}
         </div>

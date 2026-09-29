@@ -10,7 +10,7 @@ import {
   CONSENT_BODY_MAX_LENGTH,
   CONSENT_TITLE_MAX_LENGTH,
 } from "@/lib/consult/consent-template";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 const CONSENT_POLL_INTERVAL_MS = 5_000;
 
@@ -156,7 +156,7 @@ export function ConsentSign({
                       >
                         {forms.data.map((form) => (
                           <option key={form.id} value={form.id}>
-                            {form.title}
+                            {txv(form.title)}
                           </option>
                         ))}
                       </select>

@@ -12,7 +12,7 @@ import {
   CONSENT_ELECTRONIC_SIGNATURE_INTENT,
   CONSENT_SIGNER_AUTHORITY_ATTESTATION,
 } from "@/lib/consult/consent-template";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 const EXPIRED_MESSAGE =
   "This link has expired. Ask the front desk for a new code.";
@@ -435,7 +435,7 @@ export function SignClient({ token }: { token: string }) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-lg font-semibold text-gray-900">{consent.title}</h1>
+        <h1 className="text-lg font-semibold text-gray-900">{txv(consent.title)}</h1>
         <p className="mt-1 text-sm text-gray-500">
           {consent.practiceName}{" "}{tx("· For")}{" "}{consent.patientName}
         </p>

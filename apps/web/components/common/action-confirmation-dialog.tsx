@@ -5,7 +5,7 @@ import { createPortal } from "react-dom";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 type ReasonInput = {
   label: string;
@@ -123,7 +123,7 @@ export function ActionConfirmationDialog({
         {reason ? (
           <div className="mt-4">
             <label htmlFor={reasonId} className="text-sm font-medium">
-              {reason.label}
+              {txv(reason.label)}
             </label>
             <Textarea
               ref={reasonRef}

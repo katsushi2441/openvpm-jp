@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 const STORAGE_KEY = "openvpm:migration-review:v1";
 
@@ -172,7 +172,7 @@ export function MigrationReviewChecklist() {
                     {checked ? <Check className="h-3.5 w-3.5" /> : null}
                   </span>
                   <span>
-                    <span className="block font-medium">{step.title}</span>
+                    <span className="block font-medium">{txv(step.title)}</span>
                     <span className="mt-1 block text-sm leading-5 text-muted-foreground">
                       {step.detail}
                     </span>

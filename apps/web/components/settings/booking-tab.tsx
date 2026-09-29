@@ -23,7 +23,7 @@ import {
   type BookingPageConfig,
   type BookingWeeklyHours,
 } from "@/lib/booking/page-config";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 const WEEKDAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -399,7 +399,7 @@ export function BookingTab() {
             >
               {LEAD_TIME_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
-                  {o.label}
+                  {txv(o.label)}
                 </option>
               ))}
             </select>
@@ -422,7 +422,7 @@ export function BookingTab() {
             >
               {WINDOW_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>
-                  {o.label}
+                  {txv(o.label)}
                 </option>
               ))}
             </select>

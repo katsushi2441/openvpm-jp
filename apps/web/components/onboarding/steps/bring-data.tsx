@@ -42,7 +42,7 @@ import { trpc } from "@/lib/trpc";
 import { cn } from "@/lib/utils";
 import type { StepProps } from "../journey-types";
 import { MigrationHelpRequest } from "../migration-help-request";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 type Choice = "import" | "api" | "keep";
 type CsvPreview = {
@@ -883,7 +883,7 @@ function ImportFileFields({
     <div className="space-y-1.5 rounded-md border border-slate-200 bg-white p-3">
       <div className="flex items-center justify-between gap-3">
         <span className="text-sm font-medium text-slate-700">
-          {stepNumber}. {step.label}
+          {stepNumber}. {txv(step.label)}
         </span>
         <span className="text-[11px] text-slate-400">CSV</span>
       </div>
@@ -930,7 +930,7 @@ function ImportFileFields({
       ) : null}
       {tooLarge ? (
         <p id={errorId} className="text-xs text-red-700">
-          {step.label}{" "}{tx("CSV must be 5 MB or less.")}</p>
+          {txv(step.label)}{" "}{tx("CSV must be 5 MB or less.")}</p>
       ) : null}
     </div>
   );
@@ -958,7 +958,7 @@ function CsvPreviewCard({
   return (
     <div className="rounded-md border border-slate-200 bg-white p-3">
       <div className="flex items-center justify-between gap-3">
-        <p className="text-sm font-medium text-slate-800">{step.label}</p>
+        <p className="text-sm font-medium text-slate-800">{txv(step.label)}</p>
         <span
           className={cn(
             "rounded-full px-2 py-0.5 text-xs font-medium",

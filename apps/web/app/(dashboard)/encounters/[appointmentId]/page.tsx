@@ -84,7 +84,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { EmptyState } from "@/components/common/empty-state";
 import type { AppRouter } from "@/server/routers/_app";
-import { tx, uiLocale } from "@/lib/i18n";
+import { tx, uiLocale, txv } from "@/lib/i18n";
 
 const TreatmentPlanComposer = dynamic(
   () =>
@@ -622,7 +622,7 @@ export default function EncounterWorkspacePage() {
             ) : (
               <Check className="mr-2 h-4 w-4" />
             )}
-            {nextAction.label}
+            {txv(nextAction.label)}
           </Button>
         ) : appointment.status === "in_exam" && canManageVisit(role) ? (
           <Button
@@ -1047,7 +1047,7 @@ function VisitCompletionGuide({
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-wide text-primary">{tx("Finish this visit")}</p>
-            <CardTitle className="mt-1">{action.title}</CardTitle>
+            <CardTitle className="mt-1">{txv(action.title)}</CardTitle>
             <CardDescription className="mt-1 max-w-2xl">
               {action.description}
             </CardDescription>
@@ -1101,7 +1101,7 @@ function VisitCompletionGuide({
                   step.complete ? "font-medium" : "text-muted-foreground"
                 }
               >
-                {step.label}
+                {txv(step.label)}
               </span>
             </li>
           ))}

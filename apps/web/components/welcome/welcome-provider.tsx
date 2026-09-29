@@ -38,6 +38,7 @@ import { WelcomeSurface } from "./welcome-surface";
 import type { WelcomeVariant } from "./polaroid-card";
 import { WELCOME_COPY } from "./welcome-copy";
 import { stripDemoRoleSwitchMarker } from "@/lib/demo-role-switcher";
+import { tx, txv } from "@/lib/i18n";
 
 const DEMO_MODE = process.env.NEXT_PUBLIC_DEMO_MODE?.trim() === "true";
 
@@ -305,7 +306,7 @@ function SetupOffer({
           <PartyPopper className="h-5 w-5" aria-hidden="true" />
         </span>
         <h2 className="mt-3 font-heading text-lg font-semibold">
-          {WELCOME_COPY.allDone.title}
+          {txv(WELCOME_COPY.allDone.title)}
         </h2>
         <p className="mt-1.5 text-sm leading-6 text-muted-foreground">
           {WELCOME_COPY.allDone.body}

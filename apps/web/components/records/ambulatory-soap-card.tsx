@@ -19,7 +19,7 @@ import {
 } from "@/lib/records/soap-content";
 import { useOnlineStatus } from "@/lib/use-online-status";
 import { useUnsavedChangesGuard } from "@/lib/use-unsaved-changes-guard";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 type SoapSections = {
   subjective: string;
@@ -245,7 +245,7 @@ export function AmbulatorySoapCard({
             <div className="grid gap-4 lg:grid-cols-2">
               {SECTION_FIELDS.map((field) => (
                 <label key={field.name} className="space-y-1.5">
-                  <span className="text-sm font-medium">{field.label}</span>
+                  <span className="text-sm font-medium">{txv(field.label)}</span>
                   <Textarea
                     value={sections[field.name]}
                     maxLength={SOAP_SECTION_MAX_LENGTH}

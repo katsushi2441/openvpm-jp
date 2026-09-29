@@ -49,3 +49,12 @@ export function tx(message: string, vars?: Record<string, string | number>): str
   }
   return out;
 }
+
+/**
+ * Translate a value that is displayed as-is but may not be a string
+ * (e.g. `{tab.label}` from an `as const` array, or a status value).
+ * Non-strings are returned unchanged.
+ */
+export function txv<T>(value: T): T | string {
+  return typeof value === "string" ? tx(value) : value;
+}

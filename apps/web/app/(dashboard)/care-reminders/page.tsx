@@ -25,7 +25,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/common/empty-state";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { tx, uiLocale } from "@/lib/i18n";
+import { tx, uiLocale, txv } from "@/lib/i18n";
 
 type ReminderStatusFilter = "open" | "completed" | "dismissed";
 type ReminderDueFilter = "all" | "overdue" | "upcoming";
@@ -753,7 +753,7 @@ export default function CareRemindersPage() {
                           ) : null}
                         </td>
                         <td className="py-4 pr-4">
-                          <p className="font-medium">{item.title}</p>
+                          <p className="font-medium">{txv(item.title)}</p>
                           {item.notes ? (
                             <p className="mt-1 max-w-xl whitespace-pre-wrap text-xs text-muted-foreground">
                               {item.notes}

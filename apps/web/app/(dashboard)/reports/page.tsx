@@ -30,7 +30,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/common/empty-state";
 import { useCurrencyFormatter } from "@/lib/locale/useCurrency";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 function ReportChartChunkLoading() {
   return (
@@ -940,7 +940,7 @@ function ReportsDashboard() {
               )}
             >
               <Icon className="h-4 w-4" />
-              <span className="hidden sm:inline">{tab.label}</span>
+              <span className="hidden sm:inline">{txv(tab.label)}</span>
             </Button>
           );
         })}

@@ -15,7 +15,7 @@ import {
   PATIENT_SPECIES_OPTIONS,
   type PatientSpecies,
 } from "@/lib/patients/species";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 const speciesEmoji: Record<string, string> = PATIENT_SPECIES_EMOJI;
 
@@ -109,7 +109,7 @@ export default function PatientsPage() {
         >
           {speciesOptions.map((opt) => (
             <option key={opt.value} value={opt.value}>
-              {opt.label}
+              {txv(opt.label)}
             </option>
           ))}
         </select>

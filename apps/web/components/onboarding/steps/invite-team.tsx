@@ -12,7 +12,7 @@ import {
 import { isValidEmail } from "@/lib/utils";
 import { toast } from "sonner";
 import type { StepHandle } from "../journey-types";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 type Role = "admin" | "veterinarian" | "technician" | "front_desk" | "viewer";
 
@@ -156,7 +156,7 @@ export function InviteTeamStep({
                 >
                   {ROLES.map((r) => (
                     <option key={r.value} value={r.value}>
-                      {r.label}
+                      {txv(r.label)}
                     </option>
                   ))}
                 </select>

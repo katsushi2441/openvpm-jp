@@ -41,7 +41,7 @@ import { ChoosePathStep } from "./steps/choose-path";
 import { PracticeBasicsStep } from "./steps/practice-basics";
 import { BringDataStep } from "./steps/bring-data";
 import { AllSetStep } from "./steps/all-set";
-import { tx } from "@/lib/i18n";
+import { tx, txv } from "@/lib/i18n";
 
 interface OnboardingJourneyContextValue {
   /** Open the "Make it yours" guided setup (resumes at the saved step). */
@@ -495,7 +495,7 @@ function JourneyShell({
                         : "font-heading text-2xl font-bold sm:text-3xl",
                     )}
                   >
-                    {step.title}
+                    {txv(step.title)}
                   </h2>
                 </DialogPrimitive.Title>
 

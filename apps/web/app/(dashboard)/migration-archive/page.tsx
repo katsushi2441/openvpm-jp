@@ -28,7 +28,7 @@ import { Input } from "@/components/ui/input";
 import { EmptyState } from "@/components/common/empty-state";
 import type { AppRouter } from "@/server/routers/_app";
 import { MigrationReviewChecklist } from "@/components/migration/migration-review-checklist";
-import { tx, uiLocale } from "@/lib/i18n";
+import { tx, uiLocale, txv } from "@/lib/i18n";
 
 const PAGE_SIZE = 50;
 
@@ -195,7 +195,7 @@ export default function MigrationArchivePage() {
             <Card key={card.label}>
               <CardContent className="p-4">
                 <p className="text-sm font-medium text-muted-foreground">
-                  {card.label}
+                  {txv(card.label)}
                 </p>
                 <p className="mt-1 text-2xl font-semibold tabular-nums">
                   {metric(card.value)}
@@ -236,7 +236,7 @@ export default function MigrationArchivePage() {
                 onClick={() => setSection(item.id)}
               >
                 <item.icon className="h-4 w-4" aria-hidden="true" />
-                {item.label}
+                {txv(item.label)}
               </button>
             ))}
           </div>
@@ -303,7 +303,7 @@ export default function MigrationArchivePage() {
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-center gap-2">
-                            <p className="font-medium">{item.title}</p>
+                            <p className="font-medium">{txv(item.title)}</p>
                             <Badge
                               variant={
                                 item.needsReview ? "destructive" : "secondary"

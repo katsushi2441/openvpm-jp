@@ -60,7 +60,7 @@ import {
   layoutOverlaps,
   type OverlapPosition,
 } from "@/lib/scheduling/overlap-layout";
-import { tx, uiLocale } from "@/lib/i18n";
+import { tx, uiLocale, txv } from "@/lib/i18n";
 
 // --- Constants ---
 
@@ -570,7 +570,7 @@ function DayCalendar({
                   className="flex-1 border-l border-border px-3 py-2"
                   style={{ minWidth: 160 }}
                 >
-                  <p className="truncate text-sm font-medium">{lane.label}</p>
+                  <p className="truncate text-sm font-medium">{txv(lane.label)}</p>
                   <p className="text-xs text-muted-foreground">
                     {lane.appointments.length}{" "}{tx("appointment")}{lane.appointments.length !== 1 ? tx("s") : ""}
                   </p>
@@ -1425,7 +1425,7 @@ function AppointmentDetailPopover({
                 >
                   {TIME_SLOTS.map((slot) => (
                     <option key={slot.value} value={slot.value}>
-                      {slot.label}
+                      {txv(slot.label)}
                     </option>
                   ))}
                 </select>
@@ -1720,7 +1720,7 @@ function AppointmentDetailPopover({
                 {isUpdating ? (
                   <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
                 ) : null}
-                {action.label}
+                {txv(action.label)}
               </Button>
             ))}
           </div>
@@ -2263,7 +2263,7 @@ function BookingForm({
             >
               {TIME_SLOTS.map((slot) => (
                 <option key={slot.value} value={slot.value}>
-                  {slot.label}
+                  {txv(slot.label)}
                 </option>
               ))}
             </select>
@@ -2749,7 +2749,7 @@ function SchedulePageContent() {
                     : "text-muted-foreground hover:bg-muted"
                 )}
               >
-                {option.label}
+                {txv(option.label)}
               </button>
             ))}
           </div>
