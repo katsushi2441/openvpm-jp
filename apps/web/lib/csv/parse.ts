@@ -126,7 +126,32 @@ export function parseCsv(text: string): ParsedCsv {
 }
 
 /** Normalize a header to a comparison key: lowercase, alphanumerics only. */
+// Japanese column headers (paper charts typed into a spreadsheet) → the
+// normalized English header the importer already understands.
+const JA_HEADERS: Record<string, string> = {
+  飼い主番号: "clientid", 顧客番号: "clientid", 診察券番号: "clientid",
+  姓: "lastname", 苗字: "lastname", 名字: "lastname", 氏: "lastname",
+  名: "firstname",
+  メール: "email", メールアドレス: "email", eメール: "email",
+  電話: "phone", 電話番号: "phone", 携帯: "mobile", 携帯電話: "mobile", 連絡先: "phone",
+  住所: "address", 番地: "address", 市区町村: "city", 都道府県: "state", 郵便番号: "zip",
+  カルテ番号: "patientid", 患者番号: "patientid", 動物番号: "patientid",
+  飼い主メール: "owneremail", 飼い主メールアドレス: "owneremail",
+  動物名: "petname", ペット名: "petname", 患者名: "petname", 呼び名: "petname",
+  動物種: "species", 種類: "species", 種別: "species", 品種: "breed", 犬種: "breed", 猫種: "breed",
+  性別: "sex", 生年月日: "dob", 誕生日: "dob", 毛色: "color", 色: "color",
+  マイクロチップ: "microchip", マイクロチップ番号: "microchip", 状態: "status",
+  ワクチン: "vaccine", ワクチン名: "vaccinename", 接種日: "dategiven", 次回予定日: "nextduedate",
+  次回接種日: "nextduedate", 次回: "nextduedate", ロット番号: "lotnumber", メーカー: "manufacturer",
+  来院日: "visitdate", 診察日: "visitdate", 受診日: "visitdate",
+  稟告: "subjective", 主訴: "subjective", 所見: "objective", 検査所見: "objective",
+  診断: "assessment", 評価: "assessment", 治療: "plan", 処置: "plan", 方針: "plan",
+  カルテ内容: "notes", 記録: "notes", メモ: "notes", 備考: "notes",
+};
+
 export function normalizeKey(key: string): string {
+  const ja = key.normalize("NFKC").replace(/[\s　_・()（）]/g, "");
+  if (JA_HEADERS[ja]) return JA_HEADERS[ja];
   return key.toLowerCase().replace(/[^a-z0-9]/g, "");
 }
 

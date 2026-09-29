@@ -72,13 +72,26 @@ const SPECIES_ALIASES: Record<string, NormalizedSpecies> = {
   chinchilla: "other",
 };
 
+// Japanese species names used on paper charts and spreadsheets in Japan.
+const JA_SPECIES_ALIASES: Record<string, NormalizedSpecies> = {
+  犬: "canine", いぬ: "canine", イヌ: "canine", 子犬: "canine",
+  猫: "feline", ねこ: "feline", ネコ: "feline", 子猫: "feline",
+  鳥: "avian", とり: "avian", トリ: "avian", 小鳥: "avian", インコ: "avian", 文鳥: "avian", オウム: "avian",
+  ウサギ: "rabbit", うさぎ: "rabbit", 兎: "rabbit",
+  爬虫類: "reptile", カメ: "reptile", 亀: "reptile", トカゲ: "reptile", ヘビ: "reptile", 蛇: "reptile",
+  馬: "equine", 牛: "bovine", 羊: "ovine", ヤギ: "caprine", 山羊: "caprine", 豚: "porcine", ブタ: "porcine",
+  鶏: "poultry", ニワトリ: "poultry",
+  フェレット: "other", ハムスター: "other", モルモット: "other", チンチラ: "other", ハリネズミ: "other",
+  その他: "other",
+};
+
 /** Map a source species value onto our enum, or null when unrecognized. */
 export function normalizeSpeciesValue(
   value: string | undefined,
 ): NormalizedSpecies | null {
-  const v = value?.trim().toLowerCase().replace(/\s+/g, " ");
+  const v = value?.normalize("NFKC").trim().toLowerCase().replace(/\s+/g, " ");
   if (!v) return null;
-  return SPECIES_ALIASES[v] ?? null;
+  return SPECIES_ALIASES[v] ?? JA_SPECIES_ALIASES[v] ?? null;
 }
 
 export type NormalizedSex =
@@ -112,16 +125,27 @@ const SEX_ALIASES: Record<string, NormalizedSex> = {
   "female spayed": "female_spayed",
 };
 
+// Japanese sex notation: オス/メス, with 去勢/避妊 for neutered/spayed.
+const JA_SEX_ALIASES: Record<string, NormalizedSex> = {
+  オス: "male", 雄: "male", おす: "male", "♂": "male",
+  メス: "female", 雌: "female", めす: "female", "♀": "female",
+  去勢オス: "male_neutered", オス去勢: "male_neutered", オス去勢済み: "male_neutered", 去勢済みオス: "male_neutered",
+  去勢: "male_neutered", 去勢済み: "male_neutered", 雄去勢: "male_neutered",
+  避妊メス: "female_spayed", メス避妊: "female_spayed", メス避妊済み: "female_spayed", 避妊済みメス: "female_spayed",
+  避妊: "female_spayed", 避妊済み: "female_spayed", 雌避妊: "female_spayed",
+};
+
 /** Map a source sex value onto our enum, or undefined when unrecognized. */
 export function normalizeSexValue(
   value: string | undefined,
 ): NormalizedSex | undefined {
-  const v = value
+  const nfkc = value?.normalize("NFKC");
+  const v = nfkc
     ?.trim()
     .toLowerCase()
     .replace(/[\s/-]+/g, " ");
   if (!v) return undefined;
-  return SEX_ALIASES[v];
+  return SEX_ALIASES[v] ?? JA_SEX_ALIASES[v.replace(/[\s()（）・]/g, "")];
 }
 
 export type NormalizedPatientStatus = "active" | "inactive" | "deceased";
@@ -171,8 +195,28 @@ export function normalizeDateValue(
   value: string | undefined,
   now: Date = new Date(),
 ): string | null {
-  const v = value?.trim();
+  const v = value?.normalize("NFKC").trim();
   if (!v) return null;
+
+  // Japanese spreadsheets write year/month/day: 2019/3/5, 2019.3.5, 2019年3月5日
+  const ymd = v.match(/^(\d{4})\s*[/.年]\s*(\d{1,2})\s*[/.月]\s*(\d{1,2})\s*日?$/);
+  if (ymd) {
+    const year = Number(ymd[1]);
+    const month = Number(ymd[2]);
+    const day = Number(ymd[3]);
+    if (!isRealDate(year, month, day)) return null;
+    return `${year}-${pad2(month)}-${pad2(day)}`;
+  }
+  // Japanese era dates: 令和5年3月5日, 平成31年4月30日, R5.3.5, H31/4/30 (元年 = year 1)
+  const era = v.match(/^(令和|平成|昭和|R|H|S)\s*(元|\d{1,2})\s*[年./]\s*(\d{1,2})\s*[月./]\s*(\d{1,2})\s*日?$/i);
+  if (era) {
+    const base: Record<string, number> = { 令和: 2018, R: 2018, 平成: 1988, H: 1988, 昭和: 1925, S: 1925 };
+    const year = base[era[1]!.toUpperCase()]! + (era[2] === "元" ? 1 : Number(era[2]));
+    const month = Number(era[3]);
+    const day = Number(era[4]);
+    if (!isRealDate(year, month, day)) return null;
+    return `${year}-${pad2(month)}-${pad2(day)}`;
+  }
 
   const iso = v.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[T ].*)?$/);
   if (iso) {
