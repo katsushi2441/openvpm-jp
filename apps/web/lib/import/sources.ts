@@ -1,3 +1,4 @@
+import { tx } from "@/lib/i18n";
 /**
  * Migration source presets: where a clinic's data is coming from and how
  * to get it out of that system. The importers themselves are source
@@ -25,31 +26,31 @@ export const MIGRATION_SOURCES: MigrationSource[] = [
     id: "avimark",
     name: "AVImark",
     exportHint:
-      "In AVImark, use Information Search to pull Clients and Patients, then choose Results, then Export and save as CSV. Your Covetrus rep can also send full exports.",
+      tx("In AVImark, use Information Search to pull Clients and Patients, then choose Results, then Export and save as CSV. Your Covetrus rep can also send full exports."),
   },
   {
     id: "cornerstone",
     name: "Cornerstone",
     exportHint:
-      "In Cornerstone, run the Client and Patient reports under Reports, then save or print each one to CSV. IDEXX support can also pull full exports for you.",
+      tx("In Cornerstone, run the Client and Patient reports under Reports, then save or print each one to CSV. IDEXX support can also pull full exports for you."),
   },
   {
     id: "ezyvet",
     name: "ezyVet",
     exportHint:
-      "In ezyVet, open the Records dashboard, search Contacts and Animals, and use Export to download CSV files.",
+      tx("In ezyVet, open the Records dashboard, search Contacts and Animals, and use Export to download CSV files."),
   },
   {
     id: "shepherd",
     name: "Shepherd",
     exportHint:
-      "In Shepherd, use Reports to export your client and patient lists as CSV. For your full records, ask Shepherd support for your data export. Shepherd is cloud based, so support sends the files.",
+      tx("In Shepherd, use Reports to export your client and patient lists as CSV. For your full records, ask Shepherd support for your data export. Shepherd is cloud based, so support sends the files."),
   },
   {
     id: "other",
-    name: "Another system or spreadsheet",
+    name: tx("Another system or spreadsheet"),
     exportHint:
-      "Use a CSV with the columns shown below. The dry run shows exactly what will import before anything is saved.",
+      tx("Use a CSV with the columns shown below. The dry run shows exactly what will import before anything is saved."),
   },
 ];
 
@@ -100,41 +101,41 @@ export interface MigrationStep {
 export const MIGRATION_STEPS: readonly MigrationStep[] = [
   {
     mode: "clients",
-    label: "Clients (pet owners)",
-    shortLabel: "client",
+    label: tx("Clients (pet owners)"),
+    shortLabel: tx("client"),
     columnHint:
-      "firstName, lastName, plus email or client ID. Optional: phone, address, city, state, zip",
+      tx("firstName, lastName, plus email or client ID. Optional: phone, address, city, state, zip"),
     placeholder:
-      "clientId,firstName,lastName,email,phone,address,city,state,zip",
+      tx("clientId,firstName,lastName,email,phone,address,city,state,zip"),
   },
   {
     mode: "patients",
-    label: "Patients (pets)",
-    shortLabel: "pet",
+    label: tx("Patients (pets)"),
+    shortLabel: tx("pet"),
     columnHint:
-      "clientEmail or client ID, name, species. Patient ID is recommended. Optional: breed, sex, dob, color, microchipNumber",
+      tx("clientEmail or client ID, name, species. Patient ID is recommended. Optional: breed, sex, dob, color, microchipNumber"),
     placeholder:
-      "clientId,clientEmail,patientId,name,species,breed,sex,dob,color,microchipNumber",
+      tx("clientId,clientEmail,patientId,name,species,breed,sex,dob,color,microchipNumber"),
     unmatchedLabel: "Missing owners",
   },
   {
     mode: "vaccinations",
-    label: "Vaccine history",
-    shortLabel: "vaccine history",
+    label: tx("Vaccine history"),
+    shortLabel: tx("vaccine history"),
     columnHint:
-      "patient ID, or an owner reference plus patientName; vaccineName and dateGiven. Optional: nextDueDate, lotNumber, manufacturer",
+      tx("patient ID, or an owner reference plus patientName; vaccineName and dateGiven. Optional: nextDueDate, lotNumber, manufacturer"),
     placeholder:
-      "patientId,clientId,clientEmail,patientName,vaccineName,dateGiven,nextDueDate,lotNumber,manufacturer",
+      tx("patientId,clientId,clientEmail,patientName,vaccineName,dateGiven,nextDueDate,lotNumber,manufacturer"),
     unmatchedLabel: "Missing pets",
   },
   {
     mode: "soapNotes",
-    label: "Medical history (visit notes)",
-    shortLabel: "medical history",
+    label: tx("Medical history (visit notes)"),
+    shortLabel: tx("medical history"),
     columnHint:
-      "patient ID, or an owner reference plus patientName; date, and either subjective, objective, assessment, plan or a single notes column",
+      tx("patient ID, or an owner reference plus patientName; date, and either subjective, objective, assessment, plan or a single notes column"),
     placeholder:
-      "patientId,clientId,clientEmail,patientName,date,subjective,objective,assessment,plan",
+      tx("patientId,clientId,clientEmail,patientName,date,subjective,objective,assessment,plan"),
     unmatchedLabel: "Missing pets",
   },
 ];

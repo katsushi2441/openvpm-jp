@@ -27,6 +27,12 @@ export function unwrapCatalogCalls(source: string): string {
 const original = fs.readFileSync;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (fs as any).readFileSync = function patched(this: unknown, file: fs.PathOrFileDescriptor, ...rest: unknown[]) {
+  // The Japanese fork keeps the upstream README as README.en.md; README checks read that one.
+  const asName = typeof file === "string" ? file : file instanceof URL ? file.pathname : "";
+  if (asName.endsWith("README.md")) {
+    const en = asName.slice(0, -"README.md".length) + "README.en.md";
+    if (fs.existsSync(en)) file = en;
+  }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const out = (original as any).call(this, file, ...rest);
   const name = typeof file === "string" ? file : file instanceof URL ? file.pathname : "";

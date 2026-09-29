@@ -59,7 +59,7 @@ import {
   type ClinicModel,
   type FirstGoal,
 } from "@/lib/onboarding/clinic-profile";
-import { tx, txv } from "@/lib/i18n";
+import { tx, txv, UI_LANGUAGE } from "@/lib/i18n";
 
 type RegistrationCountry = ClinicRegionCode | "OTHER" | "";
 type RegistrationStage = "profile" | "workflow" | "preview" | "account";
@@ -647,7 +647,7 @@ function RegisterPageInner() {
               </select>
             </FormField>
 
-            {country && country !== "US" && country !== "OTHER" ? (
+            {country && country !== "US" && country !== "OTHER" && UI_LANGUAGE !== "ja" ? (
               <div className="flex gap-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-950">
                 <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
                 <p>{tx("OpenVPM can format this workspace for your region, but the supported design-partner rollout is currently limited to US clinics. Explore with sample data only; do not move live clinic work yet.")}</p>

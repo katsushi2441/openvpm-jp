@@ -17,7 +17,7 @@ import {
   isClinicRegionCode,
   type ClinicRegionCode,
 } from "@/lib/locale/clinic-regions";
-import { tx } from "@/lib/i18n";
+import { tx, UI_LANGUAGE } from "@/lib/i18n";
 
 // Mirrors the TIMEZONES list on the settings page.
 const TIMEZONES = [
@@ -229,7 +229,7 @@ export function PracticeBasicsStep({
         </FormField>
       </div>
 
-      {country && country !== "US" ? (
+      {country && country !== "US" && UI_LANGUAGE !== "ja" ? (
         <div className="flex gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-950">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0" />
           <p>{tx("The supported design-partner rollout is currently limited to US clinics. This workspace is for sample-data evaluation only until your region is supported.")}</p>

@@ -29,7 +29,9 @@ const ATTRS = new Set([
   "helperText", "tooltip", "confirmLabel", "cancelLabel", "confirmText", "cancelText",
   "heading", "subtitle", "emptyTitle", "emptyDescription", "submitLabel", "actionLabel",
 ]);
-const PROP_KEYS = new Set(["label", "title", "description", "placeholder", "emptyMessage", "subtitle", "heading", "helperText", "tooltip"]);
+const PROP_KEYS = new Set(["label", "title", "description", "placeholder", "emptyMessage", "subtitle", "heading", "helperText", "tooltip",
+  // 追加の表示用キー（例: EXTRA_KEYS=shortLabel,firstWin,exportHint）
+  ...(process.env.EXTRA_KEYS ? process.env.EXTRA_KEYS.split(",") : [])]);
 const TOAST = new Set(["toast", "success", "error", "info", "warning", "message", "loading"]);
 const SKIP_TAGS = new Set(["code", "pre", "kbd", "style", "script", "samp"]);
 
@@ -94,7 +96,7 @@ const allMessages = new Map(); // message -> [file:line]
 
 function processFile(file) {
   const src = fs.readFileSync(file, "utf8");
-  const sf = ts.createSourceFile(file, src, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+  const sf = ts.createSourceFile(file, src, ts.ScriptTarget.Latest, true, file.endsWith(".tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
   // すでに @/lib/i18n から取り込んでいればその名前を使う（2回目以降の実行で別名にしない）
   const existing = src.match(/import \{([^}]*)\} from "@\/lib\/i18n";/);
   const bound = existing && existing[1].split(",").map((x) => x.trim()).find((x) => x === "tx" || x === "tx as txUi");

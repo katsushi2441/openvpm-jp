@@ -1,4 +1,5 @@
 import type { OnboardingIntent } from "@/lib/onboarding/intent";
+import { tx } from "@/lib/i18n";
 
 export const CLINIC_MODELS = [
   "companion",
@@ -36,43 +37,43 @@ export type ClinicModelOption = {
 export const CLINIC_MODEL_OPTIONS: readonly ClinicModelOption[] = [
   {
     value: "companion",
-    label: "Companion animal clinic",
-    shortLabel: "Companion animal",
+    label: tx("Companion animal clinic"),
+    shortLabel: tx("Companion animal"),
     tone: "emerald",
     readiness: "pilot",
   },
   {
     value: "mobile",
-    label: "Mobile or house-call practice",
-    shortLabel: "Mobile or house-call",
+    label: tx("Mobile or house-call practice"),
+    shortLabel: tx("Mobile or house-call"),
     tone: "coral",
     readiness: "design_partner",
   },
   {
     value: "equine",
-    label: "Equine or farm practice",
-    shortLabel: "Equine or farm",
+    label: tx("Equine or farm practice"),
+    shortLabel: tx("Equine or farm"),
     tone: "lavender",
     readiness: "design_partner",
   },
   {
     value: "specialty",
-    label: "Specialty or wellness",
-    shortLabel: "Specialty or wellness",
+    label: tx("Specialty or wellness"),
+    shortLabel: tx("Specialty or wellness"),
     tone: "blue",
     readiness: "design_partner",
   },
   {
     value: "shelter",
-    label: "Shelter or nonprofit",
-    shortLabel: "Shelter or nonprofit",
+    label: tx("Shelter or nonprofit"),
+    shortLabel: tx("Shelter or nonprofit"),
     tone: "rose",
     readiness: "design_partner",
   },
   {
     value: "exploring",
-    label: "I’m exploring",
-    shortLabel: "Exploring",
+    label: tx("I’m exploring"),
+    shortLabel: tx("Exploring"),
     tone: "amber",
     readiness: "explore",
   },
@@ -87,29 +88,29 @@ export type FirstGoalOption = {
 export const FIRST_GOAL_OPTIONS: readonly FirstGoalOption[] = [
   {
     value: "run_visit",
-    label: "Run one real visit",
+    label: tx("Run one real visit"),
     onboardingIntent: "alongside",
   },
   {
     value: "import_records",
-    label: "Bring records from my current PIMS",
+    label: tx("Bring records from my current PIMS"),
     onboardingIntent: "replace",
   },
   {
     value: "start_fresh",
-    label: "Start fresh",
+    label: tx("Start fresh"),
     onboardingIntent: "alongside",
   },
   {
     value: "explore_sample",
-    label: "Explore with sample data",
+    label: tx("Explore with sample data"),
     onboardingIntent: "explore",
   },
 ];
 
 export const SELF_HOST_GOAL: FirstGoalOption = {
   value: "self_host",
-  label: "Evaluate self-hosting",
+  label: tx("Evaluate self-hosting"),
   onboardingIntent: "self_host",
 };
 

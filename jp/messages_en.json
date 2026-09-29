@@ -217,7 +217,8 @@
     "apps/web/app/(dashboard)/clients/[id]/page.tsx:235"
   ],
   "A platform truly built for your clinic.": [
-    "apps/web/app/(auth)/register/page.tsx:386"
+    "apps/web/app/(auth)/register/page.tsx:386",
+    "apps/web/lib/onboarding/journey-plan.ts:14"
   ],
   "A practice full of made up clients and pets so you can explore. Add it any time, and remove it when you are ready to work for real.": [
     "apps/web/app/(dashboard)/settings/page.tsx:3770"
@@ -805,6 +806,9 @@
   "Allow writes: appointments and patient vitals": [
     "apps/web/app/(dashboard)/agent/page.tsx:409"
   ],
+  "Alongside current PIMS": [
+    "apps/web/lib/onboarding/intent.ts:46"
+  ],
   "Already have an account?": [
     "apps/web/app/(auth)/register/page.tsx:799"
   ],
@@ -861,6 +865,9 @@
   ],
   "Another country": [
     "apps/web/app/(auth)/register/page.tsx:690"
+  ],
+  "Another system or spreadsheet": [
+    "apps/web/lib/import/sources.ts"
   ],
   "Answer client questions and record messaging preferences.": [
     "apps/web/app/sms/[practiceId]/privacy/page.tsx:36"
@@ -1363,6 +1370,9 @@
   "Brand and campaign submissions incur Telnyx charges and require an explicit confirmation. Refresh is read-only. Assignment never enables sending.": [
     "apps/web/app/(dashboard)/admin/page.tsx:660"
   ],
+  "Brand your self-hosted workspace": [
+    "apps/web/lib/onboarding/intent.ts:82"
+  ],
   "Branding": [
     "apps/web/app/(dashboard)/settings/page.tsx:770"
   ],
@@ -1386,8 +1396,20 @@
   "Briefly describe the reason for the visit": [
     "apps/web/app/portal/[token]/book/page.tsx:455"
   ],
+  "Bring clients and pets in before switching live clinic workflows.": [
+    "apps/web/lib/onboarding/intent.ts:62"
+  ],
   "Bring clients, pets, vaccine history, and visit notes.": [
     "apps/web/components/onboarding/steps/bring-data.tsx:603"
+  ],
+  "Bring over a small real dataset": [
+    "apps/web/lib/onboarding/intent.ts:49"
+  ],
+  "Bring records from my current PIMS": [
+    "apps/web/lib/onboarding/clinic-profile.ts:95"
+  ],
+  "Bring your history with confidence.": [
+    "apps/web/lib/onboarding/journey-plan.ts:16"
   ],
   "Browse imported history": [
     "apps/web/components/migration/migration-review-checklist.tsx:145"
@@ -2060,6 +2082,9 @@
     "apps/web/components/layout/sidebar.tsx:60",
     "apps/web/components/layout/top-bar.tsx:23"
   ],
+  "Clients (pet owners)": [
+    "apps/web/lib/import/sources.ts:103"
+  ],
   "Clients imported": [
     "apps/web/app/(dashboard)/settings/page.tsx:3257"
   ],
@@ -2288,6 +2313,12 @@
   ],
   "Compact closeout": [
     "apps/web/components/settings/ambulatory-workspace-settings.tsx:121"
+  ],
+  "Companion animal": [
+    "apps/web/lib/onboarding/clinic-profile.ts:40"
+  ],
+  "Companion animal clinic": [
+    "apps/web/lib/onboarding/clinic-profile.ts:39"
   ],
   "Complete": [
     "apps/web/app/(dashboard)/lab-results/page.tsx:574",
@@ -3534,6 +3565,12 @@
   "Entering a value records this result as completed and sends it to the clinic Lab Inbox for review. A result without values stays pending.": [
     "apps/web/app/(dashboard)/records/page.tsx:2898"
   ],
+  "Equine or farm": [
+    "apps/web/lib/onboarding/clinic-profile.ts:54"
+  ],
+  "Equine or farm practice": [
+    "apps/web/lib/onboarding/clinic-profile.ts:53"
+  ],
   "Est. MRR": [
     "apps/web/app/(dashboard)/admin/page.tsx:254"
   ],
@@ -3543,6 +3580,12 @@
   ],
   "Estimate converted to invoice": [
     "apps/web/app/(dashboard)/billing/page.tsx:217"
+  ],
+  "Evaluate for self-hosting": [
+    "apps/web/lib/onboarding/intent.ts:78"
+  ],
+  "Evaluate self-hosting": [
+    "apps/web/lib/onboarding/clinic-profile.ts:112"
   ],
   "Event": [
     "apps/web/app/api-docs/page.tsx:1555",
@@ -3691,6 +3734,9 @@
   "Explicit resend after definite failure": [
     "apps/web/components/admin/sms-recovery-console.tsx:1463"
   ],
+  "Explore": [
+    "apps/web/lib/onboarding/intent.ts:69"
+  ],
   "Explore a ready-made clinic": [
     "apps/web/components/onboarding/first-day-recommendations.tsx:55"
   ],
@@ -3700,8 +3746,15 @@
   "Explore the live product": [
     "apps/web/app/(auth)/login/page.tsx:143"
   ],
+  "Explore with sample data": [
+    "apps/web/lib/onboarding/clinic-profile.ts:105",
+    "apps/web/lib/onboarding/intent.ts:68"
+  ],
   "Explore with the example pets we set up for you.": [
     "apps/web/components/onboarding/steps/bring-data.tsx:830"
+  ],
+  "Exploring": [
+    "apps/web/lib/onboarding/clinic-profile.ts:75"
   ],
   "Export CSV": [
     "apps/web/app/(dashboard)/reports/page.tsx:202"
@@ -4304,11 +4357,23 @@
   "Importing your data": [
     "apps/web/components/onboarding/steps/bring-data.tsx:766"
   ],
+  "In AVImark, use Information Search to pull Clients and Patients, then choose Results, then Export and save as CSV. Your Covetrus rep can also send full exports.": [
+    "apps/web/lib/import/sources.ts:27"
+  ],
+  "In Cornerstone, run the Client and Patient reports under Reports, then save or print each one to CSV. IDEXX support can also pull full exports for you.": [
+    "apps/web/lib/import/sources.ts:33"
+  ],
   "In Exam": [
     "apps/web/app/(dashboard)/schedule/page.tsx:1276"
   ],
+  "In Shepherd, use Reports to export your client and patient lists as CSV. For your full records, ask Shepherd support for your data export. Shepherd is cloud based, so support sends the files.": [
+    "apps/web/lib/import/sources.ts:45"
+  ],
   "In Stock": [
     "apps/web/app/(dashboard)/inventory/page.tsx:83"
+  ],
+  "In ezyVet, open the Records dashboard, search Contacts and Animals, and use Export to download CSV files.": [
+    "apps/web/lib/import/sources.ts:39"
   ],
   "In visit": [
     "apps/web/components/records/recent-clinical-items.tsx:71"
@@ -4508,6 +4573,9 @@
   "Items requiring attention": [
     "apps/web/app/(dashboard)/encounters/[appointmentId]/page.tsx:3545"
   ],
+  "I’m exploring": [
+    "apps/web/lib/onboarding/clinic-profile.ts:74"
+  ],
   "Japan": [
     "apps/web/lib/locale/clinic-regions.ts"
   ],
@@ -4632,6 +4700,12 @@
   ],
   "Launch readiness · all required to approve": [
     "apps/web/components/admin/clinic-pilot-console.tsx:719"
+  ],
+  "Learn the product first with a ready-made clinic and no migration decision.": [
+    "apps/web/lib/onboarding/intent.ts:70"
+  ],
+  "Learn the same open-source product while you plan or run your own deployment.": [
+    "apps/web/lib/onboarding/intent.ts:80"
   ],
   "Leave": [
     "apps/web/app/(dashboard)/records/page.tsx:2905"
@@ -5174,6 +5248,9 @@
   "Make getting paid easy": [
     "apps/web/components/onboarding/first-day-recommendations.tsx:159"
   ],
+  "Make it feel like your clinic.": [
+    "apps/web/lib/onboarding/journey-plan.ts:15"
+  ],
   "Make it your brand": [
     "apps/web/components/dashboard/activation-checklist.tsx:187"
   ],
@@ -5270,6 +5347,9 @@
     "apps/web/app/(dashboard)/patients/[id]/page.tsx:193",
     "apps/web/app/(dashboard)/records/page.tsx:1239",
     "apps/web/app/api-docs/page.tsx:344"
+  ],
+  "Medical history (visit notes)": [
+    "apps/web/lib/import/sources.ts:132"
   ],
   "Medical history CSV checked": [
     "apps/web/app/(dashboard)/settings/page.tsx:3352"
@@ -5403,6 +5483,12 @@
   ],
   "Missing:": [
     "apps/web/app/(dashboard)/settings/page.tsx:3959"
+  ],
+  "Mobile or house-call": [
+    "apps/web/lib/onboarding/clinic-profile.ts:47"
+  ],
+  "Mobile or house-call practice": [
+    "apps/web/lib/onboarding/clinic-profile.ts:46"
   ],
   "Moderate": [
     "apps/web/app/(dashboard)/patients/[id]/page.tsx:3593"
@@ -6874,6 +6960,9 @@
   "Patients (": [
     "apps/web/app/(dashboard)/clients/[id]/page.tsx:327"
   ],
+  "Patients (pets)": [
+    "apps/web/lib/import/sources.ts:112"
+  ],
   "Patients Seen Today": [
     "apps/web/app/(dashboard)/page.tsx:115"
   ],
@@ -7185,6 +7274,9 @@
     "apps/web/app/book/[slug]/page.tsx:185",
     "apps/web/app/portal/[token]/book/page.tsx:192",
     "apps/web/app/portal/[token]/book/page.tsx:362"
+  ],
+  "Prepare a staged move of your clinic data and day-to-day workflows.": [
+    "apps/web/lib/onboarding/intent.ts:59"
   ],
   "Prescribe": [
     "apps/web/app/(dashboard)/encounters/[appointmentId]/page.tsx:809",
@@ -7977,6 +8069,9 @@
   "Replace client link": [
     "apps/web/components/encounters/treatment-plan-composer.tsx:645"
   ],
+  "Replace current PIMS": [
+    "apps/web/lib/onboarding/intent.ts:58"
+  ],
   "Replace existing content": [
     "apps/web/app/(dashboard)/records/new-soap/[patientId]/page.tsx:1066"
   ],
@@ -7988,6 +8083,9 @@
   "Replace logo": [
     "apps/web/app/(dashboard)/settings/page.tsx:797",
     "apps/web/components/onboarding/steps/branding.tsx:201"
+  ],
+  "Replace my current PIMS": [
+    "apps/web/lib/onboarding/intent.ts:57"
   ],
   "Replace or delete every bracketed template prompt before finalizing.": [
     "apps/web/app/(dashboard)/records/replace-soap/[patientId]/page.tsx:302"
@@ -8480,8 +8578,12 @@
   "Rows parsed": [
     "apps/web/app/(dashboard)/settings/page.tsx:4339"
   ],
+  "Run alongside my current PIMS": [
+    "apps/web/lib/onboarding/intent.ts:45"
+  ],
   "Run one real visit": [
-    "apps/web/components/onboarding/first-day-recommendations.tsx:37"
+    "apps/web/components/onboarding/first-day-recommendations.tsx:37",
+    "apps/web/lib/onboarding/clinic-profile.ts:90"
   ],
   "Run practice analytics over configurable date ranges.": [
     "apps/web/app/api-docs/page.tsx:1106"
@@ -8875,6 +8977,9 @@
   "See my first day": [
     "apps/web/app/(auth)/register/page.tsx:532"
   ],
+  "See the schedule, records, billing, and AI in a minute.": [
+    "apps/web/lib/onboarding/intent.ts:73"
+  ],
   "See which OpenVPM clinic workflows are ready today, which need a supported pilot, and which are not yet available.": [
     "apps/web/app/clinic-fit/page.tsx:21"
   ],
@@ -8949,6 +9054,9 @@
   ],
   "Selected file:": [
     "apps/web/app/(dashboard)/settings/page.tsx:4298"
+  ],
+  "Self-host": [
+    "apps/web/lib/onboarding/intent.ts:79"
   ],
   "Self-hosted — all features unlocked": [
     "apps/web/app/(dashboard)/settings/page.tsx:1483"
@@ -9075,6 +9183,9 @@
   "Services Report": [
     "apps/web/app/(dashboard)/reports/page.tsx:607"
   ],
+  "Set clinic details first; hosted-only billing steps stay out of self-hosted setup.": [
+    "apps/web/lib/onboarding/intent.ts:83"
+  ],
   "Set each veterinarian's weekly coverage at every clinic. Times use": [
     "apps/web/components/settings/provider-hours.tsx:123"
   ],
@@ -9150,6 +9261,10 @@
   ],
   "Share where the visit should happen and anything that would help the clinic prepare. These are owner-reported details and remain unverified until the care team reviews and confirms them.": [
     "apps/web/components/booking/previsit-intake-fields.tsx:50"
+  ],
+  "Shelter or nonprofit": [
+    "apps/web/lib/onboarding/clinic-profile.ts:67",
+    "apps/web/lib/onboarding/clinic-profile.ts:68"
   ],
   "Show documents for this visit": [
     "apps/web/app/(dashboard)/patients/[id]/page.tsx:2912"
@@ -9261,6 +9376,10 @@
   "Source-attributed history from a prior system. These records support clinical and business context, but they do not silently create live appointments, dispense inventory, change accounts receivable, or authorize client communication.": [
     "apps/web/app/(dashboard)/migration-archive/page.tsx:145"
   ],
+  "Specialty or wellness": [
+    "apps/web/lib/onboarding/clinic-profile.ts:60",
+    "apps/web/lib/onboarding/clinic-profile.ts:61"
+  ],
   "Species": [
     "apps/web/app/(dashboard)/patients/[id]/page.tsx:1443"
   ],
@@ -9333,6 +9452,9 @@
   "Start free": [
     "apps/web/app/clinic-fit/page.tsx:90"
   ],
+  "Start fresh": [
+    "apps/web/lib/onboarding/clinic-profile.ts:100"
+  ],
   "Start guided setup": [
     "apps/web/components/dashboard/activation-checklist.tsx:409"
   ],
@@ -9350,12 +9472,21 @@
     "apps/web/app/(dashboard)/inventory/page.tsx:570",
     "apps/web/app/(dashboard)/inventory/page.tsx:615"
   ],
+  "Start with a few clients and pets. Your current PIMS stays in place.": [
+    "apps/web/lib/onboarding/intent.ts:50"
+  ],
   "Start with a small representative sample. A confirmed import has no one-click rollback.": [
     "apps/web/app/(dashboard)/settings/page.tsx:4398",
     "apps/web/components/onboarding/steps/bring-data.tsx:766"
   ],
+  "Start with one useful workflow while your current system stays in place.": [
+    "apps/web/lib/onboarding/intent.ts:47"
+  ],
   "Start with sample data": [
     "apps/web/app/clinic-fit/page.tsx:226"
+  ],
+  "Start your staged data import": [
+    "apps/web/lib/onboarding/intent.ts:61"
   ],
   "Start your workspace": [
     "apps/web/app/(auth)/register/page.tsx:467"
@@ -9559,7 +9690,8 @@
     "apps/web/app/capture/[token]/capture-client.tsx:181"
   ],
   "Take the 60-second tour": [
-    "apps/web/components/dashboard/activation-checklist.tsx:180"
+    "apps/web/components/dashboard/activation-checklist.tsx:180",
+    "apps/web/lib/onboarding/intent.ts:72"
   ],
   "Taken": [
     "apps/web/components/settings/booking-tab.tsx:268"
@@ -10625,6 +10757,9 @@
   "Use Mon–Fri, 8–6": [
     "apps/web/components/settings/provider-hours.tsx:230"
   ],
+  "Use a CSV with the columns shown below. The dry run shows exactly what will import before anything is saved.": [
+    "apps/web/lib/import/sources.ts:51"
+  ],
   "Use one consistent inventory unit. For medication dispensed as tablets, enter stock and price per tablet—not per bottle or package. Prescription quantities, stock deductions, and invoice totals all use this unit.": [
     "apps/web/app/(dashboard)/inventory/page.tsx:190"
   ],
@@ -10700,6 +10835,9 @@
   ],
   "Vaccine Name": [
     "apps/web/app/(dashboard)/patients/[id]/page.tsx:2483"
+  ],
+  "Vaccine history": [
+    "apps/web/lib/import/sources.ts:122"
   ],
   "Vaccine history imported": [
     "apps/web/app/(dashboard)/settings/page.tsx:3328"
@@ -11273,7 +11411,8 @@
     "apps/web/components/onboarding/clinic-intent-builder.tsx:240"
   ],
   "Your first day is ready.": [
-    "apps/web/app/(auth)/register/page.tsx:569"
+    "apps/web/app/(auth)/register/page.tsx:569",
+    "apps/web/lib/onboarding/journey-plan.ts:17"
   ],
   "Your first day, already taking shape.": [
     "apps/web/app/(auth)/register/page.tsx:814"
@@ -11436,7 +11575,17 @@
     "apps/web/app/(dashboard)/encounters/[appointmentId]/page.tsx:3353"
   ],
   "client": [
-    "apps/web/app/(dashboard)/clients/page.tsx:76"
+    "apps/web/app/(dashboard)/clients/page.tsx:76",
+    "apps/web/lib/import/sources.ts:104"
+  ],
+  "clientEmail or client ID, name, species. Patient ID is recommended. Optional: breed, sex, dob, color, microchipNumber": [
+    "apps/web/lib/import/sources.ts:114"
+  ],
+  "clientId,clientEmail,patientId,name,species,breed,sex,dob,color,microchipNumber": [
+    "apps/web/lib/import/sources.ts:116"
+  ],
+  "clientId,firstName,lastName,email,phone,address,city,state,zip": [
+    "apps/web/lib/import/sources.ts:107"
   ],
   "clients ·": [
     "apps/web/app/(dashboard)/admin/page.tsx:608"
@@ -11557,6 +11706,9 @@
   "explore the immediate demo": [
     "apps/web/app/(auth)/register/page.tsx:714"
   ],
+  "firstName, lastName, plus email or client ID. Optional: phone, address, city, state, zip": [
+    "apps/web/lib/import/sources.ts:105"
+  ],
   "for an explicit Claude model.": [
     "apps/web/app/(dashboard)/agent/page.tsx:296"
   ],
@@ -11662,6 +11814,9 @@
   "may use OpenVPM to send requested veterinary service messages. These may include appointment reminders, vaccination and care updates, and replies to client questions.": [
     "apps/web/app/sms/[practiceId]/page.tsx:20"
   ],
+  "medical history": [
+    "apps/web/lib/import/sources.ts:133"
+  ],
   "min": [
     "apps/web/app/(dashboard)/settings/page.tsx:2974"
   ],
@@ -11742,6 +11897,18 @@
   "patient": [
     "apps/web/app/(dashboard)/patients/page.tsx:123"
   ],
+  "patient ID, or an owner reference plus patientName; date, and either subjective, objective, assessment, plan or a single notes column": [
+    "apps/web/lib/import/sources.ts:134"
+  ],
+  "patient ID, or an owner reference plus patientName; vaccineName and dateGiven. Optional: nextDueDate, lotNumber, manufacturer": [
+    "apps/web/lib/import/sources.ts:124"
+  ],
+  "patientId,clientId,clientEmail,patientName,date,subjective,objective,assessment,plan": [
+    "apps/web/lib/import/sources.ts:136"
+  ],
+  "patientId,clientId,clientEmail,patientName,vaccineName,dateGiven,nextDueDate,lotNumber,manufacturer": [
+    "apps/web/lib/import/sources.ts:126"
+  ],
   "pending ·": [
     "apps/web/app/(dashboard)/admin/page.tsx:444"
   ],
@@ -11750,6 +11917,9 @@
   ],
   "per unit. The prescription quantity will be deducted and charged in that same unit.": [
     "apps/web/app/(dashboard)/records/page.tsx:2177"
+  ],
+  "pet": [
+    "apps/web/lib/import/sources.ts:113"
   ],
   "plus each write tool's underlying resource scope. All requests are scoped to the authenticated practice; clinical record writes such as SOAP note creation require": [
     "apps/web/app/api-docs/ai/page.tsx:35"
@@ -11947,6 +12117,9 @@
   ],
   "v1.0 Reference": [
     "apps/web/app/api-docs/page.tsx:1433"
+  ],
+  "vaccine history": [
+    "apps/web/lib/import/sources.ts:123"
   ],
   "valid changes can import. Review": [
     "apps/web/components/onboarding/steps/bring-data.tsx:773"

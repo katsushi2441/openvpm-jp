@@ -1,3 +1,4 @@
+import { tx } from "@/lib/i18n";
 export const ONBOARDING_INTENTS = [
   "alongside",
   "replace",
@@ -42,46 +43,46 @@ export type OnboardingIntentOption = {
 export const ONBOARDING_INTENT_OPTIONS: readonly OnboardingIntentOption[] = [
   {
     value: "alongside",
-    label: "Run alongside my current PIMS",
-    shortLabel: "Alongside current PIMS",
+    label: tx("Run alongside my current PIMS"),
+    shortLabel: tx("Alongside current PIMS"),
     description:
-      "Start with one useful workflow while your current system stays in place.",
-    firstWin: "Bring over a small real dataset",
+      tx("Start with one useful workflow while your current system stays in place."),
+    firstWin: tx("Bring over a small real dataset"),
     firstWinHint:
-      "Start with a few clients and pets. Your current PIMS stays in place.",
+      tx("Start with a few clients and pets. Your current PIMS stays in place."),
     firstWinTarget: "data",
     recommended: true,
   },
   {
     value: "replace",
-    label: "Replace my current PIMS",
-    shortLabel: "Replace current PIMS",
+    label: tx("Replace my current PIMS"),
+    shortLabel: tx("Replace current PIMS"),
     description:
-      "Prepare a staged move of your clinic data and day-to-day workflows.",
-    firstWin: "Start your staged data import",
+      tx("Prepare a staged move of your clinic data and day-to-day workflows."),
+    firstWin: tx("Start your staged data import"),
     firstWinHint:
-      "Bring clients and pets in before switching live clinic workflows.",
+      tx("Bring clients and pets in before switching live clinic workflows."),
     firstWinTarget: "data",
   },
   {
     value: "explore",
-    label: "Explore with sample data",
-    shortLabel: "Explore",
+    label: tx("Explore with sample data"),
+    shortLabel: tx("Explore"),
     description:
-      "Learn the product first with a ready-made clinic and no migration decision.",
-    firstWin: "Take the 60-second tour",
-    firstWinHint: "See the schedule, records, billing, and AI in a minute.",
+      tx("Learn the product first with a ready-made clinic and no migration decision."),
+    firstWin: tx("Take the 60-second tour"),
+    firstWinHint: tx("See the schedule, records, billing, and AI in a minute."),
     firstWinTarget: "tour",
   },
   {
     value: "self_host",
-    label: "Evaluate for self-hosting",
-    shortLabel: "Self-host",
+    label: tx("Evaluate for self-hosting"),
+    shortLabel: tx("Self-host"),
     description:
-      "Learn the same open-source product while you plan or run your own deployment.",
-    firstWin: "Brand your self-hosted workspace",
+      tx("Learn the same open-source product while you plan or run your own deployment."),
+    firstWin: tx("Brand your self-hosted workspace"),
     firstWinHint:
-      "Set clinic details first; hosted-only billing steps stay out of self-hosted setup.",
+      tx("Set clinic details first; hosted-only billing steps stay out of self-hosted setup."),
     firstWinTarget: "brand",
   },
 ];
