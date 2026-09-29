@@ -75,7 +75,10 @@ pnpm dev
 ## 導入の支援
 
 本番で使うための手順（サーバーの用意・バックアップ・紙カルテの移行表のひな形・スタッフの初期設定）をまとめた
-「動物病院の電子カルテ OpenVPM 日本語版 導入キット」を、[株式会社エクスブリッジ](https://exbridge.jp/) で用意しています。
+導入キットを用意しています。
+
+- 導入キット（Kurage App Store）: [動物病院の電子カルテ OpenVPM 日本語版 導入キット](https://kappstore.exbridge.jp/app.php?id=302ada8100bb954f&ref=github-openvpm-jp)
+- 紙カルテからの移行と、向いている病院・向いていない病院の整理: [動物病院の電子カルテをオープンソースで（株式会社エクスブリッジ）](https://exbridge.jp/solution/doubutsu.html?ref=github-openvpm-jp)
 
 ## ライセンス
 
